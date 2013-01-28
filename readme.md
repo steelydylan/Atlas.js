@@ -1,5 +1,5 @@
 
-<img src="http://dl.dropbox.com/u/24487013/Acre.js/header_logo.png">
+<img src="http://dl.dropbox.com/u/24487013/Atlas.js/header_logo.png">
 ==========
 
 JavaScript Game Engine
@@ -8,15 +8,15 @@ JavaScript Game Engine
 Download
 --------
 
-- [Acre.js](https://raw.github.com/steelydylan/Acre.js/master/Acre.js)
-- [Acre.min.js](https://raw.github.com/steelydylan/Acre.js/master/library/Acre.min.js) (compressed)
+- [Atlas.js](https://raw.github.com/steelydylan/Atlas.js/master/Atlas.js)
+- [Atlas.min.js](https://raw.github.com/steelydylan/Atlas.js/master/library/Atlas.min.js) (compressed)
 
 
 Documentation
 -------------
 
 - Japanese
-    - <http://dl.dropbox.com/u/24487013/Acre.js/index.html>
+    - <http://dl.dropbox.com/u/24487013/Atlas.js/index.html>
 
 
 Design
