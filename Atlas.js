@@ -1,6 +1,6 @@
 ﻿/**
- * Acre.js v0.0.3
- * https://github.com/steelydylan/Acre.js
+ * Atlas.js v0.0.3
+ * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <ess_president@me.com>.
  * Released under the MIT license.
@@ -14,7 +14,7 @@ var IsAllLoaded = 0;
 var field;
 var ctx;
 var key = new Object();
-Acre = function(place) {  
+Atlas = function(place) {  
     field = document.getElementById(place);  
     this.fps = 30;// fps default
     this.width = 320;//resolution default
@@ -52,7 +52,7 @@ var Set = function(button){
        }
     return ret;
 }
-Acre.prototype = {
+Atlas.prototype = {
     touchenable:function(){
         if(this.isMobile){
             field.addEventListener("touchstart", this.touchstart, false);
