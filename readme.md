@@ -16,7 +16,7 @@ Documentation
 -------------
 
 - Japanese
-    - <http://dl.dropbox.com/u/24487013/Atlas.js/index.html>
+    - <http://steelydylan.github.io/Atlas.js/>
 
 
 Design
