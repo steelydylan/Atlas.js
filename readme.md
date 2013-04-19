@@ -9,7 +9,7 @@ Download
 --------
 
 - [Atlas.js](https://raw.github.com/steelydylan/Atlas.js/master/Atlas.js)
-- [Atlas.min.js](https://raw.github.com/steelydylan/Atlas.js/master/library/Atlas.min.js) (compressed)
+- [Atlas.min.js](https://raw.github.com/steelydylan/Atlas.js/master/Atlas.min.js) (compressed)
 
 
 Documentation
