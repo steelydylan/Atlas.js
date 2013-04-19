@@ -23,7 +23,7 @@ Design
 ------
 
 - Compact
-- function type
+- object-type
 
 ## License
 MIT License
