@@ -1,0 +1,29 @@
+﻿<h3>初期化、ループ</h3>
+次にゲームの初期処理、ロード中処理、ループ処理について説明したいと思います。
+<pre class="prettyprint linenums">
+game.InitScene(fn);
+/*
+画像や音楽がロードされる前に呼び出される関数を読み込むメソッドです
+*/
+game.LoadingScene(fn);
+/*
+画像や音楽がローディングされているときに呼び出される関数を読み込むメソッドです
+*/
+game.MainScene(fn);
+/*
+画像や音楽のローディング後に呼び出される関数を読み込むメソッドです
+この関数がゲームとして実行されます
+*/
+</pre>
+<img src ="./image/chara2.png" align="right"/>
+game.InitSceneのなかでは、画像をこのようにロードします。<br />
+右のように一つのスプライトが32(横）*32(縦）pxの3*4等分の画像をロードする場合<br />
+素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
+<br />
+<pre class="prettyprint linenums">
+var chara = new Tile("./images/chara2.png",32,32,3,4);
+</pre>
+また、gama.InitSceneのなかでは、音楽をこのようにロードさせることもできます。<br />
+<pre class="prettyprint linenums">
+var music = new Sound("./mymusic.mp3");
+</pre>

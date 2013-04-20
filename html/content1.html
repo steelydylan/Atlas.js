@@ -6,7 +6,7 @@
 <br>
 ダウンロードしたAtlas.jsをそのライブラリーを利用する、htmlファイルと<br>
 同じ階層にし、下記のようにAtlas.jsをインクルードします。
-<pre>
+<pre class="prettyprint linenums">
 &lt;html&gt;
 &lt;head&gt;
 &lt;script type="text/javascript" src="Atlas.js"&gt;&lt;/script&gt;
@@ -16,7 +16,7 @@
 &lt;/html&gt;
 </pre>
 つぎに、body要素の中にゲーム画面にしたいcanvasをid付きで下記のように記述します。
-<pre class="syntax" id="Pre1">
+<pre class="prettyprint linenums">
 &lt;body&gt;
 &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
 &lt;/body&gt;
@@ -26,11 +26,21 @@
 <br>
 最後に,body要素の中にJavaScriptの記述を書いて、<br>
 自分のオリジナルゲームを作りましょう<br>
-<pre class="synatax" id="Pre2">
+<pre class="prettyprint linenums">
 &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
 &lt;script&gt;
 &lt;!--ここに処理をかく--&gt;
 &lt;/script&gt;
 &lt;/body&gt;
 </pre>
+そして、canvas要素のidが上のように、Atlasだったとします。<br />
+そのとき、
+<pre class="prettyprint linenums">
+var game = new Atlas('Atlas');
+</pre>
+ある変数にAtlasをインスタンスする場合、うえのように、引数として、
+canvasのid名である、Atlasを指定します。
+こうすることで、このライブラリが提供する様々な機能を変数gameを
+通して使うことができるようになります。
+<br />
 

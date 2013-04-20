@@ -1,20 +1,38 @@
-<h3>初期化</h3>
-<br>
-例えば、
-<pre>
-&lt;body&gt;
-&lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
-&lt;/body&gt;
+<h3>各種設定</h3>
+ゲームをループさせる前の初期設定のgameのメソッドを紹介したいと思います
+<pre class="prettyprint linenums">
+game.touchenable();
+/*
+画面をタッチしたり、クリックやドラッグをするためのイベントリスナを追加します。
+ */
+game.centerize();
+/*
+ゲーム画面をブラウザ画面の中心に配置します。
+*/
+game.changeQuality(width,height);
+/*
+ゲーム画面の縦横の解像度を設定します。
+*/
+game.changeSize(width,height);
+/*
+ゲーム画面の縦横のサイズを設定します。
+*/
+game.keySet(buttonA,buttonB);
+/*
+ボタンのキーをそれぞれ、
+game.key.aにbuttonA
+game.key.bにbuttonB
+と、バインドさせる
+キーが押されているとき、
+game.key.a == 1
+キーが離されているとき、
+game.key.a == 0
+*/
+game.fps = 30;
+/*
+ゲームのfpsを30に設定します。
+*/
 </pre>
-このように、canvas要素のidが、Atlasだったとします。<br />
-そのとき、
-<pre>
-var game = new Atlas('Atlas');
-</pre>
-ある変数にAtlasをインスタンスする場合、うえのように、引数として、
-canvasのid名である、Atlasを指定します。
-こうすることで、このライブラリが提供する様々な機能を変数gameを
-通して使うことができるようになります。
 
 
 
