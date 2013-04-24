@@ -1,0 +1,36 @@
+﻿<h3>その他</h3>
+他にもAtlas.jsには便利なプロパティ、メソッドがいろいろ用意されています<br />
+それらを紹介しましょう
+<pre class="prettyprint linenums">
+game.isMobile;
+/*
+これはプロパティですが
+クライアントが使用している機器が携帯端末か
+どうかを判定します。
+携帯端末ならtrue,そうでなければfalseを返します。
+ */
+game.drawText(x, y, string, col,font);
+/*
+座標(x,y)に文字列"string"を色"col",フォント"font"で
+書き込みます。
+*/
+game.drawBox(x, y, sizeX, sizeY, col, alpha);
+座標(x,y)に横"sizeX"px,縦"sizeY"pxで色"col",透明度"alpha"の四角形を
+書き込みます
+*/
+game.getRand(min,max);
+/*
+minからmaxの間の適当な整数を返します。
+*/
+game.field;
+/*
+game化されたcanvas要素が入っています。
+ここからcanvas要素を操作することが出来ます。
+例
+game.field.width = 500;
+ゲーム画面の幅を500に設定する
+ただし、例の場合は、画面サイズ変更のメソッドとして
+game.changeSize(width,height);
+があり、こちらを使うことを推奨します。
+*/
+</pre>
