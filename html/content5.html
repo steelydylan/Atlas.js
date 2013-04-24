@@ -1,0 +1,16 @@
+﻿<h3>イベントリスナー</h3>
+Atlas.jsでは標準で3つのイベントリスナーを
+gameオブジェクトのメソッドに登録する機能があります。<br />
+それぞれ、<br />game.touchstart<br />game.touchmove<br />game.touchend
+です。<br />
+game.touchstartはゲーム画面ないがクリック、及び、タッチされた時に呼び出される命令を登録する関数です。<br />
+game.touchmoveはゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときの命令を登録する関数です<br />
+game.touchendはゲーム画面内でクリックが終了したとき、及び指が離れたときの命令を登録する関数です。
+<pre class="prettyprint linenums">
+game.touchstart(function(e){
+var obj = game.getPosition(e);
+console.log("あなたの触れた位置は("+obj.x+","+obj.y+")です。");
+});
+</pre>
+上のように３つのメソッド内では、現在のクリック位置やタッチ位置が取得できるメソッド<br />
+game.getPosition(e)を使用することが出来ます。
