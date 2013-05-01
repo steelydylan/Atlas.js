@@ -13,6 +13,9 @@ var ImgIndex = 0;
 var IsAllLoaded = 0;
 var field;
 var ctx;
+var initScene;
+var loadingScene;
+var mainScene;
 var key = new Object();
 Atlas = function(place) {  
     field = document.getElementById(place);  
@@ -53,20 +56,27 @@ var Set = function(button){
     return ret;
 }
 Atlas.prototype = {
-    touchenable:function(){
-        if(this.isMobile){
-            field.addEventListener("touchstart", this.touchstart, false);
-            field.addEventListener("touchmove", this.touchmove, false);
-            field.addEventListener("touchend", this.touchend, false);
-        }else{
-            field.addEventListener("mousedown", this.touchstart, false);
-            field.addEventListener("mousemove", this.touchmove, false);
-            field.addEventListener("mouseup", this.touchend, false);
-        }
+    touchstart: function (fn) {
+        if(this.isMobile)
+            field.addEventListener("touchstart", fn, false);
+        else
+            field.addEventListener("mousedown", fn, false);
+    },
+    touchmove: function (fn) {
+        if(this.isMobile)
+            field.addEventListener("touchmove", fn, false);
+        else
+            field.addEventListener("mousemove", fn, false);
+    },
+    touchend: function (fn) {
+        if(this.isMobile)
+            field.addEventListener("touchend", fn, false);
+        else
+            field.addEventListener("mouseup", fn, false);
     },
     centerize:function(){
-        field.style.marginLeft = window.innerWidth/2 - parseInt(field.style.width);
-        field.style.marginTop = window.innerHeight/2 - parseInt(field.style.height);
+        field.style.marginLeft = window.innerWidth/2 - parseInt(field.style.width)/2;
+        field.style.marginTop = window.innerHeight/2 - parseInt(field.style.height)/2;
         this.center = true;
     },
     keySet:function(buttonA,buttonB){
@@ -153,20 +163,26 @@ Atlas.prototype = {
     }
     return obj;
     },
+	MainScene:function(fn){
+	    mainScene = fn;
+	},
+	LoadingScene:function(fn){
+	    loadingScene = fn;
+	},
+	InitScene:function(fn){
+	    initScene = fn;
+	},
     start:function(){
-    if(typeof this.MainScene == "function" && typeof this.LoadingScene == "function" && typeof this.InitScene == "function"){
-        var MainGame = this.MainScene;
-        var LoadingGame = this.LoadingScene;
-        this.InitScene();
+	    if(initScene)
+            initScene();
         setInterval(function() {
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, field.width, field.height);
             if (IsAllLoaded == 0)
-                MainGame();
-            else
-                LoadingGame();
-            }, 1000/this.fps);
-        }
+                mainScene();
+            else if(loadingScene)
+                loadingScene();
+            }, 1000/this.fps);      
     },
     drawText:function(x, y, string, col,font) {
         if(font)
@@ -194,8 +210,17 @@ var Tile = function(name, width, height, numX, numY){
     this.frame = 0;
     if(arguments.length == 5)
     this.img = this.LoadDivGraph(name, width, height, numX, numY);  
-    else if(arguments.length == 1)
-    this.img = name.img;
+    else if (arguments.length == 1) {
+        this.width = name.width;
+        this.height = name.height;
+        this.x = 0;
+        this.y = 0;
+        this.sx = 1;
+        this.sy = 1;
+        this.rot = 0;
+        this.frame = 0;
+        this.img = name.img;
+    }
 }
 Tile.prototype = {
     LoadDivGraph:function(name, width, height, numX, numY) {
@@ -234,7 +259,7 @@ Tile.prototype = {
         var dy = (~~(this.frame / numX) % numY) * SizeY;
         ctx.save();
         ctx.translate(this.x + SizeX / 2, this.y + SizeY / 2);
-        ctx.rotate(-this.rot);
+        ctx.rotate(this.rot);
         ctx.translate(-SizeX / 2, -SizeY / 2);
         ctx.drawImage(images[this.img], dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
         ctx.restore();
