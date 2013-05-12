@@ -34,11 +34,6 @@ img.browser {
     }
 }
 
-#wrap {
-    overflow-x:hidden;
-}
-
-
 html,body  {
 font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 font-size:16px;
@@ -62,6 +57,7 @@ height:100%;
     height: 100%;
     /* Negative indent footer by it's height */
     margin: 0 auto -60px;
+    overflow-x:hidden;
 }
 
 
