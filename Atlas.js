@@ -103,7 +103,6 @@
             if (buttonB);
             key.buttonB = Set(buttonB);
             document.onkeydown = function (e) {
-                console.log(e.which);
                 switch (e.which) {
                     case 39: // Key[→]
                         key.right = 1;
