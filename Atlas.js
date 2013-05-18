@@ -39,6 +39,50 @@
         document.body.style.margin = "0em";
         window.Tile = Tile;
         window.Sound = Sound;
+        if (!this.isMobile) {
+            document.onkeydown = function (e) {
+                switch (e.which) {
+                    case 39: // Key[→]
+                        key.right = 1;
+                        break;
+                    case 37: // Key[←]
+                        key.left = 1;
+                        break;
+                    case 38: // Key[↑]
+                        key.up = 1;
+                        break;
+                    case 40: // Key[↓]
+                        key.down = 1;
+                        break;
+                }
+                if (e.which == key.buttonA)
+                    key.a = true;
+                if (e.which == key.buttonB)
+                    key.b = true;
+                return false;
+            };
+            document.onkeyup = function (e) {
+                switch (e.which) {
+                    case 39: // Key[→]
+                        key.right = 0;
+                        break;
+                    case 37: // Key[←]
+                        key.left = 0;
+                        break;
+                    case 38: // Key[↑]
+                        key.up = 0;
+                        break;
+                    case 40: // Key[↓]
+                        key.down = 0;
+                        break;
+                }
+                if (e.which == key.buttonA)
+                    key.a = false;
+                if (e.which == key.buttonB)
+                    key.b = false;
+                return false;
+            };
+        }
     };
     String.prototype.succ = function () {
         return String.fromCharCode(this.charCodeAt(this.length - 1) + 1)
@@ -93,57 +137,15 @@
             field.style.marginTop = window.innerHeight / 2 - parseInt(field.style.height) / 2;
             this.center = true;
         },
-        keySet: function (buttonA, buttonB) {
+        keySet: function (bA, bB) {
             key.buttonA = -1;
             key.buttonB = -1;
             key.a = false;
             key.b = false;
-            if (buttonA)
-                key.buttonA = Set(buttonA);
-            if (buttonB);
-            key.buttonB = Set(buttonB);
-            document.onkeydown = function (e) {
-                switch (e.which) {
-                    case 39: // Key[→]
-                        key.right = 1;
-                        break;
-                    case 37: // Key[←]
-                        key.left = 1;
-                        break;
-                    case 38: // Key[↑]
-                        key.up = 1;
-                        break;
-                    case 40: // Key[↓]
-                        key.down = 1;
-                        break;
-                }
-                if (e.which == key.buttonA)
-                    key.a = true;
-                if (e.which == key.buttonB)
-                    key.b = true;
-                return false;
-            }
-            document.onkeyup = function (e) {
-                switch (e.which) {
-                    case 39: // Key[→]
-                        key.right = 0;
-                        break;
-                    case 37: // Key[←]
-                        key.left = 0;
-                        break;
-                    case 38: // Key[↑]
-                        key.up = 0;
-                        break;
-                    case 40: // Key[↓]
-                        key.down = 0;
-                        break;
-                }
-                if (e.which == key.buttonA)
-                    key.a = false;
-                if (e.which == key.buttonB)
-                    key.b = false;
-                return false;
-            }
+            if (bA)
+                key.buttonA = Set(bA);
+            if (bB)
+                key.buttonB = Set(bB);
         },
         changeQuality: function (width, height) {
             field.width = width;
@@ -224,6 +226,7 @@
         this.sy = 1;
         this.rot = 0;
         this.frame = 0;
+        this.mapping = false;
         if (arguments.length == 5)
             this.img = this.LoadDivGraph(name, width, height, numX, numY);
         else if (arguments.length == 1) {
@@ -247,7 +250,7 @@
             images[ImgIndex].SizeY = height;
             images[ImgIndex].numX = numX;
             images[ImgIndex].numY = numY;
-            images[ImgIndex].onload = function () { IsAllLoaded--; console.log(this.src + ' isLoaded') }
+            images[ImgIndex].onload = function () { IsAllLoaded--; console.log(this.src + ' isLoaded') };
             ImgIndex++;
             return ImgIndex - 1;
         },
@@ -279,6 +282,37 @@
             ctx.translate(-SizeX / 2, -SizeY / 2);
             ctx.drawImage(images[this.img], dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
             ctx.restore();
+        },
+        setMap: function (array) {
+            this.map = array;
+            this.mapping = true;
+        },
+        drawMapGraph: function () {
+            if (this.mapping) {
+                var x = this.map[0].length;
+                var y = this.map.length;
+                var array = this.map;
+                var width = this.width;
+                var height = this.height;
+                var px = this.x;
+                var py = this.y;
+                var i = 0;
+                var t = 0;
+                while (i < y) {
+                    while (t < x) {
+                        this.frame = array[i][t];
+                        this.drawGraph();
+                        this.x += width;
+                        t++;
+                    }
+                    this.y += height;
+                    i++;
+                    this.x = px;
+                    t = 0;
+                }
+                this.x = px;
+                this.y = py;
+            }
         },
         Intersect: function (ex, ey) {
             if (ex > this.x && ex < this.x + images[this.img].SizeX
