@@ -14,7 +14,7 @@ var game = new Atlas("game");
 var map = new Tile("./images/map.png", 16, 16, 30, 16);
 game.changeSize(256, 256);
 game.changeQuality(256, 256);
-game.InitScene(function () {
+game.initScene(function () {
     map.setMap([
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -34,8 +34,8 @@ game.InitScene(function () {
   [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]);
 });
-game.LoadingScene(function () { });
-game.MainScene(function () {
+game.loadingScene(function () { });
+game.mainScene(function () {
     map.drawMapGraph();
 });
 game.start();

@@ -24,14 +24,14 @@ sprite.drawScaleGraph();//spriteを拡大して描画します
 /*
 いずれも座標(sprite.x,sprite.y)の位置にスプライトを描画します
 この描画処理のメソッドはgameオブジェクトのメソッド、
-LoadingSceneおよびMainSceneの内部で行ってください。
+loadingSceneおよびmainSceneの内部で行ってください。
 */
-sprite.WithIn(anotherSprite,range);
+sprite.within(anotherSprite,range);
 /*
 他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
 true,範囲外であればfalseを返す。
 */
-sprite.InterSect(x,y);
+sprite.intersect(x,y);
 /*
 スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
 */
