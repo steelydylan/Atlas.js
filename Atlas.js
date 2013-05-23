@@ -2,7 +2,7 @@
  * Atlas.js v0.0.3
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
- * <ess_president@me.com>.
+ * <http://steelydylan.phpapps.jp/>.
  * Released under the MIT license.
  */
 (function () {
@@ -84,8 +84,8 @@
             };
         }
     };
-    String.prototype.succ = function () {
-        return String.fromCharCode(this.charCodeAt(this.length - 1) + 1)
+    var succ = function (alpha) {
+        return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
     };
     var Set = function (button) {
         var ret;
@@ -108,25 +108,25 @@
                     ret = 65 + i;
                     break;
                 }
-                alpha = alpha.succ();
+                alpha = succ(alpha);
             }
         }
         return ret;
     };
     Atlas.prototype = {
-        touchstart: function (fn) {
+        touchStart: function (fn) {
             if (this.isMobile)
                 field.addEventListener("touchstart", fn, false);
             else
                 field.addEventListener("mousedown", fn, false);
         },
-        touchmove: function (fn) {
+        touchMove: function (fn) {
             if (this.isMobile)
                 field.addEventListener("touchmove", fn, false);
             else
                 field.addEventListener("mousemove", fn, false);
         },
-        touchend: function (fn) {
+        touchEnd: function (fn) {
             if (this.isMobile)
                 field.addEventListener("touchend", fn, false);
             else
@@ -181,13 +181,13 @@
             }
             return obj;
         },
-        MainScene: function (fn) {
+        mainScene: function (fn) {
             mainScene = fn;
         },
-        LoadingScene: function (fn) {
+        loadingScene: function (fn) {
             loadingScene = fn;
         },
-        InitScene: function (fn) {
+        initScene: function (fn) {
             initScene = fn;
         },
         start: function () {
@@ -228,7 +228,7 @@
         this.frame = 0;
         this.mapping = false;
         if (arguments.length == 5)
-            this.img = this.LoadDivGraph(name, width, height, numX, numY);
+            this.img = this.LoadDivGraph(name, numX, numY);
         else if (arguments.length == 1) {
             this.width = name.width;
             this.height = name.height;
@@ -242,12 +242,10 @@
         }
     };
     Tile.prototype = {
-        LoadDivGraph: function (name, width, height, numX, numY) {
+        LoadDivGraph: function (name, numX, numY) {
             IsAllLoaded++;
             images[ImgIndex] = new Image();
             images[ImgIndex].src = name;
-            images[ImgIndex].SizeX = width;
-            images[ImgIndex].SizeY = height;
             images[ImgIndex].numX = numX;
             images[ImgIndex].numY = numY;
             images[ImgIndex].onload = function () { IsAllLoaded--; console.log(this.src + ' isLoaded') };
@@ -255,32 +253,36 @@
             return ImgIndex - 1;
         },
         drawScaleGraph: function () {
-            var SizeX = images[this.img].SizeX;
-            var SizeY = images[this.img].SizeY;
-            var numX = images[this.img].numX;
-            var numY = images[this.img].numY;
-            var dx = (this.frame % numX) * SizeX;
-            var dy = (~~(this.frame / numX) % numY) * SizeY;
+            var frame = this.frame;
+            var image = images[this.img];
+            var SizeX = this.width;
+            var SizeY = this.height;
+            var numX = image.numX;
+            var numY = image.numY;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
             ctx.save();
             ctx.translate(this.x + SizeX / 2, this.y + SizeY / 2);
             ctx.rotate(this.rot);
             ctx.translate(-SizeX / 2, -SizeY / 2);
             ctx.scale(this.sx, this.sy);
-            ctx.drawImage(images[this.img], dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
             ctx.restore();
         },
         drawGraph: function () {
-            var SizeX = images[this.img].SizeX;
-            var SizeY = images[this.img].SizeY;
-            var numX = images[this.img].numX;
-            var numY = images[this.img].numY;
-            var dx = (this.frame % numX) * SizeX;
-            var dy = (~~(this.frame / numX) % numY) * SizeY;
+            var frame = this.frame;
+            var image = images[this.img];
+            var SizeX = this.width;
+            var SizeY = this.height;
+            var numX = image.numX;
+            var numY = image.numY;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
             ctx.save();
             ctx.translate(this.x + SizeX / 2, this.y + SizeY / 2);
             ctx.rotate(this.rot);
             ctx.translate(-SizeX / 2, -SizeY / 2);
-            ctx.drawImage(images[this.img], dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
             ctx.restore();
         },
         setMap: function (array) {
@@ -314,18 +316,18 @@
                 this.y = py;
             }
         },
-        Intersect: function (ex, ey) {
-            if (ex > this.x && ex < this.x + images[this.img].SizeX
-            && ey > this.y && ey < this.y + images[this.img].SizeY)
+        intersect: function (ex, ey) {
+            if (ex > this.x && ex < this.x + this.width
+            && ey > this.y && ey < this.y + this.height)
                 return true;
             else
                 return false;
         },
-        WithIn: function (tile, range) {
-            var x = this.x + images[this.img].SizeX / 2;
-            var y = this.y + images[this.img].SizeY / 2;
-            var dx = tile.x + images[tile.img].SizeX / 2;
-            var dy = tile.y + images[tile.img].SizeY / 2;
+        within: function (tile, range) {
+            var x = this.x + this.width / 2;
+            var y = this.y + this.height / 2;
+            var dx = tile.x + tile.width / 2;
+            var dy = tile.y + tile.height / 2;
             var tmp;
             if (dx < x) {
                 tmp = dx;
@@ -344,11 +346,11 @@
         }
     };
     var Sound = function (name) {
-        this.id = this.LoadSound(name);
+        this.id = this.loadSound(name);
         this.loop = 0;
     };
     Sound.prototype = {
-        LoadSound: function (name) {
+        loadSound: function (name) {
             if (Audio) {
                 musics[MusicIndex] = new Audio(name);
                 MusicIndex++;
@@ -356,7 +358,7 @@
             } else
                 return 0;
         },
-        PlaySound: function () {
+        playSound: function () {
             if (Audio) {
                 if (this.loop == 1)
                     musics[id].loop = true;
