@@ -4,6 +4,7 @@
  * Copyright steelydylan
  * <ess_president@me.com>.
  * Released under the MIT license.
+ * 参考 Gemmaの日記(http://d.hatena.ne.jp/Gemma/20070816)
  */
 Atlas.setting(function () {
     var NO = 0;//なにもないところ
