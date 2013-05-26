@@ -13,7 +13,7 @@
     var IsAllLoaded = 0;
     var field;
     var ctx;
-	var setting = [];
+    var setting = [];
     var initScene;
     var loadingScene;
     var mainScene;
@@ -114,13 +114,13 @@
         }
         return ret;
     };
-	Atlas.setting = function(fn){
-	    if(typeof fn == "function"){
-			var obj = new Object();
-		    obj.method = fn;
-		    setting.push(obj);
-		}
-	};
+    Atlas.setting = function (fn) {
+        if (typeof fn == "function") {
+            var obj = new Object();
+            obj.method = fn;
+            setting.push(obj);
+        }
+    };
     Atlas.prototype = {
         touchStart: function (fn) {
             if (this.isMobile)
@@ -199,10 +199,10 @@
             initScene = fn;
         },
         start: function () {
-		    var length = setting.length;
-			for(var i = 0; i < length; i++){
-			    setting[i].method();
-			}
+            var length = setting.length;
+            for (var i = 0; i < length; i++) {
+                setting[i].method();
+            }
             if (initScene)
                 initScene();
             setInterval(function () {
@@ -312,10 +312,13 @@
                 var py = this.y;
                 var i = 0;
                 var t = 0;
+                var fieldHeight = field.height;
+                var fieldWidth = field.width;
                 while (i < y) {
                     while (t < x) {
                         this.frame = array[i][t];
-                        this.drawGraph();
+                        if (fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0)
+                            this.drawGraph();
                         this.x += width;
                         t++;
                     }
