@@ -1,8 +1,8 @@
 ﻿/**
- * Atlas.js v0.0.3
+ * Atlas.js v0.1.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
- * <http://steelydylan.phpapps.jp/>.
+ * <http://steelydylan.phpapps.jp/>
  * Released under the MIT license.
  */
 (function () {
@@ -13,6 +13,7 @@
     var IsAllLoaded = 0;
     var field;
     var ctx;
+	var setting = [];
     var initScene;
     var loadingScene;
     var mainScene;
@@ -43,16 +44,16 @@
             document.onkeydown = function (e) {
                 switch (e.which) {
                     case 39: // Key[→]
-                        key.right = 1;
+                        key.right = true;
                         break;
                     case 37: // Key[←]
-                        key.left = 1;
+                        key.left = true;
                         break;
                     case 38: // Key[↑]
-                        key.up = 1;
+                        key.up = true;
                         break;
                     case 40: // Key[↓]
-                        key.down = 1;
+                        key.down = true;
                         break;
                 }
                 if (e.which == key.buttonA)
@@ -64,16 +65,16 @@
             document.onkeyup = function (e) {
                 switch (e.which) {
                     case 39: // Key[→]
-                        key.right = 0;
+                        key.right = false;
                         break;
                     case 37: // Key[←]
-                        key.left = 0;
+                        key.left = false;
                         break;
                     case 38: // Key[↑]
-                        key.up = 0;
+                        key.up = false;
                         break;
                     case 40: // Key[↓]
-                        key.down = 0;
+                        key.down = false;
                         break;
                 }
                 if (e.which == key.buttonA)
@@ -113,6 +114,13 @@
         }
         return ret;
     };
+	Atlas.setting = function(fn){
+	    if(typeof fn == "function"){
+			var obj = new Object();
+		    obj.method = fn;
+		    setting.push(obj);
+		}
+	};
     Atlas.prototype = {
         touchStart: function (fn) {
             if (this.isMobile)
@@ -191,6 +199,10 @@
             initScene = fn;
         },
         start: function () {
+		    var length = setting.length;
+			for(var i = 0; i < length; i++){
+			    setting[i].method();
+			}
             if (initScene)
                 initScene();
             setInterval(function () {
