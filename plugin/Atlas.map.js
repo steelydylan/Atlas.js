@@ -39,16 +39,13 @@ Atlas.setting(function () {
         if ((rect.x1 - rect.x0 < margin * 2) ||
             (rect.y1 - rect.y0 < margin * 2) ||
             (Random(0, 5) === 0)) {
-            //以上が終了条件
             return [rect];
         } else {
             if (Random(0, 2) === 0) {
-                //縦に分割
                 var a = Random(rect.y0 + margin, rect.y1 - margin);
                 return [new rectangle(rect.x0, rect.y0, rect.x1, a),
                     new rectangle(rect.x0, a, rect.x1, rect.y1)].map(split).flatten();
             } else {
-                //横に分割
                 var a = Random(rect.x0 + margin, rect.x1 - margin);
                 return [new rectangle(rect.x0, rect.y0, a, rect.y1),
                     new rectangle(a, rect.y0, rect.x1, rect.y1)].map(split).flatten();
