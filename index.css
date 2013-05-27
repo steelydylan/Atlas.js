@@ -1,4 +1,9 @@
-﻿.container-narrow {
+﻿
+#English {
+ 	display: none;
+}
+
+.container-narrow {
         margin: 0 auto;
         max-width: 900px;
       }

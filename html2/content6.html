@@ -1,0 +1,42 @@
+﻿<h3>Map</h3>
+Let's use the Mapping function of Atlas.js<br />
+By using the mapping function,you can spread the tiles<br />
+in the canvas.<br />
+using the method called "setMap" of sprites in the initScene,<br />
+you have to call the method called "drawMapGraph" in the mainScene.
+<h4>例</h4>
+<img src="./image/map.png" /><br clear="right"/>
+
+<small><a href="http://www.tekepon.net/fsm/">I'm using the image at "First Seed Material"</a></small><br />
+Suppose that you load the image width 16*16px devided by 30(vertical)*16(horizontal) like this<br />
+<pre class="prettyprint linenums">
+var game = new Atlas("game");
+var map = new Tile("./images/map.png", 16, 16, 30, 16);
+game.changeSize(256, 256);
+game.changeQuality(256, 256);
+game.initScene(function () {
+    map.setMap([
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+  [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+  [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]);
+});
+game.loadingScene(function () { });
+game.mainScene(function () {
+    map.drawMapGraph();
+});
+game.start();
+</pre>

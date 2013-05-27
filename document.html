@@ -42,7 +42,7 @@
 		</div>
 </div>
 <!--content-->
-<div class="container-narrow">
+<div class="container-narrow" id="Japanese">
       <br />
       <div class="row-fluid marketing">
         <div class="span4">
@@ -58,8 +58,47 @@
 			    <li><a href="#content7.html" class="sidemenu">その他<i class="icon-chevron-right"></i></a></li>
 			</ul>
           </div>
+             <h4>Language</h4>
+             <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">日本語 <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" onclick="Display('Japanese')">日本語</a></li>
+                  <li><a href="#" onclick="Display('English')">English</a></li>
+                </ul>
+              </div><!-- /btn-group -->
         </div>
         <div class="span8" id="content">
+        </div>
+      </div>
+      <br />
+ </div> 
+<!-- /content -->
+<div class="container-narrow" id="English">
+      <br />
+      <div class="row-fluid marketing">
+        <div class="span4">
+          <h4>Menu</h4>
+          <div class="well sidebar-nav-fixed">
+            <ul class="nav nav-tabs nav-stacked">
+                <li class="active"><a href="#content1.html" class="sidemenu">First<i class="icon-chevron-right"></i></a></li>
+			    <li><a href="#content2.html" class="sidemenu">Settings<i class="icon-chevron-right"></i></a></li>
+			    <li><a href="#content3.html" class="sidemenu">Initialize,Loop<i class="icon-chevron-right"></i></a></li>
+			    <li><a href="#content4.html" class="sidemenu">Sprite<i class="icon-chevron-right"></i></a></li>
+			    <li><a href="#content5.html" class="sidemenu">EventListener<i class="icon-chevron-right"></i></a></li>
+                <li><a href="#content6.html" class="sidemenu">Map<i class="icon-chevron-right"></i></a></li>
+			    <li><a href="#content7.html" class="sidemenu">Other<i class="icon-chevron-right"></i></a></li>
+			</ul>
+          </div>
+             <h4>Language</h4>
+             <div class="btn-group" id="langageChange">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">English<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" onclick="Display('Japanese')">日本語</a></li>
+                  <li><a href="#" onclick="Display('English')">English</a></li>
+                </ul>
+              </div><!-- /btn-group -->
+        </div>
+        <div class="span8" id="content2">
         </div>
       </div>
       <br />
@@ -86,6 +125,7 @@
     <script src="./bootstrap/js/bootstrap.min.js"></script>
 	<script src="./bootstrap-modal/js/bootstrap-modalmanager.js"></script>
     <script src="./bootstrap-modal/js/bootstrap-modal.js"></script>
+    <script src="./multilingal.js"></script>
     <script src="./document.js"></script>
     </body>
 </html>

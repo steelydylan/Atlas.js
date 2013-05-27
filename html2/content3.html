@@ -1,0 +1,29 @@
+﻿<h3>Initialize,Loop</h3>
+Next,I'd like to introduce you the Initialization, Loading and Mainloop.
+<pre class="prettyprint linenums">
+game.initScene(fn);
+/*
+it runs before the loadings.
+*/
+game.loadingScene(fn);
+/*
+it runs during the loadings.
+*/
+game.mainScene(fn);
+/*
+it runs after the loadings
+this method runs an game loop.
+*/
+</pre>
+<img src ="./image/chara2.png" align="right"/>
+in the game.initScene, you can load the sprite like this<br />
+Suppose that you load the image width 32*32px devided by 3(vertical)*4(horizontal)<br />
+I download the material at <a href="http://usui.moo.jp/rpg_tukuru.html">http://usui.moo.jp/rpg_tukuru.html</a><br clear="right"/>
+<br />
+<pre class="prettyprint linenums">
+var chara = new Tile("./images/chara2.png",32,32,3,4);
+</pre>
+And in the game.initScene, you can load the sound like this<br />
+<pre class="prettyprint linenums">
+var music = new Sound("./mymusic.mp3");
+</pre>

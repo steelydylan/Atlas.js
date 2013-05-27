@@ -1,0 +1,34 @@
+<h3>Settings</h3>
+I'd like to introduce you the initial settings before the game loop.
+<pre class="prettyprint linenums">
+game.centerize();
+/*
+put the game screen at the center of the browser screen.
+*/
+game.changeQuality(width,height);
+/*
+set the horizontal and vertical resolution of the game.
+*/
+game.changeSize(width,height);
+/*
+set the size of the screen.
+*/
+game.keySet(buttonA,buttonB);
+/*
+bind the keys
+buttonA to game.key.a
+buttonB to game.key.b
+
+if the buttonA is pushed
+game.key.a == true
+if the buttonA is released
+game.key.a == false
+*/
+game.fps = 30;
+/*
+set the fps of the game
+*/
+</pre>
+
+
+

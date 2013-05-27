@@ -1,0 +1,38 @@
+﻿<h3>Sprite</h3>
+<pre class="prettyprint linenums">
+var sprite = new Tile("./images/chara2.png",32,32,3,4);
+</pre>
+A sprite initialized like this has following properties as initial value.
+<pre class="prettyprint linenums">
+sprite.x = 0;//x point
+sprite.y = 0;//y point
+sprite.rot = 0;//theta
+sprite.sx = 1;//enlargement ratio of x
+sprite.sy = 1;//enlargement ratio of y
+sprite.frame = 0;//a number of frame.
+</pre>
+<img src="./image/sprite.png" align="right"/><br />
+see the image on the right<br />
+Relation between the images and frames<br />
+If you set the sprite frame as 3,"3" will be drawn.
+<br clear="right"/>
+<br />
+And you can use following method via sprites.
+<pre class="prettyprint linenums">
+sprite.drawGraph();//draw the sprite without maginification
+sprite.drawScaleGraph();//draw the sprite with magnification
+/*
+In any way,the sprite will be drawn at the point of (sprite.x,sprite.y)
+Please call this drawing methods in the loadingScene or mainScene;
+*/
+sprite.within(anotherSprite,range);
+/*
+Parameters are another sprite and the range
+if another sprite is within the radius of the sprite's range,
+return true,else return false.
+*/
+sprite.intersect(x,y);
+/*
+if the point of (x,y) is in the sprite,return true,else return false.
+*/
+</pre>

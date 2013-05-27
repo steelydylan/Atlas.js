@@ -39,7 +39,7 @@
 			</div>	    			
 		</div>
 </div>
-<div class="container-narrow">
+<div class="container-narrow" id="Japanese">
       <br />
       <div class="hero-unit" id="explain">
         <h1 class="title">Atlas.js</h1>
@@ -73,8 +73,65 @@
             <script type="text/javascript" src="http://jsdo.it/blogparts/wFeW/js?width=496&height=496&view=readme"></script>
             </div>
         </div>
-
         <div class="span4">
+            <h4>Language</h4>
+             <div class="btn-group" id="langageChange">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">日本語 <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" onclick="Display('Japanese')">日本語</a></li>
+                  <li><a href="#" onclick="Display('English')">English</a></li>
+                </ul>
+              </div><!-- /btn-group -->
+          <h4>Facebook</h4>
+          <div class="fb-like-box" data-href="https://www.facebook.com/Natsupuro" data-width="292" data-show-faces="true" data-colorscheme="light" data-stream="false" data-header="true"></div>
+        </div>
+      </div>
+      <br />
+
+ </div> <!-- /container -->
+<div class="container-narrow" id="English">
+      <br />
+      <div class="hero-unit" id="Div1">
+        <h1 class="title">Atlas.js</h1>
+        <p>A game engine specialized for 2D with its transaction speed superior to enchant.js</p>
+        <small>v0.1 was released(2013.5.26)</small><br />
+        <a class="btn btn-large btn-primary" href = "https://github.com/steelydylan/Atlas.js/archive/master.zip">
+        <i class="icon-download-alt"></i> Download</a>
+        <a class="btn btn-large btn-info" href="https://github.com/steelydylan/Atlas.js" target="_blank"><i class="icon-github-alt"></i> github</a>
+      </div>
+      <hr/>
+      <div class="row-fluid marketing">
+        <div class="span8" id="Div2">
+          <h4>Features</h4>
+                <ul>
+                <li>3 times faster than enchant.js</li>
+                <li>You can decide the drawing order of the sprites</li>
+                <li>It's methods allow you to change the resolution and size of your games</li>
+                <li>You can set your loading scene of your game</li>
+                <li>Its code is short enough to read!!Only about 300 lines</li>
+                </ul>
+            <hr/>
+            <h4>Compatible with..</h4>
+            <img class="browser" src="image/ie.png"/>
+            <img class="browser" src ="image/chrome.png"/>
+            <img class="browser" src="image/firefox.png"/>
+            <img class="browser" src="image/safari.png"/>
+            <img class="browser" src = "image/opera.png"/>
+            <hr />
+            <div class="hidden-phone">
+            <h4>Short Demonstration</h4>
+            <script type="text/javascript" src="http://jsdo.it/blogparts/wFeW/js?width=496&height=496&view=readme"></script>
+            </div>
+        </div>
+        <div class="span4">
+            <h4>Language</h4>
+             <div class="btn-group" id="Div3">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">English <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" onclick="Display('Japanese')">日本語</a></li>
+                  <li><a href="#" onclick="Display('English')">English</a></li>
+                </ul>
+              </div><!-- /btn-group -->
           <h4>Facebook</h4>
           <div class="fb-like-box" data-href="https://www.facebook.com/Natsupuro" data-width="292" data-show-faces="true" data-colorscheme="light" data-stream="false" data-header="true"></div>
         </div>
@@ -101,5 +158,6 @@
     <script src="./bootstrap/js/bootstrap.min.js"></script>
 	<script src="./bootstrap-modal/js/bootstrap-modalmanager.js"></script>
     <script src="./bootstrap-modal/js/bootstrap-modal.js"></script>
+    <script src="./multilingal.js"></script>
     </body>
 </html>

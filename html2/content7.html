@@ -1,0 +1,34 @@
+﻿<h3>Others</h3>
+Atlas.js has other many useful methods.<br />
+I'll let you know.
+<pre class="prettyprint linenums">
+game.isMobile;
+/*
+This is property.
+it judges client's device.
+if client's device is Mobile, it returns true,else returns false。
+ */
+game.drawText(x, y, string, col,font);
+/*
+Write down the string"string" with color"col",font"font"
+at the point(x,y)
+*/
+game.drawBox(x, y, sizeX, sizeY, col, alpha);
+Draw the box with size(sizeX,sizeY),color"col"and transparency"alpha"
+at the point(x,y)
+*/
+game.getRand(min,max);
+/*
+it returns random integer from "min" to "max"
+*/
+game.field;
+/*
+it is canvas element,
+From this, you can manipulate the canvas element.
+Example
+game.field.width = 500;
+set the screen size of game as 500
+But,in this case,I recomend you to use the following method
+game.changeSize(width,height);
+*/
+</pre>

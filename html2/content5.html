@@ -1,0 +1,14 @@
+﻿<h3>EventListener</h3>
+Atlas.js has the 3 methods which allows you to register following Eventlisters.<br />
+Like,<br />game.touchStart<br />game.touchMove<br />game.touchEnd<br />
+game.touchStart is the function, which is called when you start touching the screen<br />
+game.touchMove is the function, which is called when you are moving the carsor or fingers on the screen<br />
+game.touchEnd is the function, which is called when you finished touching the screen.
+<pre class="prettyprint linenums">
+game.touchStart(function(e){
+var obj = game.getPosition(e);
+console.log("your touching point is("+obj.x+","+obj.y+")");
+});
+</pre>
+Like above you can get the touched point<br />
+via game.getPosition(e)
