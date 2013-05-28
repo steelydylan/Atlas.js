@@ -1,5 +1,5 @@
-﻿/**
- * Atlas.js v0.1.0
+/**
+ * Atlas.js v0.1.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -7,13 +7,11 @@
  */
 (function () {
     var images = [];
-    var musics = [];
-    var MusicIndex = 0;
     var ImgIndex = 0;
     var IsAllLoaded = 0;
     var field;
     var ctx;
-    var setting = [];
+	var setting = [];
     var initScene;
     var loadingScene;
     var mainScene;
@@ -21,10 +19,11 @@
     Atlas = function (place) {
         field = document.getElementById(place);
         this.fps = 30;// fps default
-        this.width = 320;//resolution default
-        this.height = 480;//resolution default
+        this.qualityWidth = 320;//resolution default
+        this.qualityHeight = 480;//resolution default
+		field.width = 320;
+		field.height = 480;
         this.isMobile = false;
-        this.center = false;
         this.field = field;
         this.key = key;
         ctx = field.getContext('2d');
@@ -32,14 +31,18 @@
         if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
             field.style.width = window.innerWidth;//mobile default
             field.style.height = window.innerHeight;//mobile default
+			this.width = window.innerWidth;
+			this.height = window.innerHeight;
             this.isMobile = true;
         } else {
             field.style.width = 480;//pc default
-            field.style.height = 620;//pc default    
+            field.style.height = 620;//pc default   
+			this.width = 480;
+			this.height = 620;			
         }
         document.body.style.margin = "0em";
         window.Tile = Tile;
-        window.Sound = Sound;
+        window.Sounds = Sounds;
         if (!this.isMobile) {
             document.onkeydown = function (e) {
                 switch (e.which) {
@@ -114,13 +117,13 @@
         }
         return ret;
     };
-    Atlas.setting = function (fn) {
-        if (typeof fn == "function") {
+	Atlas.setting = function(fn){
+	    if(typeof fn == "function"){
             var obj = new Object();
             obj.method = fn;
             setting.push(obj);
-        }
-    };
+		}
+	};
     Atlas.prototype = {
         touchStart: function (fn) {
             if (this.isMobile)
@@ -141,9 +144,11 @@
                 field.addEventListener("mouseup", fn, false);
         },
         centerize: function () {
-            field.style.marginLeft = window.innerWidth / 2 - parseInt(field.style.width) / 2;
-            field.style.marginTop = window.innerHeight / 2 - parseInt(field.style.height) / 2;
-            this.center = true;
+		    field.style.marginTop = -this.height/2;
+			field.style.marginLeft = -this.width/2;
+            field.style.top = '50%';
+			field.style.left = '50%';
+			field.style.position = 'absolute';
         },
         keySet: function (bA, bB) {
             key.buttonA = -1;
@@ -158,24 +163,27 @@
         changeQuality: function (width, height) {
             field.width = width;
             field.height = height;
+			this.qualityWidth = width;
+			this.qualityHeight = height;
         },
         changeSize: function (width, height) {
             field.style.width = width;
             field.style.height = height;
-            if (this.center) {
-                field.style.marginLeft = window.innerWidth / 2 - width / 2;
-                field.style.marginTop = window.innerHeight / 2 - height / 2;
-            }
+			this.width = width;
+			this.height = height;
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
         },
         getPosition: function (e) {
             e.preventDefault();
+			var rateX = this.qualityWidth/this.width;
+			var rateY = this.qualityHeight/this.height;
             var obj = new Object();
+			var margin = field.getBoundingClientRect();
             if (e) {
-                var x = parseInt(field.style.marginLeft);
-                var y = parseInt(field.style.marginTop);
+                var x = parseInt(margin.left);
+                var y = parseInt(margin.top);
                 if (isNaN(x))
                     x = 0;
                 if (isNaN(y))
@@ -184,9 +192,11 @@
                 obj.y = (this.isMobile ? e.touches[0].pageY : e.pageY) - y;
             }
             else {
-                obj.x = event.x + document.body.scrollLeft;
-                obj.y = event.y + document.body.scrollTop;
+                obj.x = event.x - x;
+                obj.y = event.y - y;
             }
+			obj.x = parseInt(obj.x*rateX);
+			obj.y = parseInt(obj.y*rateY);
             return obj;
         },
         mainScene: function (fn) {
@@ -199,10 +209,10 @@
             initScene = fn;
         },
         start: function () {
-            var length = setting.length;
-            for (var i = 0; i < length; i++) {
-                setting[i].method();
-            }
+		    var length = setting.length;
+			for(var i = 0; i < length; i++){
+			    setting[i].method();
+			}
             if (initScene)
                 initScene();
             setInterval(function () {
@@ -312,12 +322,12 @@
                 var py = this.y;
                 var i = 0;
                 var t = 0;
-                var fieldHeight = field.height;
-                var fieldWidth = field.width;
+				var fieldHeight = field.height;
+				var fieldWidth = field.width;
                 while (i < y) {
                     while (t < x) {
                         this.frame = array[i][t];
-                        if (fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0)
+						if(fieldHeight > py+height*i &&  py + height*(i+1) > 0 && fieldWidth > px+width*t && px + width*(t+1) > 0)
                             this.drawGraph();
                         this.x += width;
                         t++;
@@ -360,25 +370,72 @@
                 return false;
         }
     };
-    var Sound = function (name) {
-        this.id = this.loadSound(name);
-        this.loop = 0;
+    var Sounds = function(){
+	    var length = arguments.length;
+	    this.data = [];
+	    for(var i = 0; i < length; i++){
+	        this.data.push(new Audio(arguments[i]));
+			this.data[i].playing = false;
+		}
     };
-    Sound.prototype = {
-        loadSound: function (name) {
-            if (Audio) {
-                musics[MusicIndex] = new Audio(name);
-                MusicIndex++;
-                return MusicIndex - 1;
-            } else
-                return 0;
-        },
-        playSound: function () {
-            if (Audio) {
-                if (this.loop == 1)
-                    musics[id].loop = true;
-                musics[id].play();
-            }
-        }
-    };
+	Sounds.prototype = {
+	    play:function(id){
+		    if(this.data[id].paused)
+		        this.data[id].play();
+			else if(!this.data[id].loop)
+			    (new Audio( this.data[id].src )).play();
+			this.data[id].playing = true;
+		},
+		loop:function(id){
+		    var data = this.data[id];
+		    if (!data.loop){
+                data.addEventListener('ended', function() {
+                    data.currentTime = 0;
+                    data.play();
+                }, false);
+			}
+		    data.loop = true;
+			data.playing = true;
+			data.play();
+		},
+		restart:function(id){
+            this.data[id].load();
+			this.data[id].play();
+			this.data[id].playing = true;
+		},
+		pause:function(id){
+		    if(this.data[id].playing == true){
+		        this.data[id].pause();
+			    this.data[id].playing = false;
+			}
+		},
+		stop:function(id){
+            if(this.data[id].playing == true){
+                this.data[id].pause();
+                this.data[id].currentTime = 0;
+				this.data[id].playing = false;
+            }else{
+			    this.data[id].load();
+			}
+		},
+		getCount:function(id){
+		    return this.data[id].currentTime;
+		},
+		setCount:function(id,time){
+		    if(this.data[id].playing == true)
+		        this.data[id].currentTime = time;
+		},
+		getVolume:function(id){
+		    return this.data[id].volume;
+		},
+		setVolume:function(id,volume){
+		    this.data[id].volume = volume;
+		},
+		getAlltime:function(id){
+		    return this.data[id].duration;
+		},
+		isPlaying:function(id){
+		    return this.data[id].playing;
+		}
+	};
 })();
