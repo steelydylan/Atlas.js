@@ -38,3 +38,21 @@ sprite.intersect(x,y);
 if the point of (x,y) is in the sprite,return true,else return false.
 */
 </pre>
+<h4>Group Function</h4>
+<p>you can manipulate all of shape objects and tile objects via Group()</p>
+<p>For your reference,Group is a child Class of Array</p>
+<pre class="prettyprint linenums">
+//generate group object
+var enemies = new Group();
+//add object to group
+var enemy = new Enemy();
+enemies.add(enemy);
+//manipulate all added object
+enemies.move(x,y);
+/*
+in this moment,enemies_group execute each method "enemies[i].move(x,y)"
+of each added object in order. 
+*/
+enemies[i].remove = true;
+//remove the number i object
+</pre>

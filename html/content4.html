@@ -38,3 +38,21 @@ sprite.intersect(x,y);
 スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
 */
 </pre>
+<h4>グループ機能</h4>
+<p>Tileオブジェクトや、Shapeオブジェクトをグループとして一斉に動かすこともできます。</p>
+<p>ちなみに、GroupオブジェクトはArrayクラスの継承クラスです</p>
+<pre class="prettyprint linenums">
+//グループオブジェクトの生成
+var enemies = new Group();
+//グループにオブジェクトを追加
+var enemy = new Enemy();
+enemies.add(enemy);
+//グループ全体のオブジェクトを操作
+enemies.move(x,y);
+/*
+このとき、enemiesグループはenemiesに追加されたそれぞれのオブジェクトの
+メソッドenemies[i].move(x,y)を順に実行していきます
+*/
+enemies[i].remove = true;
+//i番目のオブジェクトを削除します。
+</pre>
