@@ -13,16 +13,17 @@ game.changeSize(width,height);
 /*
 set the size of the screen.
 */
-game.keySet(buttonA,buttonB);
+var util = new Util();
+util.keySet(buttonA,buttonB);
 /*
 bind the keys
 buttonA to game.key.a
 buttonB to game.key.b
 
 if the buttonA is pushed
-game.key.a == true
+util.key.a == true
 if the buttonA is released
-game.key.a == false
+util.key.a == false
 */
 game.fps = 30;
 /*

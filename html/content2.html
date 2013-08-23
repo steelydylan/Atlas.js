@@ -13,16 +13,17 @@ game.changeSize(width,height);
 /*
 ゲーム画面の縦横のサイズを設定します。
 */
-game.keySet(buttonA,buttonB);
+var util = new Util();
+util.keySet(buttonA,buttonB);
 /*
 ボタンのキーをそれぞれ、
-game.key.aにbuttonA
-game.key.bにbuttonB
+util.key.aにbuttonA
+util.key.bにbuttonB
 と、バインドさせる
 キーが押されているとき、
-game.key.a == true
+util.key.a == true
 キーが離されているとき、
-game.key.a == false
+util.key.a == false
 */
 game.fps = 30;
 /*
