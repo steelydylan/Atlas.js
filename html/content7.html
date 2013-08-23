@@ -35,3 +35,33 @@ game.changeSize(width,height);
 があり、こちらを使うことを推奨します。
 */
 </pre>
+さらに、Atlas.jsにはクラスを継承し、サブクラスを作るメソッドが用意されています<br />
+<p>例</p>
+<p>Enemyクラスの生成</p>
+<pre class="prettyprint linenums">
+(function(){
+    Enemy = Atlas.createClass(Atlas.Tile,{
+	    initialize : function(image,numX,numY){
+		    this.inherent(image,numX,numY);
+		    this.sx = this.getRand(5,10);
+			this.sy = this.getRand(5,10);
+			this.setPosition(0,this.getRand(100,300));
+		},
+		move : function(bullets){
+		    this.drawGraph();
+		    this.x += this.sx;
+			this.y += this.sy;			
+			if(this.x > 500)
+			    this.remove = true;
+		}
+	});
+});
+window.onload = function(){
+    Atlas("game");
+    var game = new Screen();
+    var enemy = new Enemy("teki2.png",100,95);
+    game.mainScene(function(){
+        enemy.move();
+    });
+};
+</pre>
