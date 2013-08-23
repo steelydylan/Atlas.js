@@ -36,8 +36,7 @@ game.changeSize(width,height);
 */
 </pre>
 <p>さらに、Atlas.jsにはクラスを継承し、サブクラスを作るメソッドが用意されています</p>
-<h4>例</h4>
-<p>Enemyクラスの生成</p>
+<h4>例<small>(Enemyクラスの生成)</small></h4>
 <pre class="prettyprint linenums">
 (function(){
     Enemy = Atlas.createClass(Atlas.Tile,{
@@ -47,7 +46,7 @@ game.changeSize(width,height);
 			this.sy = this.getRand(5,10);
 			this.setPosition(0,this.getRand(100,300));
 		},
-		move : function(bullets){
+		move : function(){
 		    this.drawGraph();
 		    this.x += this.sx;
 			this.y += this.sy;			

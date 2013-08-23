@@ -35,8 +35,7 @@ game.changeSize(width,height);
 */
 </pre>
 <p>in Addition,you can override the Atlas's Classes and create your new Classes</p>
-<h4>Example</h4>
-<p>Creating Enemy Class</p>
+<h4>Example<small>(Creating Enemy Class)</small></h4>
 <pre class="prettyprint linenums">
 (function(){
     Enemy = Atlas.createClass(Atlas.Tile,{
@@ -46,7 +45,7 @@ game.changeSize(width,height);
 			this.sy = this.getRand(5,10);
 			this.setPosition(0,this.getRand(100,300));
 		},
-		move : function(bullets){
+		move : function(){
 		    this.drawGraph();
 		    this.x += this.sx;
 			this.y += this.sy;			
