@@ -171,19 +171,19 @@
             alpha = n;
         },
         touchStart: function (fn) {
-            if (this.isMobile)
+            if (isMobile)
                 field.addEventListener("touchstart", fn, false);
             else
                 field.addEventListener("mousedown", fn, false);
         },
         touchMove: function (fn) {
-            if (this.isMobile)
+            if (isMobile)
                 field.addEventListener("touchmove", fn, false);
             else
                 field.addEventListener("mousemove", fn, false);
         },
         touchEnd: function (fn) {
-            if (this.isMobile)
+            if (isMobile)
                 field.addEventListener("touchend", fn, false);
             else
                 field.addEventListener("mouseup", fn, false);
