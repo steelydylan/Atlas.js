@@ -76,7 +76,7 @@
             this.initialize.apply(this, arguments);
         };
         if (typeof superClass == "function" && typeof obj == "object") {
-            newClass.prototype = superClass.prototype;
+            newClass.prototype = Object.create(superClass.prototype);
             newClass.prototype.inherent = function () {
                 superClass.apply(this, arguments);
             };
