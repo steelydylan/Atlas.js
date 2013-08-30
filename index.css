@@ -14,6 +14,7 @@
 
 
 
+
 #content{
 	padding-bottom: 15px;
 }
@@ -36,6 +37,10 @@ img.browser {
     }
     img.browser {
     width: 50px;
+    }
+    .logo {
+    width: 200px;
+    height: 160px;
     }
 }
 
