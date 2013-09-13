@@ -1,6 +1,16 @@
 <h3>各種設定</h3>
 ゲームをループさせる前の初期設定のgameのメソッドを紹介したいと思います
 <pre class="prettyprint linenums">
+var game = new App();
+
+game.load("hero.png","bgm.mp3");
+/*
+ゲームで使用する素材をロードします
+    */
+game.naming(["hero.png","hero"],["bgm.mp3","bgm"]);
+/*
+ゲームで使用する素材に名前を付けます
+    */
 game.centerize();
 /*
 ゲーム画面をブラウザ画面の中心に配置します。
@@ -13,17 +23,17 @@ game.changeSize(width,height);
 /*
 ゲーム画面の縦横のサイズを設定します。
 */
-var util = new Util();
-util.keySet(buttonA,buttonB);
+
+game.keySet(buttonA,buttonB);
 /*
 ボタンのキーをそれぞれ、
-util.key.aにbuttonA
-util.key.bにbuttonB
+game.key.aにbuttonA
+game.key.bにbuttonB
 と、バインドさせる
 キーが押されているとき、
-util.key.a == true
+game.key.a == true
 キーが離されているとき、
-util.key.a == false
+game.key.a == false
 */
 game.fps = 30;
 /*

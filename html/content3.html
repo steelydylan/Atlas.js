@@ -17,9 +17,11 @@ game.mainScene(fn);
 素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
 <br />
 <pre class="prettyprint linenums">
-var chara = new Tile("./images/chara2.png",32,32);
+var chara = new Sprite("./images/chara2.png",32,32);
 </pre>
-音楽をこのようにロードさせることもできます。<br />
+<p>このとき、先にgame.load("./images/chara2.png");と、素材をロードしておかないといけません</p>
+<p>またgame.naming(["images/chara2.png","chara2"]);</p>
+<p>と、名前を付けた場合、下のようにスプライトをインスタンス化します</p>
 <pre class="prettyprint linenums">
-var musics = new Sounds("./mymusic.mp3","./mymusic2.mp3");
+var chara = new Sprite("chara2",32,32);
 </pre>

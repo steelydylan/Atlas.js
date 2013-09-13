@@ -1,8 +1,6 @@
 ﻿<h3>スプライト</h3>
 <pre class="prettyprint linenums">
-var sprite = new Tile("./images/chara2.png",32,32);
-同じ画像のスプライトを使いまわしたいときは、
-var sprite2 = new Tile(sprite,32,32);
+var sprite = new Sprite("./images/chara2.png",32,32);
 </pre>
 上のようにインスタンス化されたスプライトは初期値として以下のようなプロパティが設定されています
 <pre class="prettyprint linenums">
@@ -56,5 +54,4 @@ enemies.move(x,y);
 */
 //i番目のオブジェクトを削除します。
 enemies[i].remove = true;
-
 </pre>
