@@ -1,5 +1,5 @@
-/**
- * Atlas.js v0.3.0
+﻿/**
+ * Atlas.js v0.4.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -7,8 +7,8 @@
  */
 (function () {
     var images = [];
-    var ImgIndex = 0;
-    var IsAllLoaded = 0;
+    var sounds = [];
+    var allLoaded = 0;
     var field;
     var ctx;
     var loadingScene;
@@ -31,45 +31,12 @@
             this.width = 480;
             this.height = 620;
         }
-        window.Screen = Screen;
-        window.Tile = Tile;
-        window.Sounds = Sounds;
+        window.App = App;
+        window.Sprite = Sprite;
         window.Text = Text;
         window.Shape = Shape;
         window.Group = Group;
-        window.Util = Util;
-    };
-    var getRand = function (a, b) {
-        return ~~(Math.random() * (b - a + 1)) + a;
-    };
-    var succ = function (alpha) {
-        return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
-    };
-    var Set = function (button) {
-        var ret;
-        var alpha = "a";
-        if (button.length > 1) {
-            switch (button) {
-                case "enter":
-                    ret = 13;
-                    break;
-                case "shift":
-                    ret = 16;
-                    break;
-                case "space":
-                    ret = 32;
-                    break;
-            }
-        } else {
-            for (var i = 0; i < 24; i++) {
-                if (button == alpha) {
-                    ret = 65 + i;
-                    break;
-                }
-                alpha = succ(alpha);
-            }
-        }
-        return ret;
+        window.Map = Map;
     };
     Atlas.createClass = function (superClass, obj) {
         var newClass = function () {
@@ -78,6 +45,7 @@
         if (typeof superClass == "function" && typeof obj == "object") {
             newClass.prototype = Object.create(superClass.prototype);
             newClass.prototype.inherent = function () {
+                this.initialize = superClass.prototype.initialize;
                 superClass.apply(this, arguments);
             };
         } else if (typeof superClass == "object" && obj == null) {
@@ -89,12 +57,32 @@
         newClass.prototype.constructor = newClass;
         return newClass;
     };
-    var Util = function () {
-        this.isMobile = isMobile;
+    var App = function () {
+        this.fps = 30;// fps default
+        this.qualityWidth = 320;//resolution default
+        this.qualityHeight = 480;//resolution default
+        this.field = field;
         this.key = key;
+        this.isMobile = isMobile;
+        this.ctx = ctx;
+        this.width = field.style.width;
+        this.height = field.style.height;
+        if (isMobile) {
+            var mq = window.matchMedia("(orientation: portrait)");
+            if (mq.matches) {
+                this.orientation = "portrait";
+            } else {
+                this.orientation = "landscape";
+            }
+        }
     };
-    Util.prototype = {
-        getRand: getRand,
+    App.prototype = {
+        setBackgroundColor: function (color) {
+            bgColor = color;
+        },
+        setAlpha: function (n) {
+            alpha = n;
+        },
         keyEnable: function () {
             if (!this.isMobile) {
                 document.onkeydown = function (e) {
@@ -142,6 +130,35 @@
             }
         },
         keySet: function (bA, bB) {
+            var succ = function (alpha) {
+                return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
+            };
+            var Set = function (button) {
+                var ret;
+                var alpha = "a";
+                if (button.length > 1) {
+                    switch (button) {
+                        case "enter":
+                            ret = 13;
+                            break;
+                        case "shift":
+                            ret = 16;
+                            break;
+                        case "space":
+                            ret = 32;
+                            break;
+                    }
+                } else {
+                    for (var i = 0; i < 24; i++) {
+                        if (button == alpha) {
+                            ret = 65 + i;
+                            break;
+                        }
+                        alpha = succ(alpha);
+                    }
+                }
+                return ret;
+            };
             key.buttonA = -1;
             key.buttonB = -1;
             key.a = false;
@@ -150,25 +167,6 @@
                 key.buttonA = Set(bA);
             if (bB)
                 key.buttonB = Set(bB);
-        }
-    };
-    var Screen = function () {
-        this.fps = 30;// fps default
-        this.qualityWidth = 320;//resolution default
-        this.qualityHeight = 480;//resolution default
-        this.field = field;
-        this.key = key;
-        this.ctx = ctx;
-        this.width = field.style.width;
-        this.height = field.style.height;
-    };
-    Screen.prototype = {
-        getRand: getRand,
-        setBackgroundColor: function (color) {
-            bgColor = color;
-        },
-        setAlpha: function (n) {
-            alpha = n;
         },
         touchStart: function (fn) {
             if (isMobile)
@@ -201,6 +199,19 @@
             window.onresize = function () {
                 that.changeSize(window.innerWidth, window.innerHeight);
             };
+        },
+        detectOrientation: function (portrait, landscape) {
+            if (this.isMobile) {
+                var that = this;
+                window.addEventListener("orientationchange", function () {
+                    var mq = window.matchMedia("(orientation: portrait)");
+                    if (mq.matches) {
+                        that.orientation = "portrait";
+                    } else {
+                        that.orientation = "landscape";
+                    }
+                }, false);
+            }
         },
         changeQuality: function (width, height) {
             field.width = width;
@@ -258,326 +269,451 @@
                 ctx.globalAlpha = alpha;
                 ctx.fillRect(0, 0, field.width, field.height);
                 ctx.globalAlpha = 1;
-                if (IsAllLoaded == 0)
+                if (allLoaded <= 0)
                     mainScene();
                 else if (loadingScene)
                     loadingScene();
             }, 1000 / this.fps);
         },
-        drawText: function (x, y, string, col, font) {
-            if (font)
-                ctx.font = font;
-            ctx.fillStyle = col;
-            ctx.fillText(string, x, y);
-        },
-        drawBox: function (x, y, sizeX, sizeY, col, alpha) {
-            if (alpha)
-                ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.fillStyle = col;
-            ctx.fillRect(x, y, sizeX, sizeY);
-            ctx.globalAlpha = 1;
-        }
-    };
-    var Tile = function (name, width, height) {
-        this.x = 0;
-        this.y = 0;
-        this.sx = 1;
-        this.sy = 1;
-        this.rot = 0;
-        this.frame = 0;
-        this.mapping = false;
-        this.width = width;
-        this.height = height;
-        if (typeof name == "string")
-            this.img = this.LoadDivGraph(name);
-        else {
-            this.img = name.img;
-        }
-    };
-    Tile.prototype = {
-        getRand: getRand,
-        LoadDivGraph: function (name) {
-            IsAllLoaded++;
-            images[ImgIndex] = new Image();
-            images[ImgIndex].src = name;
-            var that = this;
-            images[ImgIndex].onload = function () {
-                this.numX = this.width / that.width;
-                this.numY = this.height / that.height;
-                IsAllLoaded--;
-                console.log(this.src + ' isLoaded');
-            };
-            ImgIndex++;
-            return ImgIndex - 1;
-        },
-        drawScaleGraph: function () {
-            var frame = this.frame;
-            var image = images[this.img];
-            var SizeX = this.width;
-            var SizeY = this.height;
-            var numX = image.numX;
-            var numY = image.numY;
-            var dx = (frame % numX) * SizeX;
-            var dy = (~~(frame / numX) % numY) * SizeY;
-            ctx.save();
-            ctx.translate(this.x + SizeX / 2, this.y + SizeY / 2);
-            ctx.rotate(this.rot);
-            ctx.translate(-SizeX / 2, -SizeY / 2);
-            ctx.scale(this.sx, this.sy);
-            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
-            ctx.restore();
-        },
-        drawGraph: function () {
-            var frame = this.frame;
-            var image = images[this.img];
-            var SizeX = this.width;
-            var SizeY = this.height;
-            var numX = image.numX;
-            var numY = image.numY;
-            var dx = (frame % numX) * SizeX;
-            var dy = (~~(frame / numX) % numY) * SizeY;
-            ctx.save();
-            ctx.translate(this.x + SizeX / 2, this.y + SizeY / 2);
-            ctx.rotate(this.rot);
-            ctx.translate(-SizeX / 2, -SizeY / 2);
-            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
-            ctx.restore();
-        },
-        setMap: function (array) {
-            this.map = array;
-            this.mapping = true;
-        },
-        drawMapGraph: function () {
-            if (this.mapping) {
-                var x = this.map[0].length;
-                var y = this.map.length;
-                var array = this.map;
-                var width = this.width;
-                var height = this.height;
-                var px = this.x;
-                var py = this.y;
-                var i = 0;
-                var t = 0;
-                var fieldHeight = field.height;
-                var fieldWidth = field.width;
-                while (i < y) {
-                    while (t < x) {
-                        this.frame = array[i][t];
-                        if (this.frame >= 0 && fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0)
-                            this.drawGraph();
-                        this.x += width;
-                        t++;
-                    }
-                    this.y += height;
-                    i++;
-                    this.x = px;
-                    t = 0;
+        load: function () {
+            function getExtention(fileName) {
+                var ret;
+                if (!fileName) {
+                    return ret;
                 }
-                this.x = px;
-                this.y = py;
+                var fileTypes = fileName.split(".");
+                var len = fileTypes.length;
+                if (len === 0) {
+                    return ret;
+                }
+                ret = fileTypes[len - 1];
+                return ret;
+            }
+            for (var i = 0, n = arguments.length; i < n; i++) {
+                var data = arguments[i];
+                var ext = getExtention(data);
+                if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
+                    var obj = new Audio(data);
+                    obj.name = data;
+                    allLoaded++;
+                    obj.addEventListener("canplaythrough", function () {
+                        allLoaded--;
+                        console.log(this.src + " is loaded");
+                    });
+                    sounds.push(obj);
+                } else {
+                    var obj = new Image();
+                    obj.src = data;
+                    obj.name = data;
+                    obj.onload = function () {
+                        allLoaded--;
+                        console.log(this.src + ' is loaded');
+                    };
+                    images.push(obj);
+                }
+            }
+        },
+        naming: function () {
+            for (var t = 0, l = arguments.length; t < l; t++) {
+                for (var i = 0, n = sounds.length; i < n; i++) {
+                    if (sounds[i].name == arguments[t][0]) {
+                        sounds[i].name = arguments[t][1];
+                    }
+                }
+                for (var i = 0, n = images.length; i < n; i++) {
+                    if (images[i].name == arguments[t][0]) {
+                        images[i].name = arguments[t][1];
+                    }
+                }
+            }
+        }
+    };
+    var Thing = function () { };
+    Thing.prototype = {
+        ctx: ctx,
+        getRand: function (a, b) {
+            return ~~(Math.random() * (b - a + 1)) + a;
+        },
+        intersect: function (ex, ey) {
+            if (this.width) {
+                var x = ex - (this.x + this.width / 2);
+                var y = ey - (this.y + this.height / 2);
+                var r = this.rot;
+                var s = Math.sin(-r);
+                var c = Math.cos(-r);
+                var xx = Math.abs(x * c - y * s);
+                var yy = Math.abs(x * s + y * c);
+                if (xx < this.width / 2.0 && yy < this.height / 2.0)
+                    return true;
+                return false;
+            } else if (this.radius) {
+                var radius = this.radius;
+                var x = ex - (this.x + radius);
+                var y = ey - (this.y + radius);
+                if (Math.sqrt(x * x + y * y) < radius)
+                    return true;
+                return false;
+            } else {
+                return true;
+            }
+        },
+        within: function (target, range) {
+            if (this.width) {
+                var thiscX = this.x + this.width / 2;
+                var thiscY = this.y + this.height / 2;
+            } else {
+                var thiscX = this.x + this.radius;
+                var thiscY = this.y + this.radius;
+            }
+            if (target.width) {
+                var centerX = target.x + target.width / 2;
+                var centerY = target.y + target.height / 2;
+                var rot = -target.rot;
+                var cx = Math.cos(rot) * (thiscX - centerX) -
+                    Math.sin(rot) * (thiscY - centerY) + centerX;
+                var cy = Math.sin(rot) * (thiscX - centerX) +
+                    Math.cos(rot) * (thiscY - centerY) + centerY;
+                var x, y;
+                if (cx < target.x)
+                    x = target.x;
+                else if (cx > target.x + target.width)
+                    x = target.x + target.width;
+                else
+                    x = cx;
+                if (cy < target.y)
+                    y = target.y;
+                else if (cy > target.y + target.height)
+                    y = target.y + target.height;
+                else
+                    y = cy;
+                var a = Math.abs(cx - x);
+                var b = Math.abs(cy - y);
+            } else if (target.radius) {
+                var x = target.x + target.radius;
+                var y = target.y + target.radius;
+                var a = Math.abs(thiscX - x);
+                var b = Math.abs(thiscY - y);
+                range += target.radius;
+            } else {
+                var a = 0;
+                var b = 0;
+            }
+            if (Math.sqrt((a * a) + (b * b)) < range)
+                return true;
+            return false;
+        },
+        scale: function (sx, sy) {
+            if (this.radius) {
+                this.radius *= sx;
+            } else if (this.size) {
+                var size = parseInt(this.size);
+                size *= sx;
+                this.size = size + "pt";
+            } else {
+                this.width *= sx;
+                this.height *= sy;
             }
         },
         setPosition: function (x, y) {
             this.x = x;
             this.y = y;
         },
-        intersect: function (ex, ey) {
-            if (ex > this.x && ex < this.x + this.width
-            && ey > this.y && ey < this.y + this.height)
-                return true;
-            else
-                return false;
+        getImage: function (name) {
+            var id = -1;
+            var length = images.length;
+            for (var i = 0; i < length; i++)
+                if (images[i].name == name)
+                    this.img = i;
         },
-        within: function (tile, range) {
-            var x = this.x + this.width / 2;
-            var y = this.y + this.height / 2;
-            var dx, dy;
-            if (tile.width) {
-                dx = tile.x + tile.width / 2;
-                dy = tile.y + tile.height / 2;
+        getSound: function (name) {
+            for (var i = 0, n = sounds.length; i < n; i++) {
+                if (name == sounds[i].name)
+                    this.sound = new Audio(sounds[i].src);
+            }
+        },
+        soundClonePlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                (new Audio(sound.src)).play();
+            }
+        },
+        soundLoopPlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                if (!sound.loop) {
+                    sound.addEventListener('ended', function () {
+                        this.currentTime = 0;
+                        this.play();
+                    }, false);
+                }
+                sound.loop = true;
+                sound.play();
+            }
+        },
+        soundReplay: function () {
+            var sound = this.sound;
+            if (sound) {
+                sound.load();
+                sound.play();
+            }
+        },
+        soundStop: function () {
+            var sound = this.sound;
+            if (!sound.paused) {
+                sound.pause();
+                sound.currentTime = 0;
             } else {
-                dx = tile.x;
-                dy = tile.y;
+                sound.load();
             }
-            if (!range)
-                range = this.width / 2;
-            var tmp;
-            if (dx < x) {
-                tmp = dx;
-                dx = x;
-                x = tmp;
-            }
-            if (dx - x > range || dy - y > range)
-                return false;
-            x = (dx - x) * (dx - x);
-            y = (dy - y) * (dy - y);
-            x = Math.sqrt(x + y);
-            if (x < range)
-                return true;
-            else
-                return false;
+        },
+        soundPlay: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.play();
+        },
+        soundPause: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.pause();
+        },
+        soundGetCount: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.currentTime;
+        },
+        soundSetCount: function (time) {
+            var sound = this.sound;
+            if (sound)
+                sound.currentTime = time;
+        },
+        soundGetVolume: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.volume;
+        },
+        soundSetVolume: function (volume) {
+            var sound = this.sound;
+            if (sound)
+                sound.volume = volume;
+        },
+        soundGetAlltime: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.duration;
+        },
+        soundIsPlaying: function () {
+            var sound = this.sound;
+            if (sound)
+                return !sound.paused;
         }
     };
-    var Shape = function (string, col, width, height) {
-        this.x = 0;
-        this.y = 0;
-        this.col = col;
-        this.alpha = 1;
-        if (string == "box") {
+    var Map = Atlas.createClass(Thing, {
+        initialize: function (name, width, height) {
+            this.x = 0;
+            this.y = 0;
             this.width = width;
             this.height = height;
-            this.shape = 0;
-        } else if (string == "circle") {
-            this.radius = width;
-            this.shape = 1;
-        }
-    };
-    Shape.prototype = {
-        getRand: getRand,
-        setPosition: function (x, y) {
-            this.x = x;
-            this.y = y;
+            this.spriteWidth = width;
+            this.spriteHeight = height;
+            this.drawData;
+            this.hitData;
+            this.getImage(name);
         },
         intersect: function (ex, ey) {
-            if (this.shape == 0) {
-                if (ex > this.x && ex < this.x + this.width
-                && ey > this.y && ey < this.y + this.height)
-                    return true;
-                else
-                    return false;
-            } else if (this.shape == 1) {
-                if (Math.squrt(Math.pow(ex - this.x, 2) + Math.pow(ey - this.y, 2)) < this.radius)
-                    return true;
-                else
-                    return false;
+            var array = this.hitData;
+            var x = array[0].length;
+            var y = array.length;
+            var width = this.width;
+            var height = this.height;
+            var posX = this.x;
+            var posY = this.y;
+            for (var i = 0; i < y; i++) {
+                for (var t = 0; t < x; t++) {
+                    if (array[i][t] == 1 && posX + t * width < ex && ex < posX + (t + 1) * width
+					   && posY + i * height < ey && ey < posY + (i + 1) * height)
+                        return true;
+                }
+            }
+            return false;
+        },
+        draw: function () {
+            var array = this.drawData;
+            var x = array[0].length;
+            var y = array.length;
+            var width = this.width;
+            var height = this.height;
+            var px = this.x;
+            var py = this.y;
+            var i = 0;
+            var t = 0;
+            var fieldHeight = field.height;
+            var fieldWidth = field.width;
+            var frame;
+            var image = images[this.img];
+            var SizeX = this.spriteWidth;
+            var SizeY = this.spriteHeight;
+            var cX = this.width / 2;
+            var cY = this.height / 2;
+            var numX = image.width / SizeX;
+            var numY = image.height / SizeY;
+            var scaleX = this.width / SizeX;
+            var scaleY = this.height / SizeY;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
+            while (i < y) {
+                while (t < x) {
+                    frame = array[i][t];
+                    if (frame >= 0 && fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0) {
+                        var dx = (frame % numX) * SizeX;
+                        var dy = (~~(frame / numX) % numY) * SizeY;
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.scale(scaleX, scaleY);
+                        ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+                        ctx.restore();
+                    }
+                    this.x += width;
+                    t++;
+                }
+                this.y += height;
+                i++;
+                this.x = px;
+                t = 0;
+            }
+            this.x = px;
+            this.y = py;
+        }
+    });
+    var Sprite = Atlas.createClass(Thing, {
+        initialize: function (name, width, height) {
+            this.x = 0;
+            this.y = 0;
+            this.rot = 0;
+            this.frame = 0;
+            this.alpha = 1;
+            this.mapping = false;
+            this.width = width;
+            this.height = height;
+            this.spriteWidth = width;
+            this.spriteHeight = height;
+            this.getImage(name);
+        },
+        draw: function () {
+            var frame = this.frame;
+            var image = images[this.img];
+            var SizeX = this.spriteWidth;
+            var SizeY = this.spriteHeight;
+            var cX = this.width / 2;
+            var cY = this.height / 2;
+            var numX = image.width / SizeX;
+            var numY = image.height / SizeY;
+            var scaleX = this.width / SizeX;
+            var scaleY = this.height / SizeY;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
+            ctx.save();
+            ctx.translate(this.x + cX, this.y + cY);
+            ctx.rotate(this.rot);
+            ctx.translate(-cX, -cY);
+            ctx.scale(scaleX, scaleY);
+            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+            ctx.restore();
+        }
+    });
+    var Shape = Atlas.createClass(Thing, {
+        initialize: function (string, col, width, height) {
+            this.x = 0;
+            this.y = 0;
+            this.col = col;
+            this.alpha = 1;
+            this.rot = 0;
+            if (string == "box") {
+                this.width = width;
+                this.height = height;
+                this.shape = 0;
+            } else if (string == "circle") {
+                this.radius = width;
+                this.shape = 1;
             }
         },
-        drawShape: function () {
+        draw: function () {
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.fillStyle = this.col;
-            if (this.shape == 0)
+            if (this.shape == 0) {
+                var moveX = this.x + this.width / 2;
+                var moveY = this.y + this.height / 2;
+                ctx.save();
+                ctx.translate(moveX, moveY);
+                ctx.rotate(this.rot);
+                ctx.translate(-moveX, -moveY);
                 ctx.fillRect(this.x, this.y, this.width, this.height);
-            else if (this.shape == 1) {
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.restore();
+            } else if (this.shape == 1) {
+                var plus = this.radius;
+                ctx.arc(this.x + plus, this.y + plus, this.radius, 0, Math.PI * 2, false);
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
         }
-    };
-    var Text = function (string, size, font, col) {
-        if (font)
-            this.font = "'" + font + "'";
-        else
-            this.font = "'Meiryo'";
-        if (size)
-            this.size = size + "pt";
-        else
-            this.size = "10pt";
-        if (string)
-            this.string = string;
-        else
-            this.string = "";
-        if (col)
-            this.color = col;
-        else
-            this.col = "white";
-        this.x = 0;
-        this.y = 0;
 
-    };
-    Text.prototype = {
-        getRand: getRand,
+    });
+    var Text = Atlas.createClass(Thing, {
+        initialize: function (string, col, size, font) {
+            this.x = 0;
+            this.y = 0;
+            this.alpha = 1;
+            this.spaceWidth = 0;
+            if (font)
+                this.font = "'" + font + "'";
+            else
+                this.font = "'Meiryo'";
+            if (size)
+                this.size = size + "pt";
+            else
+                this.size = "10pt";
+            if (string)
+                this.string = string;
+            else
+                this.string = "";
+            if (col)
+                this.col = col;
+            else
+                this.col = "white";
+        },
         setSize: function (size) {
             this.size = size + "pt";
         },
         setFont: function (font) {
             this.font = "'" + font + "'";
         },
-        drawText: function () {
+        draw: function () {
+            var x = this.x;
+            var y = this.y;
+            var strings = this.string.split('<br>');
+            var length = strings.length;
+            ctx.globalAlpha = this.alpha;
             ctx.font = this.size + " " + this.font;
-            ctx.fillStyle = this.color;
-            ctx.fillText(this.string, this.x, this.y);
-        }
-    };
-    var Sounds = Atlas.createClass(Array, {
-        getRand: getRand,
-        initialize: function () {
-            this.inherent();
-            for (var i = 0, n = arguments.length; i < n; i++) {
-                this.push(new Audio(arguments[i]));
-                this[i].playing = false;
-            }
-        },
-        play: function (id) {
-            if (this[id].paused)
-                this[id].play();
-            else if (!this[id].loop)
-                (new Audio(this[id].src)).play();
-            this[id].playing = true;
-        },
-        loop: function (id) {
-            var data = this[id];
-            if (!data.loop) {
-                data.addEventListener('ended', function () {
-                    data.currentTime = 0;
-                    data.play();
-                }, false);
-            }
-            data.loop = true;
-            data.playing = true;
-            data.play();
-        },
-        restart: function (id) {
-            this[id].load();
-            this[id].play();
-            this[id].playing = true;
-        },
-        pause: function (id) {
-            if (this[id].playing == true) {
-                this[id].pause();
-                this[id].playing = false;
-            }
-        },
-        stop: function (id) {
-            if (this[id].playing == true) {
-                this[id].pause();
-                this[id].currentTime = 0;
-                this[id].playing = false;
-            } else {
-                this[id].load();
-            }
-        },
-        getCount: function (id) {
-            return this[id].currentTime;
-        },
-        setCount: function (id, time) {
-            if (this[id].playing == true)
-                this[id].currentTime = time;
-        },
-        getVolume: function (id) {
-            return this[id].volume;
-        },
-        setVolume: function (id, volume) {
-            this[id].volume = volume;
-        },
-        getAlltime: function (id) {
-            return this[id].duration;
-        },
-        isPlaying: function (id) {
-            return this[id].playing;
+            ctx.fillStyle = this.col;
+            if (length > 1) {
+                var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
+                for (var i = 0; i < length; i++) {
+                    ctx.fillText(strings[i], x, y);
+                    y += height;
+                }
+            } else
+                ctx.fillText(this.string, x, y);
+            ctx.globalAlpha = 1;
         }
     });
     var Group = Atlas.createClass(Array, {
-        getRand: getRand,
         initialize: function () {
             this.inherent();
         },
-        add: function (tile) {
-            if (typeof tile == 'object' && typeof tile.move == 'function') {
-                tile.remove = false;
-                this.push(tile);
+        add: function (Sprite) {
+            if (typeof Sprite == 'object' && typeof Sprite.move == 'function') {
+                Sprite.remove = false;
+                this.push(Sprite);
             }
         },
         move: function () {
@@ -595,11 +731,10 @@
             }
         }
     });
-    Atlas.Screen = Screen;
-    Atlas.Tile = Tile;
-    Atlas.Sounds = Sounds;
+    Atlas.App = App;
+    Atlas.Sprite = Sprite;
     Atlas.Text = Text;
     Atlas.Shape = Shape;
     Atlas.Group = Group;
-    Atlas.Util = Util;
+    Atlas.Map = Map;
 })();

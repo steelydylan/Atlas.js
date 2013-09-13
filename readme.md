@@ -1,5 +1,5 @@
-
-<img src="https://raw.github.com/steelydylan/Atlas.js/master/header_logo.png">
+<img src="https://raw.github.com/steelydylan/Atlas.js/master/logo.png"></img>
+<img src="https://raw.github.com/steelydylan/Atlas.js/master/header_logo.png"></img>
 ==========
 
 JavaScript Game Engine
