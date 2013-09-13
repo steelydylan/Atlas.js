@@ -1,44 +1,9 @@
 ﻿<h3>Others</h3>
-Atlas.js has other many useful methods.<br />
-I'll let you know.
-<pre class="prettyprint linenums">
-var util = new Util();
-util.isMobile;
-/*
-This is property.
-it judges client's device.
-if client's device is Mobile, it returns true,else returns false。
- */
-game.drawText(x, y, string, col,font);
-/*
-Write down the string"string" with color"col",font"font"
-at the point(x,y)
-*/
-game.drawBox(x, y, sizeX, sizeY, col, alpha);
-/*
-Draw the box with size(sizeX,sizeY),color"col"and transparency"alpha"
-at the point(x,y)
-*/
-game.getRand(min,max);
-/*
-it returns random integer from "min" to "max"
-*/
-game.field;
-/*
-it is canvas element,
-From this, you can manipulate the canvas element.
-Example
-game.field.width = 500;
-set the screen size of game as 500
-But,in this case,I recomend you to use the following method
-game.changeSize(width,height);
-*/
-</pre>
 <p>in Addition,you can override the Atlas's Classes and create your new Classes</p>
 <h4>Example<small>(Creating Enemy Class)</small></h4>
 <pre class="prettyprint linenums">
 (function(){
-    Enemy = Atlas.createClass(Atlas.Tile,{
+    Enemy = Atlas.createClass(Atlas.Sprite,{
 	    initialize : function(image,numX,numY){
 		    this.inherent(image,numX,numY);
 		    this.sx = this.getRand(5,10);
@@ -56,7 +21,7 @@ game.changeSize(width,height);
 });
 window.onload = function(){
     Atlas("game");
-    var game = new Screen();
+    var game = new App();
     var enemy = new Enemy("teki2.png",100,95);
     game.mainScene(function(){
         enemy.move();

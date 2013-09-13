@@ -16,14 +16,18 @@ this method acts as gameloop.
 */
 </pre>
 <img src ="./image/chara2.png" align="right"/>
-in the game.initScene, you can load the sprite like this<br />
+in the game.initScene, you can instance the sprite like this<br />
 Suppose that you load the image width 32*32px devided by 3(vertical)*4(horizontal)<br />
-I download the material at <a href="http://usui.moo.jp/rpg_tukuru.html">http://usui.moo.jp/rpg_tukuru.html</a><br clear="right"/>
+<small>I download the material at <a href="http://usui.moo.jp/rpg_tukuru.html">http://usui.moo.jp/rpg_tukuru.html</a></small>
+<br clear="right"/>
 <br />
 <pre class="prettyprint linenums">
-var chara = new Tile("./images/chara2.png",32,32);
+game.load("./images/chara2.png");
+var chara = new Sprite("./images/chara2.png",32,32);
 </pre>
-And in the game.initScene, you can load the sound like this<br />
+<p>you can also instance the sprite by naming the assets like this</p>
 <pre class="prettyprint linenums">
-var musics = new Sounds("./mymusic.mp3","./mymusic2.mp3");
+game.load("./images/chara2.png");
+game.naming(["./images/chara2.png","chara2"]);
+var chara = new Sprite("chara2",32,32);
 </pre>

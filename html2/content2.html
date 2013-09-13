@@ -1,6 +1,16 @@
 <h3>Settings</h3>
 I'd like to introduce you the initial settings before the game loop.
 <pre class="prettyprint linenums">
+var game = new App();
+
+game.load("hero.png","bgm.mp3");
+/*
+load the assets you use in your apps
+    */
+game.naming(["hero.png","hero"],["bgm.mp3","bgm"]);
+/*
+name the assets you loaded
+    */
 game.centerize();
 /*
 put the game screen at the center of the browser screen.
@@ -13,17 +23,17 @@ game.changeSize(width,height);
 /*
 set the size of the screen.
 */
-var util = new Util();
-util.keySet(buttonA,buttonB);
+var game = new App();
+game.keySet(buttonA,buttonB);
 /*
 bind the keys
 buttonA to game.key.a
 buttonB to game.key.b
 
 if the buttonA is pushed
-util.key.a == true
+game.key.a == true
 if the buttonA is released
-util.key.a == false
+game.key.a == false
 */
 game.fps = 30;
 /*
