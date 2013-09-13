@@ -37,19 +37,19 @@ sprite.intersect(x,y);
 */
 </pre>
 <h4>グループ機能</h4>
-<p>Tileオブジェクトや、Shapeオブジェクトをグループとして一斉に動かすこともできます。</p>
+<p>Spriteオブジェクトや、Shapeオブジェクトをグループとして一斉に動かすこともできます。</p>
 <p>ちなみに、GroupオブジェクトはArrayクラスの継承クラスです</p>
 <pre class="prettyprint linenums">
 //グループオブジェクトの生成
 var enemies = new Group();
 //グループにオブジェクトを追加
-var enemy = new Enemy();
+var enemy = new Sprite("enemy",32,32);
 enemies.add(enemy);
 //グループ全体のオブジェクトを操作
 enemies.move(x,y);
 /*
 このとき、enemiesグループはenemiesに追加されたそれぞれのオブジェクトの
-メソッドenemies[i].move(x,y)を順に実行していきます
+メソッドenemy.move(x,y)を順に実行していきます
 この場合は(x,y)にしていますが、引数の数は自由です
 */
 //i番目のオブジェクトを削除します。

@@ -12,16 +12,16 @@ game.mainScene(fn);
 */
 </pre>
 <img src ="./image/chara2.png" align="right"/>
-画像をこのようにロードします。<br />
-右のように一つのスプライトが32(横）*32(縦）pxの3*4等分の画像をロードする場合<br />
+右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合<br />
 素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
 <br />
 <pre class="prettyprint linenums">
+game.load("./images/chara2.png");
 var chara = new Sprite("./images/chara2.png",32,32);
 </pre>
-<p>このとき、先にgame.load("./images/chara2.png");と、素材をロードしておかないといけません</p>
-<p>またgame.naming(["images/chara2.png","chara2"]);</p>
-<p>と、名前を付けた場合、下のようにスプライトをインスタンス化します</p>
+<p>また、次のようにロードすることもできます</p>
 <pre class="prettyprint linenums">
+game.load("./images/chara2.png");
+game.naming(["./images/chara2.png","chara2"]);
 var chara = new Sprite("chara2",32,32);
 </pre>
