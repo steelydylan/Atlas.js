@@ -1,8 +1,19 @@
 ﻿<h3>スプライト</h3>
+<img src ="./image/chara2.png" align="right"/>
+右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合<br />
+素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
+<br />
 <pre class="prettyprint linenums">
-var sprite = new Sprite("./images/chara2.png",32,32);
+game.load("./images/chara2.png");
+var chara = new Sprite("./images/chara2.png",32,32);
 </pre>
-上のようにインスタンス化されたスプライトは初期値として以下のようなプロパティが設定されています
+<p>また、次のように画像にあらかじめ名前を付けてスプライトを生成することもできます</p>
+<pre class="prettyprint linenums">
+game.load("./images/chara2.png");
+game.naming(["./images/chara2.png","chara2"]);
+var chara = new Sprite("chara2",32,32);
+</pre>
+<p>スプライトは初期値として以下のようなプロパティが設定されています</p>
 <pre class="prettyprint linenums">
 sprite.x = 0;//x座標
 sprite.y = 0;//y座標

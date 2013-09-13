@@ -11,17 +11,19 @@ game.mainScene(fn);
 この関数がゲームとして実行されます
 */
 </pre>
-<img src ="./image/chara2.png" align="right"/>
-右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合<br />
-素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
-<br />
+<p>Atlas.jsではwindow.onloadの中で、初期処理やローディングシーン、メインシーンの</p>
+<p>設定をして、次のようにゲームをスタートさせます</p>
 <pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-var chara = new Sprite("./images/chara2.png",32,32);
-</pre>
-<p>また、次のように画像にあらかじめ名前を付けてスプライトを生成することもできます</p>
-<pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-game.naming(["./images/chara2.png","chara2"]);
-var chara = new Sprite("chara2",32,32);
+window.onload = function(){
+    var game = new App();
+    game.load("chara.png");
+    var sprite = new Sprite("chara.png",32,32);
+    game.mainScene(function(){
+    /*処理*/
+    });
+    game.loadingScene(function(){
+    /*処理*/
+    });
+    game.start();//これを書かないとゲームが動かない
+};
 </pre>
