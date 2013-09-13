@@ -1,16 +1,44 @@
-﻿<h3>イベントリスナー</h3>
-Atlas.jsでは標準で3つのイベントリスナーを
-gameオブジェクトのメソッドに登録する機能があります。<br />
-それぞれ、<br />game.touchStart<br />game.touchMove<br />game.touchEnd
-です。<br />
-game.touchStartはゲーム画面ないがクリック、及び、タッチされた時に呼び出される命令を登録する関数です。<br />
-game.touchMoveはゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときの命令を登録する関数です<br />
-game.touchEndはゲーム画面内でクリックが終了したとき、及び指が離れたときの命令を登録する関数です。
+﻿<h3>テキスト、図形</h3>
+<h4>テキスト</h4>
+<p>画面内にテキストを表示するためのTextクラスが用意されています</p>
+<p>引数は左から、表示する文字、色、サイズ、文字種です</p>
+<p>色、サイズ、文字種を指定しない場合デフォルトで</p>
+<p><strong>白,10pt,Meiryoとなります</strong></p>
+<p>使用例</p>
 <pre class="prettyprint linenums">
-game.touchStart(function(e){
-var obj = game.getPosition(e);
-console.log("あなたの触れた位置は("+obj.x+","+obj.y+")です。");
-});
+var text = new Text("われわれは宇宙人だ","red",20,"Meiryo");
+text.draw();
 </pre>
-上のように３つのメソッド内では、現在のクリック位置やタッチ位置が取得できるメソッド<br />
-game.getPosition(e)を使用することが出来ます。
+<p>また、次のように&lt;br&gt;を文字列に挟めば途中で改行させることもできます</p>
+<pre class="prettyprint linenums">
+var text = new Text("われわれは宇宙人だ&lt;br&gt;よろしくね","red",20,"Meiryo");
+text.draw();//描画
+</pre>
+Textクラスのメソッド及び、プロパティ
+<pre class="prettyprint linenums">
+text.setSize(15);
+//テキストのサイズを変更します
+text.setFont("Meiryo");
+//テキストの文字種を変更します
+text.spaceWidth = 5;
+//改行の際の、行間の幅を変更します
+</pre>
+<h4>図形</h4>
+<p>Atlasでは円と四角形、二つの図形を描画したり動かしたりできます</p>
+<p>使用例</p>
+<pre class="prettyprint linenums">
+var circle = new Shape("circle","red",15);
+/*円の場合の引数、"circle",色、半径*/
+circle.draw();//描画
+var box = new Shape("box","white",20,10);
+/*四角形の場合の引数、"box",色、横幅、縦幅*/
+box.draw();//描画
+</pre>
+<p>また、ShapeオブジェクトはSpriteオブジェクトと、同様に以下のプロパティが使えます</p>
+<pre class="prettyprint linenums">
+shape.within(others,range);
+shape.intersect(x,y);
+shape.scale(scaleX,scaleY);
+shape.setPosition(x,y);
+shape.getRand(min,max);
+</pre>

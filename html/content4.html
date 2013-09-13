@@ -31,8 +31,7 @@ sprite.frame = 0;//frame番号
 <br />
 そして、以下のようなメソッドが設定されています
 <pre class="prettyprint linenums">
-sprite.drawGraph();//spriteを拡大せずに描画します
-sprite.drawScaleGraph();//spriteを拡大して描画します
+sprite.draw();//spriteを描画します
 /*
 いずれも座標(sprite.x,sprite.y)の位置にスプライトを描画します
 この描画処理のメソッドはgameオブジェクトのメソッド、
@@ -47,6 +46,18 @@ sprite.intersect(x,y);
 /*
 スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
 */
+sprite.scale(5,2);
+/*
+この場合は、スプライトを横に５倍、縦に２倍拡大する
+*/
+sprite.setPosition(100,45);
+/*
+この場合は、スプライトを(100,45)の地点に移動させる
+*/
+sprite.getRand(10,100);
+/*
+この場合は、10から100までのランダムな数を返す
+ */
 </pre>
 <h4>グループ機能</h4>
 <p>Spriteオブジェクトや、Shapeオブジェクトをグループとして一斉に動かすこともできます。</p>
