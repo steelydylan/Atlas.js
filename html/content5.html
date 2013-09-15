@@ -27,11 +27,11 @@ text.spaceWidth = 5;
 <p>Atlasでは円と四角形、二つの図形を描画したり動かしたりできます</p>
 <p>使用例</p>
 <pre class="prettyprint linenums">
-var circle = new Shape("circle","red",15);
-/*円の場合の引数、"circle",色、半径*/
+var circle = new Shape.Circle("red",15);
+/*円の場合の引数、色、半径*/
 circle.draw();//描画
-var box = new Shape("box","white",20,10);
-/*四角形の場合の引数、"box",色、横幅、縦幅*/
+var box = new Shape.Box("white",20,10);
+/*四角形の場合の引数、色、横幅、縦幅*/
 box.draw();//描画
 </pre>
 <p>また、ShapeオブジェクトはSpriteオブジェクトと、同様に以下のプロパティが使えます</p>
