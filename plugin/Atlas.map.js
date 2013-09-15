@@ -1,16 +1,12 @@
 ﻿/**
- * Atlas.js v0.1.0
+ * Atlas.map.js v0.2.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <ess_president@me.com>.
  * Released under the MIT license.
  * 参考 Gemmaの日記(http://d.hatena.ne.jp/Gemma/20070816)
  */
-Atlas.setting(function () {
-    var NO = 0;//なにもないところ
-    var WALL = 2;//壁
-    var ROOM = 3;//部屋
-    var TRAIL = 4;//道
+(function () {
     var MapData;
     var C;//複雑さ
     var margin = 8;
@@ -131,7 +127,7 @@ Atlas.setting(function () {
             rooms[connect_list[i][0]], rooms[connect_list[i][1]])
         }
     };
-    Tile.prototype.getRandMap = function (width, height, complexity) {
+    Atlas.Map.prototype.getRandMap = function (width, height, complexity) {
         C = complexity;
         MapData = new Array(height);
         for (var j = 0; j < height; j++) {
@@ -144,7 +140,6 @@ Atlas.setting(function () {
         var rooms = make_rooms(partition);
         fillArray(rooms);
         make_corrider(partition, rooms);
-        this.map = MapData;
-        this.mapping = true;
+        this.hitData = MapData;
     };
-});
+})();
