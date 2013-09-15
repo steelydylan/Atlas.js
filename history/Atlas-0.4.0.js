@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.4.1
+ * Atlas.js v0.4.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -335,7 +335,7 @@
             return ~~(Math.random() * (b - a + 1)) + a;
         },
         intersect: function (ex, ey) {
-            if (this.collisionShape == "box") {
+            if (this.width) {
                 var x = ex - (this.x + this.width / 2);
                 var y = ey - (this.y + this.height / 2);
                 var r = this.rot;
@@ -346,7 +346,7 @@
                 if (xx < this.width / 2.0 && yy < this.height / 2.0)
                     return true;
                 return false;
-            } else if (this.collisionShape == "circle") {
+            } else if (this.radius) {
                 var radius = this.radius;
                 var x = ex - (this.x + radius);
                 var y = ey - (this.y + radius);
@@ -354,20 +354,18 @@
                     return true;
                 return false;
             } else {
-                return false;
+                return true;
             }
         },
         within: function (target, range) {
-            if (this.collisionShape == "box") {
+            if (this.width) {
                 var thiscX = this.x + this.width / 2;
                 var thiscY = this.y + this.height / 2;
-            } else if (this.collisionShape == "circle") {
+            } else {
                 var thiscX = this.x + this.radius;
                 var thiscY = this.y + this.radius;
-            } else {
-                return false;
             }
-            if (target.collisionShape == "box") {
+            if (target.width) {
                 var centerX = target.x + target.width / 2;
                 var centerY = target.y + target.height / 2;
                 var rot = -target.rot;
@@ -390,22 +388,31 @@
                     y = cy;
                 var a = Math.abs(cx - x);
                 var b = Math.abs(cy - y);
-            } else if (target.collisionShape == "circle") {
+            } else if (target.radius) {
                 var x = target.x + target.radius;
                 var y = target.y + target.radius;
                 var a = Math.abs(thiscX - x);
                 var b = Math.abs(thiscY - y);
                 range += target.radius;
             } else {
-                return false;
+                var a = 0;
+                var b = 0;
             }
             if (Math.sqrt((a * a) + (b * b)) < range)
                 return true;
             return false;
         },
         scale: function (sx, sy) {
-            this.width *= sx;
-            this.height *= sy;
+            if (this.radius) {
+                this.radius *= sx;
+            } else if (this.size) {
+                var size = parseInt(this.size);
+                size *= sx;
+                this.size = size + "pt";
+            } else {
+                this.width *= sx;
+                this.height *= sy;
+            }
         },
         setPosition: function (x, y) {
             this.x = x;
@@ -589,7 +596,6 @@
             this.height = height;
             this.spriteWidth = width;
             this.spriteHeight = height;
-            this.collisionShape = "box";
             this.getImage(name);
         },
         draw: function () {
@@ -614,85 +620,72 @@
             ctx.restore();
         }
     });
-    var Shape = new Object();
-    Shape.Box = Atlas.createClass(Thing, {
-        initialize: function (col, width, height) {
+    var Shape = Atlas.createClass(Thing, {
+        initialize: function (string, col, width, height) {
             this.x = 0;
             this.y = 0;
             this.col = col;
-            this.rot = 0;
-            this.width = width;
-            this.height = height;
             this.alpha = 1;
-            this.collisionShape = "box";
+            this.rot = 0;
+            if (string == "box") {
+                this.width = width;
+                this.height = height;
+                this.shape = 0;
+            } else if (string == "circle") {
+                this.radius = width;
+                this.shape = 1;
+            }
         },
         draw: function () {
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.fillStyle = this.col;
-            var moveX = this.x + this.width / 2;
-            var moveY = this.y + this.height / 2;
-            ctx.save();
-            ctx.translate(moveX, moveY);
-            ctx.rotate(this.rot);
-            ctx.translate(-moveX, -moveY);
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-            ctx.restore();
+            if (this.shape == 0) {
+                var moveX = this.x + this.width / 2;
+                var moveY = this.y + this.height / 2;
+                ctx.save();
+                ctx.translate(moveX, moveY);
+                ctx.rotate(this.rot);
+                ctx.translate(-moveX, -moveY);
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.restore();
+            } else if (this.shape == 1) {
+                var plus = this.radius;
+                ctx.arc(this.x + plus, this.y + plus, this.radius, 0, Math.PI * 2, false);
+                ctx.fill();
+            }
             ctx.globalAlpha = 1;
         }
+
     });
-    Shape.Circle = Atlas.createClass(Thing, {
-        initialize: function (col, radius) {
+    var Text = Atlas.createClass(Thing, {
+        initialize: function (string, col, size, font) {
             this.x = 0;
             this.y = 0;
-            this.col = col;
-            this.rot = 0;
-            this.radius = radius;
             this.alpha = 1;
-            this.collisionShape = "circle";
+            this.spaceWidth = 0;
+            if (font)
+                this.font = "'" + font + "'";
+            else
+                this.font = "'Meiryo'";
+            if (size)
+                this.size = size + "pt";
+            else
+                this.size = "10pt";
+            if (string)
+                this.string = string;
+            else
+                this.string = "";
+            if (col)
+                this.col = col;
+            else
+                this.col = "white";
         },
-        draw: function () {
-            ctx.globalAlpha = this.alpha;
-            ctx.beginPath();
-            ctx.fillStyle = this.col;
-            var plus = this.radius;
-            ctx.arc(this.x + plus, this.y + plus, this.radius, 0, Math.PI * 2, false);
-            ctx.fill();
-            ctx.globalAlpha = 1;
-        }
-    });
-    var Text = function (string, col, size, font) {
-        this.x = 0;
-        this.y = 0;
-        this.alpha = 1;
-        this.spaceWidth = 0;
-        if (font)
-            this.font = "'" + font + "'";
-        else
-            this.font = "'Meiryo'";
-        if (size)
-            this.size = size + "pt";
-        else
-            this.size = "10pt";
-        if (string)
-            this.string = string;
-        else
-            this.string = "";
-        if (col)
-            this.col = col;
-        else
-            this.col = "white";
-    };
-    Text.prototype = {
         setSize: function (size) {
             this.size = size + "pt";
         },
         setFont: function (font) {
             this.font = "'" + font + "'";
-        },
-        setPosition: function (x, y) {
-            this.x = x;
-            this.y = y;
         },
         draw: function () {
             var x = this.x;
@@ -712,7 +705,7 @@
                 ctx.fillText(this.string, x, y);
             ctx.globalAlpha = 1;
         }
-    };
+    });
     var Group = Atlas.createClass(Array, {
         initialize: function () {
             this.inherent();
