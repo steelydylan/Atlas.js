@@ -347,7 +347,7 @@
                     return true;
                 return false;
             } else if (this.collisionShape == "circle") {
-                var radius = this.radius;
+                var radius = this.width / 2;
                 var x = ex - (this.x + radius);
                 var y = ey - (this.y + radius);
                 if (Math.sqrt(x * x + y * y) < radius)
@@ -362,8 +362,9 @@
                 var thiscX = this.x + this.width / 2;
                 var thiscY = this.y + this.height / 2;
             } else if (this.collisionShape == "circle") {
-                var thiscX = this.x + this.radius;
-                var thiscY = this.y + this.radius;
+                var radius = this.width / 2;
+                var thiscX = this.x + radius;
+                var thiscY = this.y + radius;
             } else {
                 return false;
             }
@@ -391,11 +392,12 @@
                 var a = Math.abs(cx - x);
                 var b = Math.abs(cy - y);
             } else if (target.collisionShape == "circle") {
-                var x = target.x + target.radius;
-                var y = target.y + target.radius;
+                var tradius = target.width / 2;
+                var x = target.x + tradius;
+                var y = target.y + tradius;
                 var a = Math.abs(thiscX - x);
                 var b = Math.abs(thiscY - y);
-                range += target.radius;
+                range += tradius;
             } else {
                 return false;
             }
@@ -647,7 +649,7 @@
             this.y = 0;
             this.col = col;
             this.rot = 0;
-            this.radius = radius;
+            this.width = radius * 2;
             this.alpha = 1;
             this.collisionShape = "circle";
         },
@@ -655,8 +657,8 @@
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.fillStyle = this.col;
-            var plus = this.radius;
-            ctx.arc(this.x + plus, this.y + plus, this.radius, 0, Math.PI * 2, false);
+            var plus = this.width / 2;
+            ctx.arc(this.x + plus, this.y + plus, plus, 0, Math.PI * 2, false);
             ctx.fill();
             ctx.globalAlpha = 1;
         }
