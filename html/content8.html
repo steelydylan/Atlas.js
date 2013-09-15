@@ -5,14 +5,10 @@
 (function(){
     Enemy = Atlas.createClass(Atlas.Sprite,{
 	    initialize : function(image,numX,numY){
-		    this.inherent(image,numX,numY);
-            /*
-            this.inherentで自分のスーパークラス（この場合はAtlas.Sprite）の
-            コンストラクタを呼び出すことが出来ます。
-            */
+            this.inherent(image,numX,numY);
 		    this.sx = this.getRand(5,10);
-			this.sy = this.getRand(5,10);
-			this.setPosition(0,this.getRand(100,300));
+            this.sy = this.getRand(5,10);
+            this.setPosition(0,this.getRand(100,300));
 		},
 		move : function(){
 		    this.draw();
@@ -22,6 +18,10 @@
 			    this.remove = true;
 		}
 	});
+    /*
+    this.inherentで自分のスーパークラス（この場合はAtlas.Sprite）の
+    コンストラクタを呼び出すことが出来ます。
+    */
 });
 window.onload = function(){
     Atlas("game");
