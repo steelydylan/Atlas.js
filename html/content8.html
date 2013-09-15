@@ -6,6 +6,10 @@
     Enemy = Atlas.createClass(Atlas.Sprite,{
 	    initialize : function(image,numX,numY){
 		    this.inherent(image,numX,numY);
+            /*
+            this.inherentで自分のスーパークラス（この場合はAtlas.Sprite）の
+            コンストラクタを呼び出すことが出来ます。
+            */
 		    this.sx = this.getRand(5,10);
 			this.sy = this.getRand(5,10);
 			this.setPosition(0,this.getRand(100,300));
