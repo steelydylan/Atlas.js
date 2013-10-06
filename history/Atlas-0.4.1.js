@@ -1,5 +1,5 @@
-﻿/**
- * Atlas.js v0.4.2
+/**
+ * Atlas.js v0.4.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -586,6 +586,7 @@
             this.rot = 0;
             this.frame = 0;
             this.alpha = 1;
+            this.mapping = false;
             this.width = width;
             this.height = height;
             this.spriteWidth = width;
@@ -718,13 +719,10 @@
         initialize: function () {
             this.inherent();
         },
-        add: function () {
-            for(var i = 0, n = arguments.length; i < n; i++){
-                var sprite = arguments[i];
-                if (typeof sprite.move === 'function') {
-                    sprite.remove = false;
-                    this.push(sprite);
-                }
+        add: function (Sprite) {
+            if (typeof Sprite == 'object' && typeof Sprite.move == 'function') {
+                Sprite.remove = false;
+                this.push(Sprite);
             }
         },
         move: function () {
