@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.4.3
+ * Atlas.js v0.4.2
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -413,13 +413,8 @@
             this.x = x;
             this.y = y;
         },
-        setSpriteSize:function (width,height){
-	        this.spriteWidth = width;
-	        this.spriteHeight = height;
-        },
-        getImage: function (name,width,height) {
-            if(width && height)
-                this.setSpriteSize(width,height);
+        getImage: function (name) {
+            var id = -1;
             var length = images.length;
             for (var i = 0; i < length; i++)
                 if (images[i].name == name)
