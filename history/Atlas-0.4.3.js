@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.4.4
+ * Atlas.js v0.4.3
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -24,12 +24,12 @@
         document.body.style.margin = "0em";
         ctx = field.getContext('2d');
         if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
-            field.style.width = window.innerWidth+"px";//mobile default
-            field.style.height = window.innerHeight+"px";//mobile default
+            field.style.width = window.innerWidth;//mobile default
+            field.style.height = window.innerHeight;//mobile default
             isMobile = true;
         } else {
-            field.style.width = 480+"px";
-            field.style.height = 620+"px";
+            this.width = 480;
+            this.height = 620;
         }
         window.App = App;
         window.Sprite = Sprite;
@@ -187,8 +187,8 @@
                 field.addEventListener("mouseup", fn, false);
         },
         centerize: function () {
-            field.style.marginTop = -this.height / 2+"px";
-            field.style.marginLeft = -this.width / 2+"px";
+            field.style.marginTop = -this.height / 2;
+            field.style.marginLeft = -this.width / 2;
             field.style.top = '50%';
             field.style.left = '50%';
             field.style.position = 'absolute';
@@ -220,8 +220,8 @@
             this.qualityHeight = height;
         },
         changeSize: function (width, height) {
-            field.style.width = width+"px";
-            field.style.height = height+"px";
+            field.style.width = width;
+            field.style.height = height;
             this.width = width;
             this.height = height;
         },
