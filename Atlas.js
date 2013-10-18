@@ -444,10 +444,6 @@
             this.x = x;
             this.y = y;
         },
-        setSpriteSize:function (width,height){
-	        this.spriteWidth = width;
-	        this.spriteHeight = height;
-        },
         getSound: function (name) {
             for (var i = 0, n = sounds.length; i < n; i++) {
                 if (name == sounds[i].name)
@@ -574,6 +570,10 @@
             this.spriteHeight = height;
             this.getImage(name);
             this.frame = 0;
+        },
+        setSpriteSize:function (width,height){
+	        this.spriteWidth = width;
+	        this.spriteHeight = height;
         },
         getImage: function (name,width,height) {
             if(width && height)
