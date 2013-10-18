@@ -1,16 +1,63 @@
 ﻿<h3>イベントリスナー</h3>
-Atlas.jsでは標準で3つのイベントリスナーを
-gameオブジェクトのメソッドに登録する機能があります。<br />
-それぞれ、<br />game.touchStart<br />game.touchMove<br />game.touchEnd
+<p>Atlas.jsではGroupオブジェクト以外のすべてのオブジェクトで</p>
+<p>イベントリスナーが扱えます</p>
+それぞれ、<strong><br />touchStart<br />touchMove<br />touchEnd<br/>keyDown<br />keyUp<br/></strong>
 です。<br />
-game.touchStartはゲーム画面ないがクリック、及び、タッチされた時に呼び出される命令を登録する関数です。<br />
-game.touchMoveはゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときの命令を登録する関数です<br />
-game.touchEndはゲーム画面内でクリックが終了したとき、及び指が離れたときの命令を登録する関数です。
+<p>touchStartはゲーム画面ないがクリック、及び、タッチされた時に呼び出される関数です。</p>
+<p>touchMoveはゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときに呼び出される関数です</p>
+<p>touchEndはゲーム画面内でクリックが終了したとき、及び指が離れたとき呼び出される関数です。</p>
+<p>keyDownはキーが押されたときに呼び出される関数です。</p>
+<p>keyUpはキーが離されたときに呼び出される関数です</p>
+<p>それぞれのオブジェクトでリスナーを有効にするには</p>
+<p><strong>this.enableEvent("keyDown","keyUp");</strong></p>
+<p>のように有効にするリスナー名を文字列で登録しておく必要があります</p>
+<p>touchStartおよび、touchMoveでは画面上のタッチおよびクリックされた座標を</p>
+<p><strong>this.getTouchPosition(e)</strong>で取得できます</p>
+<h5>例)Heroオブジェクトをタッチした位置に移動させる</h5>
 <pre class="prettyprint linenums">
-game.touchStart(function(e){
-var obj = game.getPosition(e);
-console.log("あなたの触れた位置は("+obj.x+","+obj.y+")です。");
-});
+    Hero = Atlas.createClass(Atlas.Sprite,{
+         initialize:function(){
+            this.inherent("hero",64,64);
+            this.x = 250;
+            this.y = 250;
+            this.enableEvent("touchStart");
+         },
+         touchStart:function(e){
+             var obj = this.getTouchPosition(e);
+             this.setPosition(obj.x,obj.y);
+         }
+    });
 </pre>
-上のように３つのメソッド内では、現在のクリック位置やタッチ位置が取得できるメソッド<br />
-game.getPosition(e)を使用することが出来ます。
+<p>keyUpおよび、keyDownではクリックされたキーを</p>
+<p><strong>this.setKeyState(e)</strong>でtrueにできます</p>
+<p><strong>this.clearKeyState()</strong>ですべてのキーの状態をfalseにできます</p>
+<p>また、<strong>this.setKey(buttonA,buttonB);</strong>をつかい</p>
+<p>ボタンのキーをそれぞれ、this.key.aにbuttonA、this.key.bにbuttonBと、バインドさせることもできます</p>
+<h5>例)Heroオブジェクトを押した方向に動かす</h5>
+<pre class="prettyprint linenums">
+    Hero = Atlas.createClass(Atlas.Sprite,{
+         initialize:function(){
+            this.inherent("hero",64,64);
+            this.x = 250;
+            this.y = 250;
+            this.enableEvent("keyDown","keyUp");
+         },
+         keyDown:function(e){
+             this.setKeyState(e);
+             var key = this.key;
+             if(key.down)
+                 this.y+=5;
+             if(key.right)
+                 this.x+=5;
+             if(key.up)
+                 this.y-=5;
+             if(key.left)
+                 this.x-=5;
+         },
+         keyUp:function(e){
+             this.clearKeyState();
+         }
+    });
+</pre>
+
+
