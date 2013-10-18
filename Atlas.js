@@ -106,8 +106,8 @@
 				case 'mousedown': this.touchStart(e); break;
 				case 'touchmove': this.touchMove(e); break;
 				case 'mousemove': this.touchMove(e); break;
-				case 'touchend': this.touchEnd(e); break;
-				case 'mouseup': this.touchMove(e); break;
+				case 'touchend': this.touchEnd(); break;
+				case 'mouseup': this.touchEnd(); break;
 				case 'keydown': this.keyDown(e); break;
 				case 'keyup': this.keyUp(e);break;
 			}
