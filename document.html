@@ -323,11 +323,6 @@ var box = new Shape.Box("white",20,10);
 					<p>touchEndはゲーム画面内でクリックが終了したとき、及び指が離れたとき呼び出される関数です。</p>
 					<p>keyDownはキーが押されたときに呼び出される関数です。</p>
 					<p>keyUpはキーが離されたときに呼び出される関数です</p>
-					<p>それぞれのオブジェクトでリスナーを有効にするには</p>
-					<p><strong>this.enableEvent("keyDown","keyUp");</strong></p>
-					<p>のように有効にするリスナー名を文字列で登録しておく必要があります</p>
-					<p>touchStartおよび、touchMoveでは画面上のタッチおよびクリックされた座標を</p>
-					<p><strong>this.getTouchPosition(e)</strong>で取得できます</p>
 					<h5>例)Heroオブジェクトをタッチした位置に移動させる</h5>
 					<pre class="prettyprint linenums">
 Hero = Atlas.createClass(Atlas.Sprite,{
@@ -341,7 +336,7 @@ Hero = Atlas.createClass(Atlas.Sprite,{
      }
 });
 </pre>
-					<h5>例)Heroオブジェクトを押した方向に動かす</h5>
+					<h5>例)Heroオブジェクトを十時キーを押した方向に動かす</h5>
 					<pre class="prettyprint linenums">
 Hero = Atlas.createClass(Atlas.Sprite,{
      initialize:function(){
