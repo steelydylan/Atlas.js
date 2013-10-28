@@ -109,7 +109,7 @@
 Atlas();
 var game = new App('Atlas');
 					</pre>
-					ある変数にAtlasをインスタンスする場合、うえのように、引数として、
+					ある変数にAppをインスタンスする場合、うえのように、引数として、
 					canvasのid名である、Atlasを指定します。
 					こうすることで、このライブラリが提供する様々な機能を変数gameを
 					通して使うことができるようになります。
@@ -119,8 +119,6 @@ var game = new App('Atlas');
 					<h3>各種設定</h3>
 					ゲームをループさせる前の初期設定のgameのメソッドを紹介したいと思います
 					<pre class="prettyprint linenums">
-var game = new App();
-
 game.load("hero.png","bgm.mp3");
 /*
 ゲームで使用する素材をロードします
@@ -373,8 +371,8 @@ Hero = Atlas.createClass(Atlas.Sprite,{
 					上のように一つのスプライトが16(横）*16(縦）pxの30*16等分のマップを例にとります。
 					<pre class="prettyprint linenums">
 window.onload = function(){
-    Atlas("game");
-    var game = new App();
+    Atlas();
+    var game = new App("game");
     var map = new Map("./images/map.png", 16, 16);
     game.setSize(256, 256);
     game.setQuality(256, 256);
@@ -405,8 +403,8 @@ window.onload = function(){
 					<p>それぞれ、true,falseを返す仕組みも提供されています</p>
 					<pre class="prettyprint linenums">
 window.onload = function(){
-    Atlas("game");
-    var game = new App();
+    Atlas();
+    var game = new App("game");
     var map = new Map("./images/map.png", 16, 16);
     game.setSize(256, 256);
     game.setQuality(256, 256);
@@ -484,8 +482,8 @@ this.inheritで自分のスーパークラス（この場合はAtlas.Sprite）�
 */
 });
 window.onload = function(){
-    Atlas("game");
-    var game = new App();
+    Atlas();
+    var game = new App("game");
     game.load("teki2.png");
     var enemy = new Enemy("teki2.png",100,95);
     game.addChild(enemy);
