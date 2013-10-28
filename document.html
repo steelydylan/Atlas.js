@@ -208,8 +208,6 @@ var chara = new Sprite("chara2",32,32);
 sprite.x = 0;//x座標
 sprite.y = 0;//y座標
 sprite.rot = 0;//回転量
-sprite.sx = 1;//x倍、横幅を拡大する
-sprite.sy = 1;//y倍、縦幅を拡大する
 sprite.frame = 0;//frame番号
 					</pre>
 					<img src="./image/sprite.png" align="right"/><br />
@@ -220,39 +218,61 @@ sprite.frame = 0;//frame番号
 					<br />
 					そして、以下のようなメソッドが設定されています
 					<pre class="prettyprint linenums">
-/*
-いずれも座標(sprite.x,sprite.y)の位置にスプライトを描画します
-この描画処理のメソッドはgameオブジェクトのメソッド、
-loadingSceneおよびmainSceneの内部で行ってください。
-*/
 sprite.within(anotherSprite,range);
 /*
 他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
 true,範囲外であればfalseを返す。
+(Shapeオブジェクト共通)
 */
 sprite.intersect(x,y);
 /*
 スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
+(Shapeオブジェクト共通)
 */
 sprite.scale(5,2);
 /*
 この場合は、スプライトを横に５倍、縦に２倍拡大する
+(Mapオブジェクト、Shapeオブジェクト共通)
 */
 sprite.setPosition(100,45);
 /*
 この場合は、スプライトを(100,45)の地点に移動させる
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
 */
 sprite.getRand(10,100);
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
 /*
 この場合は、10から100までのランダムな数を返す
  */
 sprite.getImage("./path/to/image",32,32);
 /*
 スプライトを新たな32*32のスプライト画像に置き換えます
+（Mapオブジェクト共通）
+*/
+sprite.getImage("./path/to/image");
+/*
+スプライトをもとのスプライトの切り取りサイズを保ったまま、新たな
+スプライト画像に置き換えます
+（Mapオブジェクト共通）
 */
 sprite.setSpriteSize(32,32);
 /*
 スプライトの切り取りサイズを32*32に変更します
+*/
+sprite.visible = false;
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトを非表示にします
+*/
+sprite.alpha = 0.5;
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトの透明度を50%にします
+*/
+sprite.remove();
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトを削除します
 */
 					</pre>
 					<h4>グループ機能</h4>
@@ -287,8 +307,6 @@ text.setSize(15);
 //テキストのサイズを変更します
 text.setFont("Meiryo");
 //テキストの文字種を変更します
-text.spaceWidth = 5;
-//改行の際の、行間の幅を変更します
 					</pre>
 					<h4>図形</h4>
 					<p>Atlasでは円と四角形、二つの図形を描画したり動かしたりできます</p>
@@ -298,15 +316,7 @@ var circle = new Shape.Circle("red",15);
 /*円の場合の引数、色、半径*/
 var box = new Shape.Box("white",20,10);
 /*四角形の場合の引数、色、横幅、縦幅*/
-					</pre>
-					<p>また、ShapeオブジェクトはSpriteオブジェクトと、同様に以下のプロパティが使えます</p>
-					<pre class="prettyprint linenums">
-shape.within(others,range);
-shape.intersect(x,y);
-shape.scale(scaleX,scaleY);
-shape.setPosition(x,y);
-shape.getRand(min,max);
-					</pre>					
+					</pre>				
 				</div>
 				<div class="tab-pane" id="sixth">
 					<h3>イベントリスナー</h3>
@@ -328,7 +338,7 @@ shape.getRand(min,max);
 					<pre class="prettyprint linenums">
 Hero = Atlas.createClass(Atlas.Sprite,{
      initialize:function(){
-        this.inherent("hero",64,64);
+        this.inherit("hero",64,64);
         this.x = 250;
         this.y = 250;
      },
@@ -341,7 +351,7 @@ Hero = Atlas.createClass(Atlas.Sprite,{
 					<pre class="prettyprint linenums">
 Hero = Atlas.createClass(Atlas.Sprite,{
      initialize:function(){
-        this.inherent("hero",64,64);
+        this.inherit("hero",64,64);
         this.x = 250;
         this.y = 250;
      },
@@ -733,10 +743,9 @@ window.onload = function(){
     var game = new App();
     game.load("./images/map.png");
     var map = new Map("./images/map.png", 16, 16);
-    game.changeSize(256, 256);
-    game.changeQuality(256, 256);
-    game.initScene(function () {
-        map.drawData = [
+    game.setSize(256, 256);
+    game.setQuality(256, 256);
+    map.drawData = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
@@ -753,12 +762,8 @@ window.onload = function(){
       [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ];
-    });
-    game.loadingScene(function () { });
-    game.mainScene(function () {
-        map.draw();
-    });
+     ];
+    game.addChild(map);
     game.start();
 }
 					</pre>				
@@ -771,7 +776,7 @@ window.onload = function(){
 (function(){
     Enemy = Atlas.createClass(Atlas.Sprite,{
 	    initialize : function(image,numX,numY){
-		    this.inherent(image,numX,numY);
+		    this.inherit(image,numX,numY);
 		    this.sx = this.getRand(5,10);
 			this.sy = this.getRand(5,10);
 			this.setPosition(0,this.getRand(100,300));
