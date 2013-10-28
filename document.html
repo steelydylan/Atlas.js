@@ -220,7 +220,6 @@ sprite.frame = 0;//frame番号
 					<br />
 					そして、以下のようなメソッドが設定されています
 					<pre class="prettyprint linenums">
-sprite.draw();//spriteを描画します
 /*
 いずれも座標(sprite.x,sprite.y)の位置にスプライトを描画します
 この描画処理のメソッドはgameオブジェクトのメソッド、
@@ -277,12 +276,10 @@ enemies.add(enemy);
 					<p>使用例</p>
 					<pre class="prettyprint linenums">
 var text = new Text("われわれは宇宙人だ","red",20,"Meiryo");
-text.draw();
 					</pre>
 					<p>また、次のように&lt;br&gt;を文字列に挟めば途中で改行させることもできます</p>
 					<pre class="prettyprint linenums">
 var text = new Text("われわれは宇宙人だ&lt;br&gt;よろしくね","red",20,"Meiryo");
-text.draw();//描画
 					</pre>
 					Textクラスのメソッド及び、プロパティ
 					<pre class="prettyprint linenums">
@@ -299,10 +296,8 @@ text.spaceWidth = 5;
 					<pre class="prettyprint linenums">
 var circle = new Shape.Circle("red",15);
 /*円の場合の引数、色、半径*/
-circle.draw();//描画
 var box = new Shape.Box("white",20,10);
 /*四角形の場合の引数、色、横幅、縦幅*/
-box.draw();//描画
 					</pre>
 					<p>また、ShapeオブジェクトはSpriteオブジェクトと、同様に以下のプロパティが使えます</p>
 					<pre class="prettyprint linenums">
@@ -471,7 +466,6 @@ Enemy = Atlas.createClass(Atlas.Sprite,{
 		this.setPosition(0,this.getRand(100,300));
 	},
 	enterFrame : function(){
-		this.draw();
 		this.x += this.sx;
 		this.y += this.sy;			
 		if(this.x > 500)
