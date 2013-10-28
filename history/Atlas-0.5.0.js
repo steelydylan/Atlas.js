@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.1
+ * Atlas.js v0.5.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -8,85 +8,29 @@
 (function () {
     var images = [];
     var sounds = [];
-    var fonts = [];
     var allLoaded = 0;
-    var isMobile = (function(){
+    var field;
+    var ctx;
+    var loadingScene;
+    var mainScene;
+    var bgColor = "black";
+    var alpha = 1;
+    var isMobile = false;
+    Atlas = function (place) {
+        field = document.getElementById(place);
+        field.width = 320;
+        field.height = 480;
+        document.body.style.margin = "0em";
+        ctx = field.getContext('2d');
         var userAgent = navigator.userAgent;
-        if((userAgent.indexOf('iPhone') > 0 && userAgent.indexOf('iPad') == -1) || userAgent.indexOf('iPod') > 0 || userAgent.indexOf('Android') > 0)
-        	return true;
-        else
-        	return false;
-    })();
-    var orientation = (function (e){
-	   var mq = window.matchMedia("(orientation: portrait)");
-	   var orientation = "";
-       if (mq.matches)
-           return "portrait";
-       else
-           return "landscape";
-	})();
-	var setKeyState = function(ret,ret2,e){
-        var which = e.which;
-        switch (which) {
-            case 13:
-                ret.enter = true;
-                ret2.enter = true;
-            break;
-            case 16:
-                ret.shift = true;
-                ret2.shift = true;
-            break;
-            case 32:
-                ret.space = true;
-                ret2.space = true;
-            break;
-                case 39: // Key[→]
-                ret.right = true;
-                ret2.right = true;
-            break;
-            case 37: // Key[←]
-                ret.left = true;
-                ret2.left = true;
-            break;
-            case 38: // Key[↑]
-                ret.up = true;
-                ret2.up = true;
-            break;
-            case 40: // Key[↓]
-                ret.down = true;
-                ret2.down = true;
-            break;
+        if ((userAgent.indexOf('iPhone') > 0 && userAgent.indexOf('iPad') == -1) || userAgent.indexOf('iPod') > 0 || userAgent.indexOf('Android') > 0) {
+            field.style.width = window.innerWidth+"px";//mobile default
+            field.style.height = window.innerHeight+"px";//mobile default
+            isMobile = true;
+        } else {
+            field.style.width = 480+"px";
+            field.style.height = 620+"px";
         }
-        for(var i = 0; i < 26; i++){
-            if(i + 65 == which){
-            	var chr = String.fromCharCode(i+97);
-            	ret[chr] = true;
-            	ret2[chr] = true;
-            	break;
-            }
-        }
-    };
-	var clearKeyState = function(ret){
-		var succ = function (alpha) {
-            return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
-        };
-        ret.enter = false;
-    	ret.shift = false;
-    	ret.space = false;
-    	ret.right = false;
-    	ret.left = false;
-    	ret.up = false;
-    	ret.down = false;
-    	for(var i = 0; i < 26; i++){
-            ret[String.fromCharCode(i+97)] = false;
-        } 
-	};
-	var keydown = (function(){       
-    	var ret = new Object();
-		clearKeyState(ret);
-		return ret;
-    })();
-    Atlas = function () {
         window.App = App;
         window.Sprite = Sprite;
         window.Text = Text;
@@ -100,7 +44,7 @@
         };
         if (typeof superClass == "function" && typeof obj == "object") {
             newClass.prototype = Object.create(superClass.prototype);
-            newClass.prototype.inherit = function () {                
+            newClass.prototype.inherent = function () {                
                 this.initialize = this.superClass.prototype.initialize;
                 this.superClass = this.superClass.prototype.superClass;
                 if(this.initialize)
@@ -115,38 +59,72 @@
         newClass.prototype.superClass = superClass;
         return newClass;
     };
-    var Util = Atlas.createClass({
-    	isMobile: isMobile,
-    	orientation: orientation,
+    var EventListener = Atlas.createClass({
         initialize: function(){
-        	this.eventListener = new Object();
-        	this.visible = true;
-        	this.parent;
-        	var eventListener = this.eventListener;
-        	eventListener.touchStart = false;
-        	eventListener.touchMove = false;
-        	eventListener.touchEnd = false;
-        	eventListener.keyUp = false;
-        	eventListener.keyDown = false;
-        	eventListener.orientationChange = false; 
+            this.key = new Object();
+            var key = this.key;
+            key.enter = false;
+            key.shift = false;
+            key.space = false;
+            key.right = false;
+            key.left = false;
+            key.up = false;
+            key.down = false;
+            key.a = false;
+            key.b = false;
+            key._a = -1;
+            key._b = -1;
         },
-        setPosition: function (x, y) {
-            this.x = x;
-            this.y = y;
+        enableEvent: function(){
+            for(var i = 0,n = arguments.length; i < n; i++){
+                var listener = arguments[i];
+            	if(listener == "touchStart"){
+            		if (isMobile)
+                		field.addEventListener("touchstart", this, false);
+            		else
+                		field.addEventListener("mousedown", this, false);
+            	}else if(listener == "touchMove"){
+            		if (isMobile)
+                		field.addEventListener("touchmove", this, false);
+            		else
+                		field.addEventListener("mousemove", this, false);
+            	}else if(listener == "touchEnd"){
+            		if (isMobile)
+                		field.addEventListener("touchend", this, false);
+            		else
+                		field.addEventListener("mouseup", this, false);
+            	}else if(listener == "keyDown"){
+            		document.addEventListener("keydown", this, false);            		
+            	}else if(listener == "keyUp"){
+            	    document.addEventListener("keyup", this, false);  
+            	}
+            }
         },
-       	getTouchPosition: function (e) {
-            var field = this.field;
+        handleEvent: function(e) {
+			switch (e.type) {
+				case 'touchstart': this.touchStart(e); break;
+				case 'mousedown': this.touchStart(e); break;
+				case 'touchmove': this.touchMove(e); break;
+				case 'mousemove': this.touchMove(e); break;
+				case 'touchend': this.touchEnd(); break;
+				case 'mouseup': this.touchEnd(); break;
+				case 'keydown': this.keyDown(e); break;
+				case 'keyup': this.keyUp(e);break;
+			}
+		},
+		getTouchPosition: function (e) {
+            e.preventDefault();
             var rateX = parseInt(field.width) / parseInt(field.style.width);
             var rateY = parseInt(field.height) / parseInt(field.style.height);
             var obj = new Object();
             var margin = field.getBoundingClientRect();
-            var x = parseInt(margin.left);
-            var y = parseInt(margin.top);
-            if (isNaN(x))
-                x = 0;
-            if (isNaN(y))
-                y = 0;
             if (e) {
+                var x = parseInt(margin.left);
+                var y = parseInt(margin.top);
+                if (isNaN(x))
+                    x = 0;
+                if (isNaN(y))
+                    y = 0;
                 if (!isMobile || (isMobile && e.touches[0])) {
                     obj.x = (isMobile ? e.touches[0].pageX : e.pageX) - x;
                     obj.y = (isMobile ? e.touches[0].pageY : e.pageY) - y;
@@ -154,7 +132,8 @@
                     obj.x = -1;
                     obj.y = -1;
                 }
-            }else{
+            }
+            else {
                 obj.x = event.x - x;
                 obj.y = event.y - y;
             }
@@ -162,142 +141,98 @@
             obj.y = parseInt(obj.y * rateY);
             return obj;
         },
-        handleEvent: function(e) {
-        	e.preventDefault();
-        	var pos = this.getTouchPosition(e);        		
-        	if(e.which > 2){
-        		var keyup = new Object();
-        		for(var i in keydown)
-            		keyup[i] = keydown[i];
-            }
-        	setKeyState(keyup,keydown,e);
-			switch (e.type) {
-				case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
-				case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
-				case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
-				case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
-				case 'touchend': if(this.touchEnd)this.touchEnd(); break;
-				case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
-				case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
-				case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
-			}
-		},
-		useEvent: function(){
-            var field = this.field;
-            var eventListener = this.eventListener;
-            if(this.touchStart && eventListener.touchStart == false){
-                if(isMobile)
-                	field.addEventListener("touchstart",this,false);
-                else
-                	field.addEventListener("mousedown",this,false);
-                eventListener.touchStart = true;
+        setKey: function (bA,bB) {
+            var succ = function (alpha) {
+                return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
+            };
+            var Set = function (button) {
+                var ret;
+                var alpha = "a";
+                for (var i = 0; i < 24; i++) {
+                    if (button == alpha) {
+                        ret = 65 + i;
+                        break;
+                    }
+                    alpha = succ(alpha);
                 }
-            if(this.touchMove && eventListener.touchMove == false){
-                if(isMobile)
-                	field.addEventListener("touchmove",this,false);
-                else
-                	field.addEventListener("mousemove",this,false);
-                eventListener.touchMove = true;
+                return ret;
+            };
+            if (bA)
+                key._a = Set(bA);
+            if (bB)
+                key._b = Set(bB);
+        },
+        setKeyState: function(e){
+            var which = e.which;
+            var key = this.key;
+        	switch (which) {
+                case 13:
+                    key.enter = true;
+                    break;
+                case 16:
+                    key.shift = true;
+                    break;
+                case 32:
+                    key.space = true;
+                    break;
+                case 39: // Key[→]
+                    key.right = true;
+                    break;
+                case 37: // Key[←]
+                    key.left = true;
+                    break;
+                case 38: // Key[↑]
+                    key.up = true;
+                    break;
+                case 40: // Key[↓]
+                    key.down = true;
+                    break;
+                case key._a:
+                	key.a = true;
+                	break;
+                case key._b:
+                	key.b = true;
+                	break;
             }
-            if(this.touchEnd && eventListener.touchEnd == false){
-                if(isMobile)
-                	field.addEventListener("touchend",this,false);
-                else
-                	field.addEventListener("mouseup",this,false);
-                eventListener.touchEnd = true;
-            }               
-            if(this.keyUp && eventListener.keyUp == false){
-                field.addEventListener("keyup",this,false);
-                eventListener.keyUp = true;
-            }
-            if(this.keyDown && eventListener.keyDown == false){
-                field.addEventListener("keydown",this,false);
-                eventListener.keyDown = true;
-            }
-		},
-        remove: function(){
-        	this._remove = true;
+        },
+        clearKeyState:function(){
+            var key = this.key;
+            key.enter = false;
+            key.shift = false;
+            key.space = false;
+            key.right = false;
+            key.left = false;
+            key.up = false;
+            key.down = false;
+            key.a = false;
+            key.b = false;
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
         }
     });
-	var Group = Atlas.createClass(Array, {
-    	initialize: function () {
-            this.inherit();
-            this._remove = false;
-        },
-        addChildren: function () {
-            for(var i = 0, n = arguments.length; i < n; i++){
-            	addChild(arguments[i]);
+    var App = Atlas.createClass(EventListener,{
+        ctx: ctx,
+        isMobile : isMobile,
+        initialize: function () {
+        	this.fps = 30;// fps default        	
+       	 	if (isMobile) {
+            	var mq = window.matchMedia("(orientation: portrait)");
+            	if (mq.matches) {
+                	this.orientation = "portrait";
+           	    } else {
+                	this.orientation = "landscape";
+            	}
             }
         },
-        remove: function(){
-        	this._remove = true;
+        setBackgroundColor: function (color) {
+            bgColor = color;
         },
-        addChild: function(sprite){
-        	sprite.parent = this;
-        	this.push(sprite);
-        },
-        enterFrame: function (e) {
-            for (var i = 0, n = this.length; i < n; i++) {
-            	var target = this[i];
-            	target.useEvent();
-            	if(target.enterFrame)
-                	target.enterFrame();
-                if(target.visible)
-                	target.draw();
-                if (target._remove) {
-                    this.splice(i, 1);
-                    delete target;
-                    i--;
-                    n--;
-                }
-            }
-        }
-    });
-    var App = Atlas.createClass(Util,{
-        initialize: function (place) {
-            var css = document.createElement("style");
-    		css.media = 'screen';
-    		css.type = "text/css";
-    		document.getElementsByTagName("head")[0].appendChild(css);
-        	var field = document.getElementById(place);
-        	field.width = 320;
-        	field.height = 480;
-        	field.tabIndex = '1';
-        	field.focus();
-        	document.body.style.margin = "0em";
-        	var userAgent = navigator.userAgent;
-        	if (isMobile) {
-            	field.style.width = window.innerWidth+"px";//mobile default
-            	field.style.height = window.innerHeight+"px";//mobile default
-            	field.addEventListener("touchstart",function(){this.focus()});
-        	} else {
-            	field.style.width = 480+"px";
-            	field.style.height = 620+"px"; 
-            	field.addEventListener("mousedown",function(){this.focus()});
-            	field.addEventListener("keyup",function(){clearKeyState(keydown);},false);
-        	}
-        	this._css = css;
-        	this.field = field;
-        	this.ctx = field.getContext('2d');
-        	this.fps = 30;// fps default
-        	this.children = new Group();  
-        	this.mainScene;
-        	this.loadingScene;  	
-        },
-        addChild: function(child){
-        	child.ctx = this.ctx;
-        	child.field = this.field;
-        	this.children.addChild(child);
-        },
-        addChildren: function(){
-        	for(var i = 0,n = arguments.length; i < n; i++)
-        		this.addChild(arguments[i]);
+        setAlpha: function (n) {
+            alpha = n;
         },
         centerize: function () {
-            var style = this.field.style;
+            var style = field.style;
             style.marginTop = - parseInt(style.height) / 2+"px";
             style.marginLeft = - parseInt(style.width) / 2+"px";
             style.top = '50%';
@@ -305,49 +240,65 @@
             style.position = 'absolute';
         },
         fitWindow: function () {
-            this.setSize(window.innerWidth, window.innerHeight);
+            this.changeSize(window.innerWidth, window.innerHeight);
             var that = this;
             window.onresize = function () {
-                that.setSize(window.innerWidth, window.innerHeight);
+                that.changeSize(window.innerWidth, window.innerHeight);
             };
         },
-        setQuality: function (width, height) {
-        	var field = this.field;
+        detectOrientation: function (portrait, landscape) {
+            if (this.isMobile) {
+                var that = this;
+                window.addEventListener("orientationchange", function () {
+                    var mq = window.matchMedia("(orientation: portrait)");
+                    if (mq.matches) {
+                        that.orientation = "portrait";
+                    } else {
+                        that.orientation = "landscape";
+                    }
+                }, false);
+            }
+        },
+        changeQuality: function (width, height) {
             field.width = width;
             field.height = height;
         },
-        setSize: function (width, height) {
-            var style = this.field.style;
+        changeSize: function (width, height) {
+            var style = field.style;
             style.width = width+"px";
             style.height = height+"px";
-        },       
+        },
+        getQuality:function(){
+            var obj = new Object();
+            obj.width = field.width;
+            obj.height = field.height;
+            return obj;
+        },
+        getSize:function(){
+            var obj = new Object();
+            obj.width = field.style.width;
+            obj.height = field.style.height;
+            return obj;
+        },        
         mainScene: function (fn) {
-            this.mainScene = fn;
+            mainScene = fn;
         },
         loadingScene: function (fn) {
-            this.loadingScene = fn;
-        },
-        enterFrame: function(){
-        	var field = this.field;
-            this.ctx.clearRect(0, 0, field.width, field.height);
-            if (allLoaded <= 0){            
-                this.children.enterFrame();
-                if(this.mainScene)
-                	this.mainScene();
-            }
-            else if (this.loadingScene)
-                this.loadingScene();        
-        },
-        setColor: function(color){
-        	this.field.style.backgroundColor = color;
+            loadingScene = fn;
         },
         start: function () {
-        	var field = this.field;
-        	this.ctx.clearRect(0,0,field.width,field.height);
-            var that = this;
+            ctx.fillStyle = bgColor;
+            ctx.globalAlpha = 1;
+            ctx.fillRect(0, 0, field.width, field.height);
             setInterval(function () {
-            	that.useEvent();
-                that.enterFrame();
+                ctx.fillStyle = bgColor;
+                ctx.globalAlpha = alpha;
+                ctx.fillRect(0, 0, field.width, field.height);
+                ctx.globalAlpha = 1;
+                if (allLoaded <= 0)
+                    mainScene();
+                else if (loadingScene)
+                    loadingScene();
             }, 1000 / this.fps);
         },
         load: function () {
@@ -367,7 +318,6 @@
             for (var i = 0, n = arguments.length; i < n; i++) {
                 var data = arguments[i];
                 var ext = getExtention(data);
-                var css = this._css;
                 if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
                     var obj = new Audio(data);
                     obj.name = data;
@@ -377,20 +327,6 @@
                         console.log(this.src + " is loaded");
                     });
                     sounds.push(obj);
-                } else if(ext == "TTF" || ext == "ttf"){
-                	var rule =  document.createTextNode("@font-face{"+
-                	"font-family:'"+data+"';"+
-                	"src: url('"+data+"') format('truetype');"+
-                	"}");
-                	if(css.styleSheet)
-                		css.styleSheet.cssText = rule;
-                	else
-                		css.appendChild(rule);
-                	var font = new Object();
-                	font.name = data;
-                	font.url = data;
-                	fonts.push(font);                	
-                	console.log(data + " is loaded");
                 } else {
                     var obj = new Image();
                     obj.src = data;
@@ -415,35 +351,19 @@
                         images[i].name = arguments[t][1];
                     }
                 }
-                for (var i = 0, n = fonts.length; i < n; i++){
-                	if(fonts[i].name == arguments[t][0]){
-                		fonts[i].name = arguments[t][1];
-                		var rule =  document.createTextNode("@font-face{"+
-                		"font-family:'"+fonts[i].name+"';"+
-                		"src: url('"+fonts[i].url+"') format('truetype');"+
-                		"}");
-                		var css = this._css;
-                		if(css.styleSheet)
-                			css.styleSheet.cssText = rule;
-                		else
-                			css.appendChild(rule);
-                	}
-                }
             }
         }
     });
-    var Thing = Atlas.createClass(Util,{
+    var Thing = Atlas.createClass(EventListener,{
         initialize: function(width,height){
-            this.inherit();
+            this.inherent();
             this.x = 0;
             this.y = 0;
             this.rot = 0;
-            this._remove = false;
             this.width = width;
             this.height = height; 
             this.collisionShape = "box";
-            this.alpha = 1;  
-            this.field;        
+            this.alpha = 1;          
         },
         intersect: function (ex, ey) {
             if (this.collisionShape == "box") {
@@ -519,6 +439,10 @@
         scale: function (sx, sy) {
             this.width *= sx;
             this.height *= sy;
+        },
+        setPosition: function (x, y) {
+            this.x = x;
+            this.y = y;
         },
         getSound: function (name) {
             for (var i = 0, n = sounds.length; i < n; i++) {
@@ -605,14 +529,13 @@
     var Shape = new Object();
     Shape.Box = Atlas.createClass(Thing, {
         initialize: function (col, width, height) {
-            this.inherit(width,height);
-            this.color = col;
+            this.inherent(width,height);
+            this.col = col;
         },
         draw: function () {
-        	var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
-            ctx.fillStyle = this.color;
+            ctx.fillStyle = this.col;
             var moveX = this.x + this.width / 2;
             var moveY = this.y + this.height / 2;
             ctx.save();
@@ -626,15 +549,14 @@
     });
     Shape.Circle = Atlas.createClass(Thing, {
         initialize: function (col, radius) {
-            this.inherit(radius * 2,0);
-            this.color = col;
+            this.inherent(radius * 2,0);
+            this.col = col;
             this.collisionShape = "circle";
         },
         draw: function () {
-        	var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
-            ctx.fillStyle = this.color;
+            ctx.fillStyle = this.col;
             var plus = this.width / 2;
             ctx.arc(this.x + plus, this.y + plus, plus, 0, Math.PI * 2, false);
             ctx.fill();
@@ -643,7 +565,7 @@
     });
     var Sprite = Atlas.createClass(Thing, {
         initialize: function (name, width, height) {
-            this.inherit(width,height);
+            this.inherent(width,height);
             this.spriteWidth = width;
             this.spriteHeight = height;
             this.getImage(name);
@@ -662,7 +584,6 @@
                     this.img = i;
         },
         draw: function () {
-        	var ctx = this.ctx;
             var frame = this.frame;
             var image = images[this.img];
             var SizeX = this.spriteWidth;
@@ -686,7 +607,7 @@
     });
     var Map = Atlas.createClass(Sprite, {
         initialize: function (name, width, height) {
-            this.inherit(name,width,height);
+            this.inherent(name,width,height);
             this.drawData;
             this.hitData;
         },
@@ -755,9 +676,9 @@
             this.y = py;
         }
     });
-    var Text = Atlas.createClass(Util,{
+    var Text = Atlas.createClass(EventListener,{
     	initialize : function (string, col, size, font) {
-    	    this.inherit();
+    	    this.inherent();
         	this.x = 0;
         	this.y = 0;
         	this.alpha = 1;
@@ -775,9 +696,9 @@
         	else
             	this.string = "";
         	if (col)
-            	this.color = col;
+            	this.col = col;
         	else
-            	this.color = "white";
+            	this.col = "white";
     	},
         setSize: function (size) {
             this.size = size + "pt";
@@ -785,15 +706,18 @@
         setFont: function (font) {
             this.font = "'" + font + "'";
         },
+        setPosition: function (x, y) {
+            this.x = x;
+            this.y = y;
+        },
         draw: function () {
             var x = this.x;
             var y = this.y;
-            var ctx = this.ctx;
             var strings = this.string.split('<br>');
             var length = strings.length;
             ctx.globalAlpha = this.alpha;
             ctx.font = this.size + " " + this.font;
-            ctx.fillStyle = this.color;
+            ctx.fillStyle = this.col;
             if (length > 1) {
                 var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
                 for (var i = 0; i < length; i++) {
@@ -803,6 +727,34 @@
             } else
                 ctx.fillText(this.string, x, y);
             ctx.globalAlpha = 1;
+        }
+    });
+    var Group = Atlas.createClass(Array, {
+    	initialize: function () {
+            this.inherent();
+        },
+        add: function () {
+            for(var i = 0, n = arguments.length; i < n; i++){
+                var sprite = arguments[i];
+                if (typeof sprite.move === 'function') {
+                    sprite.remove = false;
+                    this.push(sprite);
+                }
+            }
+        },
+        move: function () {
+            var length = arguments.length;
+            for (var i = 0, n = this.length; i < n; i++) {
+                if (length > 0)
+                    this[i].move.apply(this[i], arguments);
+                else
+                    this[i].move();
+                if (this[i].remove) {
+                    this.splice(i, 1);
+                    i--;
+                    n--;
+                }
+            }
         }
     });
     Atlas.App = App;
