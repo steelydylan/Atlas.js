@@ -133,17 +133,26 @@ game.centerize();
 /*
 ゲーム画面をブラウザ画面の中心に配置します。
 */
-game.changeQuality(width,height);
+game.setQuality(width,height);
 /*
 ゲーム画面の縦横の解像度を設定します。
 */
-game.changeSize(width,height);
+game.setSize(width,height);
 /*
 ゲーム画面の縦横のサイズを設定します。
 */
 game.fps = 30;
 /*
 ゲームのfpsを30に設定します。
+*/
+game.setColor(color);
+/*
+ゲームの背景色を変更します
+*/
+game.addChild(child);
+/*
+SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタンスをゲームに追加します。
+これをしなければそれぞれのインスタンスは描画されません。
 */
 					</pre>
 				</div>
@@ -256,15 +265,6 @@ var enemies = new Group();
 //グループにオブジェクトを追加
 var enemy = new Sprite("enemy",32,32);
 enemies.add(enemy);
-//グループ全体のオブジェクトを操作
-enemies.move(x,y);
-/*
-このとき、enemiesグループはenemiesに追加されたそれぞれのオブジェクトの
-メソッドenemy.move(x,y)を順に実行していきます
-この場合は(x,y)にしていますが、引数の数は自由です
-*/
-//i番目のオブジェクトを削除します。
-enemies[i].remove = true;
 					</pre>
 				</div>
 				<div class="tab-pane" id="fifth">
@@ -336,19 +336,12 @@ Hero = Atlas.createClass(Atlas.Sprite,{
         this.inherent("hero",64,64);
         this.x = 250;
         this.y = 250;
-        this.enableEvent("touchStart");
      },
-     touchStart:function(e){
-         var obj = this.getTouchPosition(e);
-         this.setPosition(obj.x,obj.y);
+     touchStart:function(pos){
+         this.setPosition(pos.x,pos.y);
      }
 });
 </pre>
-					<p>keyUpおよび、keyDownではクリックされたキーを</p>
-					<p><strong>this.setKeyState(e)</strong>でtrueにできます</p>
-					<p><strong>this.clearKeyState()</strong>ですべてのキーの状態をfalseにできます</p>
-					<p>また、<strong>this.setKey(buttonA,buttonB);</strong>をつかい</p>
-					<p>ボタンのキーをそれぞれ、this.key.aにbuttonA、this.key.bにbuttonBと、バインドさせることもできます</p>
 					<h5>例)Heroオブジェクトを押した方向に動かす</h5>
 					<pre class="prettyprint linenums">
 Hero = Atlas.createClass(Atlas.Sprite,{
@@ -356,11 +349,8 @@ Hero = Atlas.createClass(Atlas.Sprite,{
         this.inherent("hero",64,64);
         this.x = 250;
         this.y = 250;
-        this.enableEvent("keyDown","keyUp");
      },
-     keyDown:function(e){
-         this.setKeyState(e);
-         var key = this.key;
+     keyDown:function(key){
          if(key.down)
              this.y+=5;
          if(key.right)
@@ -369,9 +359,6 @@ Hero = Atlas.createClass(Atlas.Sprite,{
              this.y-=5;
          if(key.left)
              this.x-=5;
-     },
-     keyUp:function(e){
-         this.clearKeyState();
      }
 });
 					</pre>					
@@ -388,9 +375,8 @@ window.onload = function(){
     Atlas("game");
     var game = new App();
     var map = new Map("./images/map.png", 16, 16);
-    game.changeSize(256, 256);
-    game.changeQuality(256, 256);
-    game.initScene(function () {
+    game.setSize(256, 256);
+    game.setQuality(256, 256);
     map.drawData = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -409,11 +395,7 @@ window.onload = function(){
       [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
-    });
-    game.loadingScene(function () { });
-    game.mainScene(function () {
-        map.draw();
-    });
+    game.addChild(map);
     game.start();
 }
 					</pre>
@@ -425,9 +407,8 @@ window.onload = function(){
     Atlas("game");
     var game = new App();
     var map = new Map("./images/map.png", 16, 16);
-    game.changeSize(256, 256);
-    game.changeQuality(256, 256);
-    game.initScene(function () {
+    game.setSize(256, 256);
+    game.setQuality(256, 256);
     map.drawData = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -464,15 +445,10 @@ window.onload = function(){
       [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ];
-    });
-    game.loadingScene(function () { });
-    game.mainScene(function () {
-        map.draw();
-    });
-    game.touchStart(function(e){
-        var p = game.getPosition(e);
-        if(map.intersect(e.x,e.y))
-            console.log("当たっています");
+    game.addChild(map);
+    map.touchStart(function(pos){
+        if(map.intersect(pos.x,pos.y))
+            alert("当たっています");
     });
     game.start();
 }
@@ -489,21 +465,21 @@ window.onload = function(){
 (function(){
 Enemy = Atlas.createClass(Atlas.Sprite,{
     initialize : function(image,numX,numY){
-		this.inherent(image,numX,numY);
+		this.inherit(image,numX,numY);
 		this.sx = this.getRand(5,10);
 		this.sy = this.getRand(5,10);
 		this.setPosition(0,this.getRand(100,300));
 	},
-	move : function(){
+	enterFrame : function(){
 		this.draw();
 		this.x += this.sx;
 		this.y += this.sy;			
 		if(this.x > 500)
-		    this.remove = true;
+		    this.remove();
 	}
 });
 /*
-this.inherentで自分のスーパークラス（この場合はAtlas.Sprite）の
+this.inheritで自分のスーパークラス（この場合はAtlas.Sprite）の
 コンストラクタを呼び出すことが出来ます。
 */
 });
@@ -512,9 +488,7 @@ window.onload = function(){
     var game = new App();
     game.load("teki2.png");
     var enemy = new Enemy("teki2.png",100,95);
-    game.mainScene(function(){
-        enemy.move();
-    });
+    game.addChild(enemy);
     game.start();
 };
 					</pre>					
