@@ -106,8 +106,8 @@
 					そして、canvas要素のidが上のように、Atlasだったとします。<br />
 					そのとき、
 					<pre class="prettyprint linenums">
-Atlas('Atlas');
-var game = new App();
+Atlas();
+var game = new App('Atlas');
 					</pre>
 					ある変数にAtlasをインスタンスする場合、うえのように、引数として、
 					canvasのid名である、Atlasを指定します。
@@ -172,16 +172,12 @@ game.mainScene(fn);
 					</pre>
 					<p>Atlas.jsではwindow.onloadの中で、初期処理やローディングシーン、メインシーンの設定をして、次のようにゲームをスタートさせます</p>
 					<pre class="prettyprint linenums">
+Atlas();
 window.onload = function(){
-    var game = new App();
+    var game = new App('Atlas');
     game.load("chara.png");
     var sprite = new Sprite("chara.png",32,32);
-    game.mainScene(function(){
-    /*処理*/
-    });
-    game.loadingScene(function(){
-    /*処理*/
-    });
+    game.addChild(sprite);
     game.start();//これを書かないとゲームが動かない
 };
 					</pre>
