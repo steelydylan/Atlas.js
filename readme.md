@@ -70,7 +70,7 @@ Platform
 
 Example
 -----
-- [JustEdit](http://jsdo.it/steelydylan/wFeW)
+- [JustEdit](http://jsdo.it/steelydylan/o5nG)
 
 
 
