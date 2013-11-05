@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.2
+ * Atlas.js v0.5.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -67,6 +67,9 @@
         }
     };
 	var clearKeyState = function(ret){
+		var succ = function (alpha) {
+            return String.fromCharCode(alpha.charCodeAt(alpha.length - 1) + 1);
+        };
         ret.enter = false;
     	ret.shift = false;
     	ret.space = false;
@@ -130,7 +133,6 @@
         setPosition: function (x, y) {
             this.x = x;
             this.y = y;
-            return this;
         },
        	getTouchPosition: function (e) {
             var field = this.field;
@@ -243,8 +245,6 @@
             	target.useEvent();
             	if(target.enterFrame)
                 	target.enterFrame();
-                if(target.tween)
-                	target.tween();
                 if(target.visible)
                 	target.draw();
                 if (target._remove) {
@@ -283,10 +283,9 @@
         	this.field = field;
         	this.ctx = field.getContext('2d');
         	this.fps = 30;// fps default
-        	this.children = new Group(); 
-        	this.children.parent = this; 
-        	this._mainScene;
-        	this._loadingScene;  	
+        	this.children = new Group();  
+        	this.mainScene;
+        	this.loadingScene;  	
         },
         addChild: function(child){
         	child.ctx = this.ctx;
@@ -323,36 +322,31 @@
             style.height = height+"px";
         },       
         mainScene: function (fn) {
-            this._mainScene = fn;
+            this.mainScene = fn;
         },
         loadingScene: function (fn) {
-            this._loadingScene = fn;
+            this.loadingScene = fn;
         },
         enterFrame: function(){
         	var field = this.field;
-        	this.useEvent();
             this.ctx.clearRect(0, 0, field.width, field.height);
             if (allLoaded <= 0){            
                 this.children.enterFrame();
-                if(this._mainScene)
-                	this._mainScene();
+                if(this.mainScene)
+                	this.mainScene();
             }
-            else if (this._loadingScene)
-                this._loadingScene();        
+            else if (this.loadingScene)
+                this.loadingScene();        
         },
         setColor: function(color){
         	this.field.style.backgroundColor = color;
         },
-        setImage: function(img){
-        	var style = this.field.style;
-        	style.background = "url("+img+") no-repeat center";
-        	style.backgroundSize = "cover";
-        },
         start: function () {
         	var field = this.field;
-        	var that = this;
         	this.ctx.clearRect(0,0,field.width,field.height);
+            var that = this;
             setInterval(function () {
+            	that.useEvent();
                 that.enterFrame();
             }, 1000 / this.fps);
         },
@@ -438,23 +432,6 @@
             }
         }
     });
-    var Tween = function(that,kind,frame){
-    	var mover = that.mover;
-    	var target = mover[mover.length - 1];
-    	if(target && target.and){
-    		var obj = target;
-    	}else{
-    		var obj = new Object();
-    		mover.push(obj);
-    	}
-    	obj.time = 0;
-    	if(frame)
-    		obj.frame = frame;
-        obj.loop = false;
-        obj.and = false;
-        obj[kind] = true;
-        return obj;
-    };
     var Thing = Atlas.createClass(Util,{
         initialize: function(width,height){
             this.inherit();
@@ -465,141 +442,8 @@
             this.width = width;
             this.height = height; 
             this.collisionShape = "box";
-            this.mover = [];
-            this.moverIndex = 0;
             this.alpha = 1;  
             this.field;        
-        },
-        tween: function(){
-        	var mover = this.mover;
-        	var length = mover.length;
-        	if(this.moverIndex < length){      		
-        		var obj = mover[this.moverIndex];
-        		if(obj.animate)
-        			this._animate(obj);
-        		if(obj.moveTo)
-        			this._moveTo(obj);
-        		if(obj.moveBy)
-        			this._moveBy(obj);   
-        		if(obj.rotateBy)
-        			this._rotateBy(obj); 
-        		if(obj.scaleBy)
-        			this._scaleBy(obj);
-        		obj.time++;    		
-        		if(obj.time > obj.frame){
-        			if(obj.loop){
-        				this._refresh();
-        				this.moverIndex = 0;
-        			}else{
-        				if(obj.kind == "moveTo" || obj.kind == "moveBy"){
-        					this.setPosition(obj.toX,obj.toY);
-        				}    					
-        				this.moverIndex++;
-        			}
-        			if(this.moverIndex > length){
-        				this.stop();
-        			}
-        		}
-        	}
-        },
-        animate: function(array,frameRate,frame){
-        	var obj = Tween(this,"animate",frame);
-        	obj.array = array;
-        	obj.frameRate = frameRate;
-        	obj.frameIdx = 0;
-        	return this;
-        },
-        _animate: function(obj){
-        	if(obj.time == 0)
-        		this.frame = obj.array[0];
-        	if(obj.time % obj.frameRate == 0){
-        		obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
-        		this.frame = obj.array[obj.frameIdx];
-        	}
-        },
-        _refresh: function(){
-        	var mover = this.mover;
-        	for(var i = 0, n = mover.length; i < n; i++){
-        		var obj = mover[i];
-        		if(obj.time)
-        			obj.time = 0;
-        	}
-        },
-        moveTo: function(x,y,frame){
-        	var obj = Tween(this,"moveTo",frame);
-        	obj.toX = x;
-        	obj.toY = y;
-        	return this;
-        },
-        _moveTo : function(obj){
-        	if(obj.time == 0){
-        		obj.diffX = obj.toX - this.x;
-        		obj.diffY = obj.toY - this.y;
-        	}
-        	this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
-        	this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
-        },
-        moveBy: function(x,y,frame){
-        	var obj = Tween(this,"moveBy",frame);
-        	obj.diffX = x;
-        	obj.diffY = y;
-        	return this;
-        },
-        _moveBy: function(obj){
-        	if(obj.time == 0){
-        		obj.toX = this.x + obj.diffX;
-        		obj.toY = this.y + obj.diffY;
-        	}
-        	this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
-        	this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
-        },
-        scaleBy: function(x,y,frame){
-        	var obj = Tween(this,"scaleBy",frame);
-        	obj.scaleX = x;
-        	obj.scaleY = y;
-        	return this;
-        },
-        _scaleBy: function(obj){
-        	if(obj.time == 0){
-        	    obj.toWidth = this.width * obj.scaleX;
-        	    obj.toHeight = this.height * obj.scaleY;
-        	    obj.diffWidth = obj.toWidth - this.width;
-        	    obj.diffHeight = obj.toHeight - this.height;
-        	}
-        	this.width = obj.toWidth - obj.diffWidth * (1 - obj.time / obj.frame);
-        	this.height = obj.toHeight - obj.diffHeight * (1 - obj.time / obj.frame);       	
-        },
-        delay: function(frame){
-        	var obj = Tween(this,"delay",frame);
-        	this.mover.push(obj);
-        	return this;
-        },
-        and : function(){
-        	var mover = this.mover;
-        	var target = mover[mover.length - 1];
-        	if(target)
-        		target.and = true;
-        	return this;
-        },
-        stop : function(){
-        	this.mover  = [];
-        	this.moverIndex = 0;
-        	return this;
-        },
-        loop : function(){
-        	var obj = this.mover[this.mover.length-1];
-        	obj.loop = true;
-        	return this;
-        },
-        rotateBy : function(angle,frame){
-        	var obj = Tween(this,"rotateBy",frame);
-        	obj.diffAngle = angle;
-        	return this;
-        },
-        _rotateBy : function(obj){
-        	if(obj.time == 0)
-        		obj.toAngle = this.rot + obj.diffAngle;
-        	this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
         },
         intersect: function (ex, ey) {
             if (this.collisionShape == "box") {
@@ -675,7 +519,6 @@
         scale: function (sx, sy) {
             this.width *= sx;
             this.height *= sy;
-            return this;
         },
         getSound: function (name) {
             for (var i = 0, n = sounds.length; i < n; i++) {
