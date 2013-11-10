@@ -499,10 +499,10 @@ window.onload = function(){
       [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ];
     game.addChild(map);
-    map.touchStart(function(pos){
+    map.touchStart = function(pos){
         if(map.intersect(pos.x,pos.y))
             alert("当たっています");
-    });
+    };
     game.start();
 }
 					</pre>					
