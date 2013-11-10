@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.3
+ * Atlas.js v0.5.2
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -88,7 +88,7 @@
         window.Sprite = Sprite;
         window.Text = Text;
         window.Shape = Shape;
-        window.Scene = Scene;
+        window.Group = Group;
         window.Map = Map;
     };
     Atlas.createClass = function (superClass, obj) {
@@ -118,6 +118,7 @@
         initialize: function(){
         	this.eventListener = new Object();
         	this.visible = true;
+        	this.parent;
         	var eventListener = this.eventListener;
         	eventListener.touchStart = false;
         	eventListener.touchMove = false;
@@ -217,97 +218,16 @@
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
-        },
-        getSound: function (name) {
-            for (var i = 0, n = sounds.length; i < n; i++) {
-                if (name == sounds[i].name)
-                    this.sound = new Audio(sounds[i].src);
-            }
-        },
-        soundClonePlay: function () {
-            var sound = this.sound;
-            if (sound) {
-                (new Audio(sound.src)).play();
-            }
-        },
-        soundLoopPlay: function () {
-            var sound = this.sound;
-            if (sound) {
-                if (!sound.loop) {
-                    sound.addEventListener('ended', function () {
-                        this.currentTime = 0;
-                        this.play();
-                    }, false);
-                }
-                sound.loop = true;
-                sound.play();
-            }
-        },
-        soundReplay: function () {
-            var sound = this.sound;
-            if (sound) {
-                sound.load();
-                sound.play();
-            }
-        },
-        soundStop: function () {
-            var sound = this.sound;
-            if (!sound.paused) {
-                sound.pause();
-                sound.currentTime = 0;
-            } else {
-                sound.load();
-            }
-        },
-        soundPlay: function () {
-            var sound = this.sound;
-            if (sound)
-                sound.play();
-        },
-        soundPause: function () {
-            var sound = this.sound;
-            if (sound)
-                sound.pause();
-        },
-        soundGetCount: function () {
-            var sound = this.sound;
-            if (sound)
-                return sound.currentTime;
-        },
-        soundSetCount: function (time) {
-            var sound = this.sound;
-            if (sound)
-                sound.currentTime = time;
-        },
-        soundGetVolume: function () {
-            var sound = this.sound;
-            if (sound)
-                return sound.volume;
-        },
-        soundSetVolume: function (volume) {
-            var sound = this.sound;
-            if (sound)
-                sound.volume = volume;
-        },
-        soundGetAlltime: function () {
-            var sound = this.sound;
-            if (sound)
-                return sound.duration;
-        },
-        soundIsPlaying: function () {
-            var sound = this.sound;
-            if (sound)
-                return !sound.paused;
         }
     });
-	var Scene = Atlas.createClass(Array, {
+	var Group = Atlas.createClass(Array, {
     	initialize: function () {
             this.inherit();
             this._remove = false;
         },
         addChildren: function () {
             for(var i = 0, n = arguments.length; i < n; i++){
-            	this.addChild(arguments[i]);
+            	addChild(arguments[i]);
             }
         },
         remove: function(){
@@ -317,19 +237,10 @@
         	sprite.parent = this;
         	this.push(sprite);
         },
-        setImage : function(image){
-        	this.image = image;
-        },
-        setColor : function(color){
-        	this.color = color;
-        },
-        _enterFrame: function (e) {
-        	if(this.enterFrame)
-        		this.enterFrame();
+        enterFrame: function (e) {
             for (var i = 0, n = this.length; i < n; i++) {
             	var target = this[i];
-            	if(target.useEvent)
-            		target.useEvent();
+            	target.useEvent();
             	if(target.enterFrame)
                 	target.enterFrame();
                 if(target.tween)
@@ -347,7 +258,6 @@
     });
     var App = Atlas.createClass(Util,{
         initialize: function (place) {
-        	this.inherit();
             var css = document.createElement("style");
     		css.media = 'screen';
     		css.type = "text/css";
@@ -373,13 +283,15 @@
         	this.field = field;
         	this.ctx = field.getContext('2d');
         	this.fps = 30;// fps default
-        	this.scene = new Scene(); 
-        	this.scene.parent = this;
+        	this.children = new Group(); 
+        	this.children.parent = this; 
+        	this._mainScene;
+        	this._loadingScene;  	
         },
         addChild: function(child){
         	child.ctx = this.ctx;
         	child.field = this.field;
-        	this.scene.addChild(child);
+        	this.children.addChild(child);
         },
         addChildren: function(){
         	for(var i = 0,n = arguments.length; i < n; i++)
@@ -410,58 +322,23 @@
             style.width = width+"px";
             style.height = height+"px";
         },       
-        loadingScene: function (scene) {
-            this.preScene = scene;
-            this.preScene.parent = this;
+        mainScene: function (fn) {
+            this._mainScene = fn;
         },
-        mainScene : function(fn){
-        	console.log("mainScene will be removed, please use 'this.enterFrame = function(){....};' instead");
-        	this.enterFrame = fn;
+        loadingScene: function (fn) {
+            this._loadingScene = fn;
         },
-        _enterFrame: function(){
+        enterFrame: function(){
         	var field = this.field;
         	this.useEvent();
             this.ctx.clearRect(0, 0, field.width, field.height);
-            if (allLoaded > 0){
-            	this.loadingScene._enterFrame();
-            }else if (allLoaded == 0){
-            	allLoaded--;
-            }else{ 
-            	if(this.enterFrame)
-            		this.enterFrame();           
-                this.scene._enterFrame();
-            }        
-        },
-        pushScene: function(scene){
-        	var ctx = this.ctx;
-        	var field = this.field;
-        	var children = this.scene;
-        	for(var i = 0,n = children.length; i < n; i++){
-        		var target = children[i];
-        		target.eventListener.touchStart = false;
-        		target.eventListener.touchMove = false;
-        		target.eventListener.touchEnd = false;
-        		target.eventListener.keyUp = false;
-        		target.eventListener.keyDown = false;
-        		field.removeEventListener("touchstart",target,false);
-        		field.removeEventListener("mousedown",target,false);
-        		field.removeEventListener("touchmove",target,false);
-        		field.removeEventListener("mousemove",target,false);
-        		field.removeEventListener("touchend",target,false);
-        		field.removeEventListener("mouseup",target,false);
-        		field.addEventListener("keyup",target,false);
-        		field.addEventListener("keydown",this,false);
-        	}
-        	for(var i = 0,n = scene.length; i < n; i++){
-        		scene[i].ctx = ctx;
-        		scene[i].field = field;
-        	}
-        	scene.parent = this;
-        	if(scene.color)
-        		this.setColor(scene.color);
-        	if(scene.image)
-        		this.setImage(scene.image);
-        	this.scene = scene;
+            if (allLoaded <= 0){            
+                this.children.enterFrame();
+                if(this._mainScene)
+                	this._mainScene();
+            }
+            else if (this._loadingScene)
+                this._loadingScene();        
         },
         setColor: function(color){
         	this.field.style.backgroundColor = color;
@@ -476,7 +353,7 @@
         	var that = this;
         	this.ctx.clearRect(0,0,field.width,field.height);
             setInterval(function () {
-                that._enterFrame();
+                that.enterFrame();
             }, 1000 / this.fps);
         },
         load: function () {
@@ -799,6 +676,87 @@
             this.width *= sx;
             this.height *= sy;
             return this;
+        },
+        getSound: function (name) {
+            for (var i = 0, n = sounds.length; i < n; i++) {
+                if (name == sounds[i].name)
+                    this.sound = new Audio(sounds[i].src);
+            }
+        },
+        soundClonePlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                (new Audio(sound.src)).play();
+            }
+        },
+        soundLoopPlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                if (!sound.loop) {
+                    sound.addEventListener('ended', function () {
+                        this.currentTime = 0;
+                        this.play();
+                    }, false);
+                }
+                sound.loop = true;
+                sound.play();
+            }
+        },
+        soundReplay: function () {
+            var sound = this.sound;
+            if (sound) {
+                sound.load();
+                sound.play();
+            }
+        },
+        soundStop: function () {
+            var sound = this.sound;
+            if (!sound.paused) {
+                sound.pause();
+                sound.currentTime = 0;
+            } else {
+                sound.load();
+            }
+        },
+        soundPlay: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.play();
+        },
+        soundPause: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.pause();
+        },
+        soundGetCount: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.currentTime;
+        },
+        soundSetCount: function (time) {
+            var sound = this.sound;
+            if (sound)
+                sound.currentTime = time;
+        },
+        soundGetVolume: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.volume;
+        },
+        soundSetVolume: function (volume) {
+            var sound = this.sound;
+            if (sound)
+                sound.volume = volume;
+        },
+        soundGetAlltime: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.duration;
+        },
+        soundIsPlaying: function () {
+            var sound = this.sound;
+            if (sound)
+                return !sound.paused;
         }
     });
     var Shape = new Object();
@@ -1008,6 +966,6 @@
     Atlas.Sprite = Sprite;
     Atlas.Text = Text;
     Atlas.Shape = Shape;
-    Atlas.Scene = Scene;
+    Atlas.Group = Group;
     Atlas.Map = Map;
 })();
