@@ -159,20 +159,13 @@ SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタ
 					</pre>
 				</div>
 				<div class="tab-pane" id="third">
-					<h3>初期化、ループ</h3>
-					次にゲームの初期処理、ロード中処理、ループ処理について説明したいと思います。
+					<h3>ループ処理、シーン登録</h3>
+					<p>次にゲームの初期処理、ロード中処理、ループ処理について説明したいと思います。</p>
+					<p>ゲームのループ処理</p>
 					<pre class="prettyprint linenums">
-game.loadingScene(fn);
-/*
-画像や音楽がローディングされているときに呼び出される関数を読み込むメソッドです
-*/
-game.mainScene(fn);
-/*
-画像や音楽のローディング後に呼び出される関数を読み込むメソッドです
-この関数がゲームとして実行されます
-*/
+game.enterFrame = function(){/*処理*/};
 					</pre>
-					<p>Atlas.jsではwindow.onloadの中で、初期処理やローディングシーン、メインシーンの設定をして、次のようにゲームをスタートさせます</p>
+					<p>Atlas.jsでは次のようにゲームをスタートさせます</p>
 					<pre class="prettyprint linenums">
 Atlas();
 window.onload = function(){
@@ -180,8 +173,28 @@ window.onload = function(){
     game.load("chara.png");
     var sprite = new Sprite("chara.png",32,32);
     game.addChild(sprite);
+    game.enterFrame = function(){sprite.x++;};
     game.start();//これを書かないとゲームが動かない
 };
+					</pre>
+					<h4>シーン登録</h4>
+					<p>Atlas.jsでは次のようにローディングシーンを設定したり、シーンを切り替えたりすることができます</p>
+					<pre class="prettyprint linenums">
+/*ローディングシーンの設定*/
+var scene = new Scene();
+scene.setImage("image");
+var text = new Text("ローディングシーンだよ","white",30);
+text.setPosition(50,50);
+scene.addChild(text);
+game.loadingScene(scene);	
+
+/*シーンの切り替え*/
+var scene = new Scene();
+scene.setColor("blue");
+var sprite = new Sprite("image.png",32,32);
+sprite.enterFrame = function(){this.x++};
+scene.addChild(sprite);
+game.pushScene(sprite);				
 					</pre>
 				</div>
 				<div class="tab-pane" id="forth">
