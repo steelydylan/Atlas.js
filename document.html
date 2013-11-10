@@ -322,6 +322,22 @@ sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
 繰り返すといういみになります。
 */
 					</pre>
+				<h4>サウンド機能　<small>各クラス共通</small></h4>
+				<pre class="prettyprint linenums">
+sprite.getSound("./path/to/sound");
+sprite.soundClonePlay();/*多重再生の場合に使用*/
+sprite.soundLoopPlay();/*ループ再生の場合に使用*/
+sprite.soundReplay();/*最初から再生する場合に使用*/
+sprite.soundStop();/*サウンドを停止したい時使用*/
+sprite.soundPlay();/*再生に使用*/
+sprite.soundPause();/*サウンドの一時停止に使用*/
+sprite.soundGetCount();/*サウンドの現在の再生時間の取得*/
+sprite.soundSetCount();/*サウンドの再生時間の指定*/
+sprite.soundGetVolume();/*ボリュームの取得*/
+sprite.soundSetVolume();/*ボリュームの設定*/
+sprite.soundGetAlltime();/*サウンドの全再生時間の取得*/
+sprite.soundIsPlaying();/*サウンドが現在流れているかを取得*/
+				</pre>
 				</div>
 				<div class="tab-pane" id="fifth">
 					<h3>テキスト、図形</h3>
