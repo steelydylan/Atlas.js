@@ -457,6 +457,9 @@
         		scene[i].field = field;
         	}
         	scene.parent = this;
+        	var style = this.field.style;
+        	style.background = null;
+        	style.backgroundColor = "white";
         	if(scene.color)
         		this.setColor(scene.color);
         	if(scene.image)
@@ -464,7 +467,9 @@
         	this.scene = scene;
         },
         setColor: function(color){
-        	this.field.style.backgroundColor = color;
+        	var style = this.field.style;
+        	style.background = null;
+        	style.backgroundColor = color;
         },
         setImage: function(img){
         	var style = this.field.style;
