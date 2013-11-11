@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.4
+ * Atlas.js v0.5.3
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -56,10 +56,6 @@
                 ret.down = true;
                 ret2.down = true;
             break;
-            case 8:
-            	ret.backspace = true;
-            	ret2.backspace = true;
-            break;
         }
         for(var i = 0; i < 26; i++){
             if(i + 65 == which){
@@ -78,7 +74,6 @@
     	ret.left = false;
     	ret.up = false;
     	ret.down = false;
-    	ret.backspace = false;
     	for(var i = 0; i < 26; i++){
             ret[String.fromCharCode(i+97)] = false;
         } 
@@ -123,7 +118,6 @@
         initialize: function(){
         	this.eventListener = new Object();
         	this.visible = true;
-        	this.eventEnable = false;
         	var eventListener = this.eventListener;
         	eventListener.touchStart = false;
         	eventListener.touchMove = false;
@@ -136,19 +130,6 @@
             this.x = x;
             this.y = y;
             return this;
-        },
-        saveData: function(key){
-        	var obj = new Object();
-        	for(var i in this){
-        		if(typeof(this[i]) != 'function')
-        			obj[i] = this[i];
-        	}
-        	localStorage.setItem(key,JSON.stringify(obj));   		
-        },
-        getData: function(key){
-        	var obj = JSON.parse(localStorage.getItem(key));
-        	for(var i in obj)
-        		this[i] = obj[i];
         },
        	getTouchPosition: function (e) {
             var field = this.field;
@@ -179,26 +160,23 @@
             return obj;
         },
         handleEvent: function(e) {
-        	if(this.eventEnable){
-        		e.preventDefault();
-        		var pos = this.getTouchPosition(e);  
-        		var type = e.type;      		
-        		if(type == "keydown" || type == "keyup"){
-        			var keyup = new Object();
-        			for(var i in keydown)
-            			keyup[i] = keydown[i];
-            		setKeyState(keyup,keydown,e);
-            	}
-				switch (type) {
-					case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
-					case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
-					case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
-					case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
-					case 'touchend': if(this.touchEnd)this.touchEnd(); break;
-					case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
-					case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
-					case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
-				}
+        	e.preventDefault();
+        	var pos = this.getTouchPosition(e);        		
+        	if(e.which > 2){
+        		var keyup = new Object();
+        		for(var i in keydown)
+            		keyup[i] = keydown[i];
+            }
+        	setKeyState(keyup,keydown,e);
+			switch (e.type) {
+				case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
+				case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
+				case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
+				case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
+				case 'touchend': if(this.touchEnd)this.touchEnd(); break;
+				case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
+				case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
+				case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
 			}
 		},
 		useEvent: function(){
@@ -401,7 +379,6 @@
         addChild: function(child){
         	child.ctx = this.ctx;
         	child.field = this.field;
-        	child.eventEnable = true;
         	this.scene.addChild(child);
         },
         addChildren: function(){
@@ -445,8 +422,8 @@
         	var field = this.field;
         	this.useEvent();
             this.ctx.clearRect(0, 0, field.width, field.height);
-            if (allLoaded > 0 && this.preScene){
-            	this.preScene._enterFrame();
+            if (allLoaded > 0){
+            	this.loadingScene._enterFrame();
             }else if (allLoaded == 0){
             	allLoaded--;
             }else{ 
@@ -461,12 +438,23 @@
         	var children = this.scene;
         	for(var i = 0,n = children.length; i < n; i++){
         		var target = children[i];
-        		target.eventEnable = false;
+        		target.eventListener.touchStart = false;
+        		target.eventListener.touchMove = false;
+        		target.eventListener.touchEnd = false;
+        		target.eventListener.keyUp = false;
+        		target.eventListener.keyDown = false;
+        		field.removeEventListener("touchstart",target,false);
+        		field.removeEventListener("mousedown",target,false);
+        		field.removeEventListener("touchmove",target,false);
+        		field.removeEventListener("mousemove",target,false);
+        		field.removeEventListener("touchend",target,false);
+        		field.removeEventListener("mouseup",target,false);
+        		field.addEventListener("keyup",target,false);
+        		field.addEventListener("keydown",this,false);
         	}
         	for(var i = 0,n = scene.length; i < n; i++){
         		scene[i].ctx = ctx;
         		scene[i].field = field;
-        		scene[i].eventEnable = true;
         	}
         	scene.parent = this;
         	var style = this.field.style;
@@ -1000,16 +988,6 @@
         },
         setFont: function (font) {
             this.font = "'" + font + "'";
-        },
-        intersect: function(x,y){
-        	var ctx = this.ctx;
-        	ctx.font = this.font;
-        	var width = ctx.measureText(this.string).width;
-        	var height = ctx.measureText('m').width * 1.5;
-        	if(x > this.x && x < this.x + width && y > this.y - height && y  < this.y)
-        		return true;
-        	else
-        		return false;
         },
         draw: function () {
             var x = this.x;
