@@ -343,6 +343,10 @@
         },
         addChild: function(sprite){
         	sprite.parent = this;
+        	if(this.ctx && this.field){
+        		sprite.ctx = this.ctx;
+				sprite.field = this.field;
+			}
         	this.push(sprite);
         },
         setImage : function(image){
@@ -534,6 +538,8 @@
         			obj.onScenePushed();
         	}
         	scene.parent = this;
+        	scene.ctx = ctx;
+        	scene.field = field;
         	var style = this.field.style;
         	style.background = null;
         	style.backgroundColor = "white";
