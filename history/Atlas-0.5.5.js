@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.6
+ * Atlas.js v0.5.5
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -522,8 +522,8 @@
         	for(var i = 0,n = children.length; i < n; i++){
         		var target = children[i];
         		target.eventEnable = false;
-        		if(target.onSceneremoved)
-        			target.onSceneRemoved();
+        		if(obj.onSceneremoved)
+        			obj.onSceneRemoved();
         	}
         	for(var i = 0,n = scene.length; i < n; i++){
         		var obj = scene[i];
