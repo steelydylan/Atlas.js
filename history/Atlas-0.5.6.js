@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.7
+ * Atlas.js v0.5.6
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -333,6 +333,14 @@
             this.inherit();
             this._remove = false;
         },
+        addChildren: function () {
+            for(var i = 0, n = arguments.length; i < n; i++){
+            	this.addChild(arguments[i]);
+            }
+        },
+        remove: function(){
+        	this._remove = true;
+        },
         addChild: function(sprite){
         	sprite.parent = this;
         	if(this.ctx && this.field){
@@ -340,35 +348,6 @@
 				sprite.field = this.field;
 			}
         	this.push(sprite);
-        },
-        addChildren: function () {
-            for(var i = 0, n = arguments.length; i < n; i++){
-            	this.addChild(arguments[i]);
-            }
-        },
-        getChild: function(obj){    
-        	var array = this.getChildren(obj);
-        	var ret = array[0];
-        	if(!ret)
-        		ret = null; 
-        	return ret;
-        },
-        getChildren: function(obj){    
-        	var ret = [];    	
-        	for(var i = 0, n = this.length; i < n; i++){
-        		var flag = true;
-        		for(var key in obj){
-        			if(obj[key] != this[i][key])
-        				flag = false;
-        		}
-        		if(flag == true){
-        			ret.push(this[i]);
-        		}
-        	}
-        	return ret;
-        },
-        remove: function(){
-        	this._remove = true;
         },
         setImage : function(image){
         	this.image = image;
