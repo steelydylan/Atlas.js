@@ -255,10 +255,14 @@ sprite.getRand(10,100);
 /*
 この場合は、10から100までのランダムな数を返す
  */
-sprite.getImage("./path/to/image",32,32);
+sprite.setImage("./path/to/image",32,32);
 /*
 スプライトを新たな32*32のスプライト画像に置き換えます
 （Mapオブジェクト共通）
+*/
+sprite.setImage("./path/to/image",32,32);
+/*
+スプライトが保有している、imageオブジェクトを返します
 */
 sprite.getImage("./path/to/image");
 /*
