@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.8
+ * Atlas.js v0.5.7
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -696,18 +696,19 @@
         			this._then(obj);
         		obj.time++;    		
         		if(obj.time > obj.frame){
-                    this.moverIndex++;
-                    if(this.moverIndex == length){
-        			    if(obj.loop)
-        				    this._refresh();
-        				else 
-        				    this.stop();
+                    alert("stop");
+        			if(obj.loop){
+        				this._refresh();
+        				this.moverIndex = 0;
+        			}else{   					
+        				this.moverIndex++;
+        			}
+        			if(this.moverIndex > length){
+                        alert("stop");
+        				this.stop();
         			}
         		}
         	}
-        },
-        isQueEmpty:function(){
-            return this.mover.length ? false : true;
         },
         animate: function(array,frameRate,frame){
         	var obj = Tween(this,"animate",frame);
@@ -725,7 +726,6 @@
         	}
         },
         _refresh: function(){
-            this.moverIndex = 0;
         	var mover = this.mover;
         	for(var i = 0, n = mover.length; i < n; i++){
         		var obj = mover[i];
@@ -1011,8 +1011,6 @@
             var py = this.y;
             var i = 0;
             var t = 0;
-            var field = this.field;
-            var ctx = this.ctx;
             var fieldHeight = field.height;
             var fieldWidth = field.width;
             var frame;
