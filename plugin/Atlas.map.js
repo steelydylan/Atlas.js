@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.map.js v0.2.0
+ * Atlas.map.js v0.3.0
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <ess_president@me.com>.
@@ -127,19 +127,21 @@
             rooms[connect_list[i][0]], rooms[connect_list[i][1]])
         }
     };
-    Atlas.Map.prototype.getRandMap = function (width, height, complexity) {
-        C = complexity;
-        MapData = new Array(height);
-        for (var j = 0; j < height; j++) {
-            MapData[j] = new Array(width)
-            for (var i = 0; i < width; i++) {
-                MapData[j][i] = 0;
+    Atlas.extendClass(Atlas.Map,{
+        getRandMap : function (width, height, complexity) {
+            C = complexity;
+            MapData = new Array(height);
+            for (var j = 0; j < height; j++) {
+                MapData[j] = new Array(width)
+                for (var i = 0; i < width; i++) {
+                    MapData[j][i] = 0;
+                }
             }
-        }
-        var partition = split(new rectangle(0, 0, width - 1, height - 1));
-        var rooms = make_rooms(partition);
-        fillArray(rooms);
-        make_corrider(partition, rooms);
-        this.hitData = MapData;
-    };
+            var partition = split(new rectangle(0, 0, width - 1, height - 1));
+            var rooms = make_rooms(partition);
+            fillArray(rooms);
+            make_corrider(partition, rooms);
+            this.hitData = MapData;
+        },
+    });
 })();
