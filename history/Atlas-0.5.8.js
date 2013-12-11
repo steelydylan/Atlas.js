@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.9
+ * Atlas.js v0.5.8
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -405,13 +405,7 @@
     		css.media = 'screen';
     		css.type = "text/css";
     		document.getElementsByTagName("head")[0].appendChild(css);
-            if(!place)place = "";
         	var field = document.getElementById(place);
-            if(!field){
-                var field = document.createElement("canvas");
-                var Body = document.getElementsByTagName("body").item(0);
-                Body.appendChild(field); 
-            }
         	field.width = 320;
         	field.height = 480;
         	field.style.top = 0+"px";
