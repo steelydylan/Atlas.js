@@ -411,7 +411,6 @@
         	field.style.top = 0+"px";
         	field.style.left = 0+"px";
         	field.tabIndex = '1';
-        	field.focus();
         	document.body.style.margin = "0em";
         	var userAgent = navigator.userAgent;
         	if (isMobile) {
