@@ -405,10 +405,11 @@
     		css.media = 'screen';
     		css.type = "text/css";
     		document.getElementsByTagName("head")[0].appendChild(css);
-            if(!place)place = "";
-        	var field = document.getElementById(place);
-            if(!field){
-                var field = document.createElement("canvas");
+            var field;
+            if(place){
+        	    field = document.getElementById(place);
+            }else{
+                field = document.createElement("canvas");
                 var Body = document.getElementsByTagName("body").item(0);
                 Body.appendChild(field); 
             }
