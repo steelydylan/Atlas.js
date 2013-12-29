@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.10
+ * Atlas.js v0.5.9
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -12,19 +12,19 @@
     var isMobile = (function(){
         var userAgent = navigator.userAgent;
         if((userAgent.indexOf('iPhone') > 0 && userAgent.indexOf('iPad') == -1) || userAgent.indexOf('iPod') > 0 || userAgent.indexOf('Android') > 0)
-            return true;
+        	return true;
         else
-            return false;
+        	return false;
     })();
     var orientation = (function (e){
-       var mq = window.matchMedia("(orientation: portrait)");
-       var orientation = "";
+	   var mq = window.matchMedia("(orientation: portrait)");
+	   var orientation = "";
        if (mq.matches)
            return "portrait";
        else
            return "landscape";
-    })();
-    var setKeyState = function(ret,ret2,e){
+	})();
+	var setKeyState = function(ret,ret2,e){
         var which = e.which;
         switch (which) {
             case 13:
@@ -56,36 +56,36 @@
                 ret2.down = true;
             break;
             case 8:
-                ret.backspace = true;
-                ret2.backspace = true;
+            	ret.backspace = true;
+            	ret2.backspace = true;
             break;
         }
         for(var i = 0; i < 26; i++){
             if(i + 65 == which){
-                var chr = String.fromCharCode(i+97);
-                ret[chr] = true;
-                ret2[chr] = true;
-                break;
+            	var chr = String.fromCharCode(i+97);
+            	ret[chr] = true;
+            	ret2[chr] = true;
+            	break;
             }
         }
     };
-    var clearKeyState = function(ret){
+	var clearKeyState = function(ret){
         ret.enter = false;
-        ret.shift = false;
-        ret.space = false;
-        ret.right = false;
-        ret.left = false;
-        ret.up = false;
-        ret.down = false;
-        ret.backspace = false;
-        for(var i = 0; i < 26; i++){
+    	ret.shift = false;
+    	ret.space = false;
+    	ret.right = false;
+    	ret.left = false;
+    	ret.up = false;
+    	ret.down = false;
+    	ret.backspace = false;
+    	for(var i = 0; i < 26; i++){
             ret[String.fromCharCode(i+97)] = false;
         } 
-    };
-    var keydown = (function(){       
-        var ret = new Object();
-        clearKeyState(ret);
-        return ret;
+	};
+	var keydown = (function(){       
+    	var ret = new Object();
+		clearKeyState(ret);
+		return ret;
     })();
     Atlas = function () {
         window.App = App;
@@ -106,7 +106,7 @@
                 this.initialize = this.superClass.prototype.initialize;
                 this.superClass = this.superClass.prototype.superClass;
                 if(this.initialize)
-                    this.initialize.apply(this, arguments);
+                	this.initialize.apply(this, arguments);
             };
         } else if (typeof superClass == "object" && obj == null) {
             obj = superClass;
@@ -118,25 +118,25 @@
         return newClass;
     };
     Atlas.extendClass = function (targetclass,obj){
-        for(var key in obj){
-            if(!targetclass.prototype[key])
-                targetclass.prototype[key] = obj[key];
-        }
+    	for(var key in obj){
+    		if(!targetclass.prototype[key])
+    			targetclass.prototype[key] = obj[key];
+    	}
     };
     var Util = Atlas.createClass({
-        isMobile: isMobile,
-        orientation: orientation,
+    	isMobile: isMobile,
+    	orientation: orientation,
         initialize: function(){
-            this.eventListener = new Object();
-            this.visible = true;
-            this.eventEnable = false;
-            var eventListener = this.eventListener;
-            eventListener.touchStart = false;
-            eventListener.touchMove = false;
-            eventListener.touchEnd = false;
-            eventListener.keyUp = false;
-            eventListener.keyDown = false;
-            eventListener.orientationChange = false; 
+        	this.eventListener = new Object();
+        	this.visible = true;
+        	this.eventEnable = false;
+        	var eventListener = this.eventListener;
+        	eventListener.touchStart = false;
+        	eventListener.touchMove = false;
+        	eventListener.touchEnd = false;
+        	eventListener.keyUp = false;
+        	eventListener.keyDown = false;
+        	eventListener.orientationChange = false; 
         },
         setPosition: function (x, y) {
             this.x = x;
@@ -144,19 +144,19 @@
             return this;
         },
         saveData: function(key){
-            var obj = new Object();
-            for(var i in this){
-                if(typeof(this[i]) != 'function')
-                    obj[i] = this[i];
-            }
-            localStorage.setItem(key,JSON.stringify(obj));          
+        	var obj = new Object();
+        	for(var i in this){
+        		if(typeof(this[i]) != 'function')
+        			obj[i] = this[i];
+        	}
+        	localStorage.setItem(key,JSON.stringify(obj));   		
         },
         getData: function(key){
-            var obj = JSON.parse(localStorage.getItem(key));
-            for(var i in obj)
-                this[i] = obj[i];
+        	var obj = JSON.parse(localStorage.getItem(key));
+        	for(var i in obj)
+        		this[i] = obj[i];
         },
-        getTouchPosition: function (e) {
+       	getTouchPosition: function (e) {
             var field = this.field;
             var rateX = parseInt(field.width) / parseInt(field.style.width);
             var rateY = parseInt(field.height) / parseInt(field.style.height);
@@ -185,50 +185,50 @@
             return obj;
         },
         handleEvent: function(e) {
-            if(this.eventEnable){
-                e.preventDefault();
-                var pos = this.getTouchPosition(e);  
-                var type = e.type;              
-                if(type == "keydown" || type == "keyup"){
-                    var keyup = new Object();
-                    for(var i in keydown)
-                        keyup[i] = keydown[i];
-                    setKeyState(keyup,keydown,e);
-                }
-                switch (type) {
-                    case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
-                    case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
-                    case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
-                    case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
-                    case 'touchend': if(this.touchEnd)this.touchEnd(); break;
-                    case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
-                    case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
-                    case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
-                }
-            }
-        },
-        useEvent: function(){
+        	if(this.eventEnable){
+        		e.preventDefault();
+        		var pos = this.getTouchPosition(e);  
+        		var type = e.type;      		
+        		if(type == "keydown" || type == "keyup"){
+        			var keyup = new Object();
+        			for(var i in keydown)
+            			keyup[i] = keydown[i];
+            		setKeyState(keyup,keydown,e);
+            	}
+				switch (type) {
+					case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
+					case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
+					case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
+					case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
+					case 'touchend': if(this.touchEnd)this.touchEnd(); break;
+					case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
+					case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
+					case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
+				}
+			}
+		},
+		useEvent: function(){
             var field = this.field;
             var eventListener = this.eventListener;
             if(this.touchStart && eventListener.touchStart == false){
                 if(isMobile)
-                    field.addEventListener("touchstart",this,false);
+                	field.addEventListener("touchstart",this,false);
                 else
-                    field.addEventListener("mousedown",this,false);
+                	field.addEventListener("mousedown",this,false);
                 eventListener.touchStart = true;
                 }
             if(this.touchMove && eventListener.touchMove == false){
                 if(isMobile)
-                    field.addEventListener("touchmove",this,false);
+                	field.addEventListener("touchmove",this,false);
                 else
-                    field.addEventListener("mousemove",this,false);
+                	field.addEventListener("mousemove",this,false);
                 eventListener.touchMove = true;
             }
             if(this.touchEnd && eventListener.touchEnd == false){
                 if(isMobile)
-                    field.addEventListener("touchend",this,false);
+                	field.addEventListener("touchend",this,false);
                 else
-                    field.addEventListener("mouseup",this,false);
+                	field.addEventListener("mouseup",this,false);
                 eventListener.touchEnd = true;
             }               
             if(this.keyUp && eventListener.keyUp == false){
@@ -239,9 +239,9 @@
                 field.addEventListener("keydown",this,false);
                 eventListener.keyDown = true;
             }
-        },
+		},
         remove: function(){
-            this._remove = true;
+        	this._remove = true;
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
@@ -328,67 +328,67 @@
                 return !sound.paused;
         }
     });
-    var Scene = Atlas.createClass(Array, {
-        initialize: function () {
+	var Scene = Atlas.createClass(Array, {
+    	initialize: function () {
             this.inherit();
             this._remove = false;
         },
         addChild: function(sprite){
-            sprite.parent = this;
-            if(this.ctx && this.field){
-                sprite.ctx = this.ctx;
-                sprite.field = this.field;
-            }
-            this.push(sprite);
+        	sprite.parent = this;
+        	if(this.ctx && this.field){
+        		sprite.ctx = this.ctx;
+				sprite.field = this.field;
+			}
+        	this.push(sprite);
         },
         addChildren: function () {
             for(var i = 0, n = arguments.length; i < n; i++){
-                this.addChild(arguments[i]);
+            	this.addChild(arguments[i]);
             }
         },
         getChild: function(obj){    
-            var array = this.getChildren(obj);
-            var ret = array[0];
-            if(!ret)
-                ret = null; 
-            return ret;
+        	var array = this.getChildren(obj);
+        	var ret = array[0];
+        	if(!ret)
+        		ret = null; 
+        	return ret;
         },
         getChildren: function(obj){    
-            var ret = [];       
-            for(var i = 0, n = this.length; i < n; i++){
-                var flag = true;
-                for(var key in obj){
-                    if(obj[key] != this[i][key])
-                        flag = false;
-                }
-                if(flag == true){
-                    ret.push(this[i]);
-                }
-            }
-            return ret;
+        	var ret = [];    	
+        	for(var i = 0, n = this.length; i < n; i++){
+        		var flag = true;
+        		for(var key in obj){
+        			if(obj[key] != this[i][key])
+        				flag = false;
+        		}
+        		if(flag == true){
+        			ret.push(this[i]);
+        		}
+        	}
+        	return ret;
         },
         remove: function(){
-            this._remove = true;
+        	this._remove = true;
         },
         setImage : function(image){
-            this.image = image;
+        	this.image = image;
         },
         setColor : function(color){
-            this.color = color;
+        	this.color = color;
         },
         _enterFrame: function (e) {
-            if(this.enterFrame)
-                this.enterFrame();
+        	if(this.enterFrame)
+        		this.enterFrame();
             for (var i = 0, n = this.length; i < n; i++) {
-                var target = this[i];
-                if(target.useEvent)
-                    target.useEvent();
-                if(target.enterFrame)
-                    target.enterFrame();
+            	var target = this[i];
+            	if(target.useEvent)
+            		target.useEvent();
+            	if(target.enterFrame)
+                	target.enterFrame();
                 if(target.tween)
-                    target.tween();
+                	target.tween();
                 if(target.visible)
-                    target.draw();
+                	target.draw();
                 if (target._remove) {
                     this.splice(i, 1);
                     delete target;
@@ -400,92 +400,92 @@
     });
     var App = Atlas.createClass(Util,{
         initialize: function (place) {
-            this.inherit();
+        	this.inherit();
             var css = document.createElement("style");
-            css.media = 'screen';
-            css.type = "text/css";
-            document.getElementsByTagName("head")[0].appendChild(css);
+    		css.media = 'screen';
+    		css.type = "text/css";
+    		document.getElementsByTagName("head")[0].appendChild(css);
             var field;
             if(place){
-                field = document.getElementById(place);
+        	    field = document.getElementById(place);
             }else{
                 field = document.createElement("canvas");
                 var Body = document.getElementsByTagName("body").item(0);
                 Body.appendChild(field); 
             }
-            field.width = 320;
-            field.height = 480;
-            field.style.top = 0+"px";
-            field.style.left = 0+"px";
-            field.tabIndex = '1';
-            document.body.style.margin = "0em";
-            var userAgent = navigator.userAgent;
-            if (isMobile) {
-                field.style.width = window.innerWidth+"px";//mobile default
-                field.style.height = window.innerHeight+"px";//mobile default
-                field.addEventListener("touchstart",function(){this.focus()});
-            } else {
-                field.style.width = 480+"px";
-                field.style.height = 620+"px"; 
-                field.addEventListener("mousedown",function(){this.focus()});
-                field.addEventListener("keyup",function(){clearKeyState(keydown);},false);
-            }
-            this._css = css;
-            this.field = field;
-            this.ctx = field.getContext('2d');
-            this.fps = 30;// fps default
-            this.scene = new Scene(); 
-            this.scene.parent = this;
+        	field.width = 320;
+        	field.height = 480;
+        	field.style.top = 0+"px";
+        	field.style.left = 0+"px";
+        	field.tabIndex = '1';
+        	document.body.style.margin = "0em";
+        	var userAgent = navigator.userAgent;
+        	if (isMobile) {
+            	field.style.width = window.innerWidth+"px";//mobile default
+            	field.style.height = window.innerHeight+"px";//mobile default
+            	field.addEventListener("touchstart",function(){this.focus()});
+        	} else {
+            	field.style.width = 480+"px";
+            	field.style.height = 620+"px"; 
+            	field.addEventListener("mousedown",function(){this.focus()});
+            	field.addEventListener("keyup",function(){clearKeyState(keydown);},false);
+        	}
+        	this._css = css;
+        	this.field = field;
+        	this.ctx = field.getContext('2d');
+        	this.fps = 30;// fps default
+        	this.scene = new Scene(); 
+        	this.scene.parent = this;
         },
         colorToAlpha : function(imagename,hex){
-            var img;
-            for(var i = 0,n = images.length; i < n; i++){
-                if(images[i].name == imagename){
-                    img = images[i];
-                    img.hex = hex;
-                    img.index = i;
-                }
-            }
-            img.addEventListener("load",function(){
-                var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext('2d') ;
-                var width = this.width;
-                var height = this.height;
-                var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-                var hex = this.hex.replace(shorthandRegex, function(m, r, g, b) {
-                    return r + r + g + g + b + b;
-                });
-                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                var color = result ? {
-                    r: parseInt(result[1], 16),
-                    g: parseInt(result[2], 16),
-                    b: parseInt(result[3], 16)
-                } : null;
-                ctx.drawImage(this, 0, 0);   
-                var ImageData = ctx.getImageData(0,0,width,height);
-                var data = ImageData.data;
-                for(var i=0;i<height;i++){
-                    for(var j=0;j<width;j++){
-                        var t = i*(width*4) + (j*4);
-                        if(data[t] == color.r && data[t + 1] == color.g && data[t + 2] == color.b) 
-                            data[t + 3] = 0;
-                    }
-                }
-                ctx.putImageData(ImageData,0,0);//put image data back
-                var newimg = new Image();
-                newimg.src = canvas.toDataURL();
-                images[this.index] = newimg;
-            });
+			var img;
+			for(var i = 0,n = images.length; i < n; i++){
+				if(images[i].name == imagename){
+					img = images[i];
+					img.hex = hex;
+					img.index = i;
+				}
+			}
+			img.addEventListener("load",function(){
+				var canvas = document.createElement("canvas");
+				var ctx = canvas.getContext('2d') ;
+				var width = this.width;
+				var height = this.height;
+				var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+				var hex = this.hex.replace(shorthandRegex, function(m, r, g, b) {
+					return r + r + g + g + b + b;
+				});
+				var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+				var color = result ? {
+					r: parseInt(result[1], 16),
+					g: parseInt(result[2], 16),
+					b: parseInt(result[3], 16)
+				} : null;
+				ctx.drawImage(this, 0, 0);   
+				var ImageData = ctx.getImageData(0,0,width,height);
+				var data = ImageData.data;
+				for(var i=0;i<height;i++){
+					for(var j=0;j<width;j++){
+					 	var t = i*(width*4) + (j*4);
+					 	if(data[t] == color.r && data[t + 1] == color.g && data[t + 2] == color.b) 
+							data[t + 3] = 0;
+					}
+				}
+				ctx.putImageData(ImageData,0,0);//put image data back
+				var newimg = new Image();
+				newimg.src = canvas.toDataURL();
+				images[this.index] = newimg;
+			});
         },
         addChild: function(child){
-            child.ctx = this.ctx;
-            child.field = this.field;
-            child.eventEnable = true;
-            this.scene.addChild(child);
+        	child.ctx = this.ctx;
+        	child.field = this.field;
+        	child.eventEnable = true;
+        	this.scene.addChild(child);
         },
         addChildren: function(){
-            for(var i = 0,n = arguments.length; i < n; i++)
-                this.addChild(arguments[i]);
+        	for(var i = 0,n = arguments.length; i < n; i++)
+        		this.addChild(arguments[i]);
         },
         centerize: function () {
             var style = this.field.style;
@@ -503,7 +503,7 @@
             };
         },
         setQuality: function (width, height) {
-            var field = this.field;
+        	var field = this.field;
             field.width = width;
             field.height = height;
         },
@@ -517,79 +517,79 @@
             this.preScene.parent = this;
         },
         _preLoadEnterFrame: function(){
-            var field = this.field;
-            this.useEvent();
-            var ctx = this.ctx;
+        	var field = this.field;
+        	this.useEvent();
+        	var ctx = this.ctx;
             ctx.clearRect(0, 0, field.width, field.height);
             if (allLoaded > 0 && this.preScene){
-                this.preScene._enterFrame();
+            	this.preScene._enterFrame();
             }else{
-                if(this.onLoad)
-                    this.onLoad(); 
-                var children = this.scene;
-                for(var i = 0,n = children.length; i < n; i++){
-                    var child = children[i];
-                    if(child.onLoad)
-                        child.onLoad();
-                } 
-                clearInterval(this.preLoadInterval);
-                var that = this;            
-                setInterval(function () {
-                    that._enterFrame();
-                }, 1000 / this.fps);
+            	if(this.onLoad)
+            		this.onLoad(); 
+            	var children = this.scene;
+            	for(var i = 0,n = children.length; i < n; i++){
+            		var child = children[i];
+            		if(child.onLoad)
+            			child.onLoad();
+            	} 
+            	clearInterval(this.preLoadInterval);
+            	var that = this;        	
+            	setInterval(function () {
+                	that._enterFrame();
+				}, 1000 / this.fps);
             }    
         },
         _enterFrame : function(){
-            var field = this.field;
+        	var field = this.field;
             this.ctx.clearRect(0, 0, field.width, field.height);
-            if(this.enterFrame)
-                this.enterFrame();           
+	        if(this.enterFrame)
+            	this.enterFrame();           
             this.scene._enterFrame();
         },
         pushScene: function(scene){
-            var ctx = this.ctx;
-            var field = this.field;
-            var children = this.scene;
-            for(var i = 0,n = children.length; i < n; i++){
-                var target = children[i];
-                target.eventEnable = false;
-                if(target.onSceneremoved)
-                    target.onSceneRemoved();
-            }
-            for(var i = 0,n = scene.length; i < n; i++){
-                var obj = scene[i];
-                obj.ctx = ctx;
-                obj.field = field;
-                obj.eventEnable = true;
-                if(obj.onScenePushed)
-                    obj.onScenePushed();
-            }
-            scene.parent = this;
-            scene.ctx = ctx;
-            scene.field = field;
-            var style = this.field.style;
-            style.background = null;
-            style.backgroundColor = "white";
-            if(scene.color)
-                this.setColor(scene.color);
-            if(scene.image)
-                this.setImage(scene.image);
-            this.scene = scene;
+        	var ctx = this.ctx;
+        	var field = this.field;
+        	var children = this.scene;
+        	for(var i = 0,n = children.length; i < n; i++){
+        		var target = children[i];
+        		target.eventEnable = false;
+        		if(target.onSceneremoved)
+        			target.onSceneRemoved();
+        	}
+        	for(var i = 0,n = scene.length; i < n; i++){
+        		var obj = scene[i];
+        		obj.ctx = ctx;
+        		obj.field = field;
+        		obj.eventEnable = true;
+        		if(obj.onScenePushed)
+        			obj.onScenePushed();
+        	}
+        	scene.parent = this;
+        	scene.ctx = ctx;
+        	scene.field = field;
+        	var style = this.field.style;
+        	style.background = null;
+        	style.backgroundColor = "white";
+        	if(scene.color)
+        		this.setColor(scene.color);
+        	if(scene.image)
+        		this.setImage(scene.image);
+        	this.scene = scene;
         },
         setColor: function(color){
-            var style = this.field.style;
-            style.background = null;
-            style.backgroundColor = color;
+        	var style = this.field.style;
+        	style.background = null;
+        	style.backgroundColor = color;
         },
         setImage: function(img){
-            var style = this.field.style;
-            style.background = "url("+img+") no-repeat center";
-            style.backgroundSize = "cover";
+        	var style = this.field.style;
+        	style.background = "url("+img+") no-repeat center";
+        	style.backgroundSize = "cover";
         },
         start: function () {
-            var field = this.field;
-            var that = this;
-            this.ctx.clearRect(0,0,field.width,field.height);
+        	var field = this.field;
+        	var that = this;
+        	this.ctx.clearRect(0,0,field.width,field.height);
             this.preLoadInterval = setInterval(function () {
                 that._preLoadEnterFrame();
             }, 1000 / this.fps);
@@ -611,11 +611,11 @@
             for (var i = 0, n = arguments.length; i < n; i++) {
                 var obj = arguments[i];
                 if(obj instanceof Array){
-                    var data = obj[0];
-                    var name = obj[1];
+                	var data = obj[0];
+	                var name = obj[1];
                 }else{
-                    var data = obj;
-                    var name = obj;
+	                var data = obj;
+	                var name = obj;
                 }
                 var ext = getExtention(data);
                 if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
@@ -629,14 +629,14 @@
                     sounds.push(obj);
                 } else if(ext == "TTF" || ext == "ttf"){
                     var css = this._css;
-                    var rule =  document.createTextNode("@font-face{"+
-                    "font-family:'"+name+"';"+
-                    "src: url('"+data+"') format('truetype');"+
-                    "}");
-                    if(css.styleSheet)
-                        css.styleSheet.cssText = rule;
-                    else
-                        css.appendChild(rule);
+                	var rule =  document.createTextNode("@font-face{"+
+                	"font-family:'"+name+"';"+
+                	"src: url('"+data+"') format('truetype');"+
+                	"}");
+                	if(css.styleSheet)
+                		css.styleSheet.cssText = rule;
+                	else
+                		css.appendChild(rule);
                 } else {
                     var obj = new Image();
                     obj.src = data;
@@ -652,17 +652,17 @@
         },
     });
     var Tween = function(that,kind,frame){
-        var mover = that.mover;
-        var target = mover[mover.length - 1];
-        if(target && target.and){
-            var obj = target;
-        }else{
-            var obj = new Object();
-            mover.push(obj);
-        }
-        obj.time = 0;
-        if(frame)
-            obj.frame = frame;
+    	var mover = that.mover;
+    	var target = mover[mover.length - 1];
+    	if(target && target.and){
+    		var obj = target;
+    	}else{
+    		var obj = new Object();
+    		mover.push(obj);
+    	}
+    	obj.time = 0;
+    	if(frame)
+    		obj.frame = frame;
         obj.loop = false;
         obj.and = false;
         obj[kind] = true;
@@ -684,144 +684,144 @@
             this.field;        
         },
         tween: function(){
-            var mover = this.mover;
-            var length = mover.length;
-            if(this.moverIndex < length){           
-                var obj = mover[this.moverIndex];
-                if(obj.animate)
-                    this._animate(obj);
-                if(obj.moveTo)
-                    this._moveTo(obj);
-                if(obj.moveBy)
-                    this._moveBy(obj);   
-                if(obj.rotateBy)
-                    this._rotateBy(obj); 
-                if(obj.scaleBy)
-                    this._scaleBy(obj);
-                if(obj.then)
-                    this._then(obj);
-                obj.time++;         
-                if(obj.time > obj.frame){
+        	var mover = this.mover;
+        	var length = mover.length;
+        	if(this.moverIndex < length){      		
+        		var obj = mover[this.moverIndex];
+        		if(obj.animate)
+        			this._animate(obj);
+        		if(obj.moveTo)
+        			this._moveTo(obj);
+        		if(obj.moveBy)
+        			this._moveBy(obj);   
+        		if(obj.rotateBy)
+        			this._rotateBy(obj); 
+        		if(obj.scaleBy)
+        			this._scaleBy(obj);
+        		if(obj.then)
+        			this._then(obj);
+        		obj.time++;    		
+        		if(obj.time > obj.frame){
                     this.moverIndex++;
                     if(this.moverIndex == length){
-                        if(obj.loop)
-                            this._refresh();
-                        else 
-                            this.stop();
-                    }
-                }
-            }
+        			    if(obj.loop)
+        				    this._refresh();
+        				else 
+        				    this.stop();
+        			}
+        		}
+        	}
         },
         isQueEmpty:function(){
             return this.mover.length ? false : true;
         },
         animate: function(array,frameRate,frame){
-            var obj = Tween(this,"animate",frame);
-            obj.array = array;
-            obj.frameRate = frameRate;
-            obj.frameIdx = 0;
-            return this;
+        	var obj = Tween(this,"animate",frame);
+        	obj.array = array;
+        	obj.frameRate = frameRate;
+        	obj.frameIdx = 0;
+        	return this;
         },
         _animate: function(obj){
-            if(obj.time == 0)
-                this.frame = obj.array[0];
-            if(obj.time % obj.frameRate == 0){
-                obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
-                this.frame = obj.array[obj.frameIdx];
-            }
+        	if(obj.time == 0)
+        		this.frame = obj.array[0];
+        	if(obj.time % obj.frameRate == 0){
+        		obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
+        		this.frame = obj.array[obj.frameIdx];
+        	}
         },
         _refresh: function(){
             this.moverIndex = 0;
-            var mover = this.mover;
-            for(var i = 0, n = mover.length; i < n; i++){
-                var obj = mover[i];
-                if(obj.time)
-                    obj.time = 0;
-            }
+        	var mover = this.mover;
+        	for(var i = 0, n = mover.length; i < n; i++){
+        		var obj = mover[i];
+        		if(obj.time)
+        			obj.time = 0;
+        	}
         },
         moveTo: function(x,y,frame){
-            var obj = Tween(this,"moveTo",frame);
-            obj.toX = x;
-            obj.toY = y;
-            return this;
+        	var obj = Tween(this,"moveTo",frame);
+        	obj.toX = x;
+        	obj.toY = y;
+        	return this;
         },
         _moveTo : function(obj){
-            if(obj.time == 0){
-                obj.diffX = obj.toX - this.x;
-                obj.diffY = obj.toY - this.y;
-            }
-            this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
-            this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
+        	if(obj.time == 0){
+        		obj.diffX = obj.toX - this.x;
+        		obj.diffY = obj.toY - this.y;
+        	}
+        	this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
+        	this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
         },
         moveBy: function(x,y,frame){
-            var obj = Tween(this,"moveBy",frame);
-            obj.diffX = x;
-            obj.diffY = y;
-            return this;
+        	var obj = Tween(this,"moveBy",frame);
+        	obj.diffX = x;
+        	obj.diffY = y;
+        	return this;
         },
         _moveBy: function(obj){
-            if(obj.time == 0){
-                obj.toX = this.x + obj.diffX;
-                obj.toY = this.y + obj.diffY;
-            }
-            this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
-            this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
+        	if(obj.time == 0){
+        		obj.toX = this.x + obj.diffX;
+        		obj.toY = this.y + obj.diffY;
+        	}
+        	this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
+        	this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
         },
         scaleBy: function(x,y,frame){
-            var obj = Tween(this,"scaleBy",frame);
-            obj.scaleX = x;
-            obj.scaleY = y;
-            return this;
+        	var obj = Tween(this,"scaleBy",frame);
+        	obj.scaleX = x;
+        	obj.scaleY = y;
+        	return this;
         },
         _scaleBy: function(obj){
-            if(obj.time == 0){
-                obj.toWidth = this.width * obj.scaleX;
-                obj.toHeight = this.height * obj.scaleY;
-                obj.diffWidth = obj.toWidth - this.width;
-                obj.diffHeight = obj.toHeight - this.height;
-            }
-            this.width = obj.toWidth - obj.diffWidth * (1 - obj.time / obj.frame);
-            this.height = obj.toHeight - obj.diffHeight * (1 - obj.time / obj.frame);           
+        	if(obj.time == 0){
+        	    obj.toWidth = this.width * obj.scaleX;
+        	    obj.toHeight = this.height * obj.scaleY;
+        	    obj.diffWidth = obj.toWidth - this.width;
+        	    obj.diffHeight = obj.toHeight - this.height;
+        	}
+        	this.width = obj.toWidth - obj.diffWidth * (1 - obj.time / obj.frame);
+        	this.height = obj.toHeight - obj.diffHeight * (1 - obj.time / obj.frame);       	
         },
         delay: function(frame){
-            var obj = Tween(this,"delay",frame);
-            this.mover.push(obj);
-            return this;
+        	var obj = Tween(this,"delay",frame);
+        	this.mover.push(obj);
+        	return this;
         },
         and : function(){
-            var mover = this.mover;
-            var target = mover[mover.length - 1];
-            if(target)
-                target.and = true;
-            return this;
+        	var mover = this.mover;
+        	var target = mover[mover.length - 1];
+        	if(target)
+        		target.and = true;
+        	return this;
         },
         stop : function(){
-            this.mover  = [];
-            this.moverIndex = 0;
-            return this;
+        	this.mover  = [];
+        	this.moverIndex = 0;
+        	return this;
         },
         loop : function(){
-            var obj = this.mover[this.mover.length-1];
-            obj.loop = true;
-            return this;
+        	var obj = this.mover[this.mover.length-1];
+        	obj.loop = true;
+        	return this;
         },
         rotateBy : function(angle,frame){
-            var obj = Tween(this,"rotateBy",frame);
-            obj.diffAngle = angle;
-            return this;
+        	var obj = Tween(this,"rotateBy",frame);
+        	obj.diffAngle = angle;
+        	return this;
         },
         _rotateBy : function(obj){
-            if(obj.time == 0)
-                obj.toAngle = this.rot + obj.diffAngle;
-            this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
+        	if(obj.time == 0)
+        		obj.toAngle = this.rot + obj.diffAngle;
+        	this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
         },
         then : function(fn,frame){
-            var obj = Tween(this,"then",frame);
-            obj.exec = fn;
-            return this;
+        	var obj = Tween(this,"then",frame);
+        	obj.exec = fn;
+        	return this;
         },
         _then : function(obj){      
-            obj.exec.call(this);
+        	obj.exec.call(this);
         },
         intersect: function (ex, ey) {
             if (this.collisionShape == "box") {
@@ -907,7 +907,7 @@
             this.color = col;
         },
         draw: function () {
-            var ctx = this.ctx;
+        	var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.fillStyle = this.color;
@@ -929,7 +929,7 @@
             this.collisionShape = "circle";
         },
         draw: function () {
-            var ctx = this.ctx;
+        	var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.fillStyle = this.color;
@@ -944,11 +944,10 @@
             this.inherit(width,height);
             this.setImage(name,width,height);
             this.frame = 0;
-            this.alpha = 1;
         },
         setSpriteSize:function (width,height){
-            this.spriteWidth = width;
-            this.spriteHeight = height;
+	        this.spriteWidth = width;
+	        this.spriteHeight = height;
         },
         setImage: function (name,width,height) {
             if(width && height)
@@ -959,11 +958,10 @@
                     this.img = i;
         },
         getImage : function(){
-            return images[this.img];
+        	return images[this.img];
         },
         draw: function () {
-            var ctx = this.ctx;
-            ctx.globalAlpha = this.alpha;
+        	var ctx = this.ctx;
             var frame = this.frame;
             var image = images[this.img];
             var SizeX = this.spriteWidth;
@@ -982,9 +980,8 @@
             ctx.translate(-cX, -cY);
             ctx.scale(scaleX, scaleY);
             if(dx != null)
-                ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+            	ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
             ctx.restore();
-            ctx.globalAlpha = 1;
         }
     });
     var Map = Atlas.createClass(Sprite, {
@@ -1004,7 +1001,7 @@
             for (var i = 0; i < y; i++) {
                 for (var t = 0; t < x; t++) {
                     if (array[i][t] == 1 && posX + t * width < ex && ex < posX + (t + 1) * width
-                       && posY + i * height < ey && ey < posY + (i + 1) * height)
+					   && posY + i * height < ey && ey < posY + (i + 1) * height)
                         return true;
                 }
             }
@@ -1061,29 +1058,29 @@
         }
     });
     var Text = Atlas.createClass(Util,{
-        initialize : function (string, col, size, font) {
-            this.inherit();
-            this.x = 0;
-            this.y = 0;
-            this.alpha = 1;
-            this.spaceWidth = 0;
-            if (font)
-                this.font = "'" + font + "'";
-            else
-                this.font = "'Meiryo'";
-            if (size)
-                this.size = size + "px";
-            else
-                this.size = "10px";
-            if (string)
-                this.string = string;
-            else
-                this.string = "";
-            if (col)
-                this.color = col;
-            else
-                this.color = "white";
-        },
+    	initialize : function (string, col, size, font) {
+    	    this.inherit();
+        	this.x = 0;
+        	this.y = 0;
+        	this.alpha = 1;
+        	this.spaceWidth = 0;
+        	if (font)
+       	    	this.font = "'" + font + "'";
+        	else
+            	this.font = "'Meiryo'";
+        	if (size)
+            	this.size = size + "px";
+        	else
+            	this.size = "10px";
+        	if (string)
+            	this.string = string;
+        	else
+            	this.string = "";
+        	if (col)
+            	this.color = col;
+        	else
+            	this.color = "white";
+    	},
         setSize: function (size) {
             this.size = size + "px";
         },
@@ -1091,14 +1088,14 @@
             this.font = "'" + font + "'";
         },
         intersect: function(x,y){
-            var ctx = this.ctx;
-            ctx.font = this.font;
-            var width = ctx.measureText(this.string).width;
-            var height = ctx.measureText('m').width * 1.5;
-            if(x > this.x && x < this.x + width && y > this.y - height && y  < this.y)
-                return true;
-            else
-                return false;
+        	var ctx = this.ctx;
+        	ctx.font = this.font;
+        	var width = ctx.measureText(this.string).width;
+        	var height = ctx.measureText('m').width * 1.5;
+        	if(x > this.x && x < this.x + width && y > this.y - height && y  < this.y)
+        		return true;
+        	else
+        		return false;
         },
         draw: function () {
             var x = this.x;
@@ -1111,62 +1108,62 @@
             ctx.fillStyle = this.color;
             var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
             for (var i = 0; i < length; i++) {
-                ctx.fillText(strings[i], x, y+height);
-                y += height;
+               	ctx.fillText(strings[i], x, y+height);
+            	y += height;
             }
             ctx.globalAlpha = 1;
         }
     });
     Input = Atlas.createClass(Text,{
-        initialize : function(image,width,height,col,font){
-            this.inherit("",col,height-5,font);
-            this.box = new Atlas.Sprite(image);
-            this.box.width = width;
-            this.box.height = height;
-            var element = document.createElement('input');
-            element.style.position = "absolute";
-            element.style.zIndex = -1;
-            element.parent = this;
-            var Body = document.getElementsByTagName("body").item(0);
-            Body.appendChild(element);
-            this.element = element;
-            element.addEventListener('input', 
-                function() {
-                    var parent = this.parent;
-                    var ctx = parent.ctx;
-                    var tmp = this.value;
-                    while(ctx.measureText(tmp).width > parent.box.width){
-                        tmp = tmp.slice(1,tmp.length);
-                    }
-                    parent.string = tmp;
-                }
-            );
-        },
-        onLoad : function(){
-            this.element.style.top = this.field.style.top;
-            this.element.style.left = this.field.style.left;
-            this.element.style.marginTop = this.field.style.marginTop;
-            this.element.style.marginLeft = this.field.style.marginLeft;
-            var box = this.box;
-            var img = box.getImage();
-            box.setSpriteSize(img.width,img.height);
-            box.field = this.field;
-            box.ctx = this.ctx;
-            box.setPosition(this.x,this.y);
-            this.parent.addChild(box);
-        },
-        enterFrame : function(){
-            var box = this.box;
-            box.setPosition(this.x,this.y);
-        },
-        touchStart : function(e){
-            if(this.box.intersect(e.x,e.y)){
-                this.element.focus();
-            }
-        },
-        getValue : function(){
-            return this.element.value;
-        }
+    	initialize : function(image,width,height,col,font){
+    		this.inherit("",col,height-5,font);
+    		this.box = new Atlas.Sprite(image);
+    		this.box.width = width;
+    		this.box.height = height;
+    		var element = document.createElement('input');
+    		element.style.position = "absolute";
+    		element.style.zIndex = -1;
+    		element.parent = this;
+    		var Body = document.getElementsByTagName("body").item(0);
+    		Body.appendChild(element);
+    		this.element = element;
+    		element.addEventListener('input', 
+    			function() {
+    				var parent = this.parent;
+    				var ctx = parent.ctx;
+    				var tmp = this.value;
+    				while(ctx.measureText(tmp).width > parent.box.width){
+    					tmp = tmp.slice(1,tmp.length);
+    				}
+    				parent.string = tmp;
+    			}
+    		);
+    	},
+    	onLoad : function(){
+    		this.element.style.top = this.field.style.top;
+    		this.element.style.left = this.field.style.left;
+    		this.element.style.marginTop = this.field.style.marginTop;
+    		this.element.style.marginLeft = this.field.style.marginLeft;
+    		var box = this.box;
+    		var img = box.getImage();
+    		box.setSpriteSize(img.width,img.height);
+    		box.field = this.field;
+    		box.ctx = this.ctx;
+    		box.setPosition(this.x,this.y);
+    		this.parent.addChild(box);
+    	},
+    	enterFrame : function(){
+    		var box = this.box;
+    		box.setPosition(this.x,this.y);
+    	},
+    	touchStart : function(e){
+    		if(this.box.intersect(e.x,e.y)){
+    			this.element.focus();
+    		}
+    	},
+    	getValue : function(){
+    		return this.element.value;
+    	}
     });
     Atlas.App = App;
     Atlas.Sprite = Sprite;
