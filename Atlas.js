@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.10
+ * Atlas.js v0.5.11
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -95,6 +95,7 @@
         window.Scene = Scene;
         window.Map = Map;
         window.Input = Input;
+        window.Group = Group;
     };
     Atlas.createClass = function (superClass, obj) {
         var newClass = function () {
@@ -335,6 +336,16 @@
         },
         addChild: function(sprite){
             sprite.parent = this;
+            //for Group
+            if(sprite.children){
+                var children = sprite.children;
+                for(var i = 0,n = children.length; i < n; i++){
+                    var child = children[i];
+                    child.ctx = this.ctx;
+                    child.field = this.field;
+                    child.eventEnable = true;
+                }
+            }
             if(this.ctx && this.field){
                 sprite.ctx = this.ctx;
                 sprite.field = this.field;
@@ -434,7 +445,9 @@
             this.field = field;
             this.ctx = field.getContext('2d');
             this.fps = 30;// fps default
-            this.scene = new Scene(); 
+            this.scene = new Scene();
+            this.scene.ctx = this.ctx;
+            this.scene.field = this.field; 
             this.scene.parent = this;
         },
         colorToAlpha : function(imagename,hex){
@@ -824,9 +837,15 @@
             obj.exec.call(this);
         },
         intersect: function (ex, ey) {
+            var thisx = this.x;
+            var thisy = this.y;
+            if(this.parent.className == "Group"){
+                thisx += this.parent.x;
+                thisy += this.parent.y;
+            }
             if (this.collisionShape == "box") {
-                var x = ex - (this.x + this.width / 2);
-                var y = ey - (this.y + this.height / 2);
+                var x = ex - (thisx + this.width / 2);
+                var y = ey - (thisy + this.height / 2);
                 var r = this.rot;
                 var s = Math.sin(-r);
                 var c = Math.cos(-r);
@@ -837,8 +856,8 @@
                 return false;
             } else if (this.collisionShape == "circle") {
                 var radius = this.width / 2;
-                var x = ex - (this.x + radius);
-                var y = ey - (this.y + radius);
+                var x = ex - (thisx + radius);
+                var y = ey - (thisy + radius);
                 if (Math.sqrt(x * x + y * y) < radius)
                     return true;
                 return false;
@@ -847,13 +866,19 @@
             }
         },
         within: function (target, range) {
+            var thisx = this.x;
+            var thisy = this.y;
+            if(this.parent.className == "Group"){
+                thisx += this.parent.x;
+                thisy += this.parent.y;
+            }
             if (this.collisionShape == "box") {
-                var thiscX = this.x + this.width / 2;
-                var thiscY = this.y + this.height / 2;
+                var thiscX = thisx + this.width / 2;
+                var thiscY = thisy + this.height / 2;
             } else if (this.collisionShape == "circle") {
                 var radius = this.width / 2;
-                var thiscX = this.x + radius;
-                var thiscY = this.y + radius;
+                var thiscX = thisx + radius;
+                var thiscY = thisy + radius;
             } else {
                 return false;
             }
@@ -1117,7 +1142,7 @@
             ctx.globalAlpha = 1;
         }
     });
-    Input = Atlas.createClass(Text,{
+    var Input = Atlas.createClass(Text,{
         initialize : function(image,width,height,col,font){
             this.inherit("",col,height-5,font);
             this.box = new Atlas.Sprite(image);
@@ -1168,6 +1193,57 @@
             return this.element.value;
         }
     });
+    var Group = Atlas.createClass(Thing,{
+        initialize:function(){
+            this.inherit();
+            this.children = [];
+            this.className = "Group";
+            for(var i = 0,n = arguments.length; i < n; i++){
+                this.children.push(arguments[i]);
+            }
+        },
+        draw: function () {
+            var children = this.children;
+            for(var i = 0,n = children.length; i < n; i++){
+                var target = children[i];
+                target.x += this.x;
+                target.y += this.y;
+                if(target.useEvent)
+                    target.useEvent();
+                if(target.enterFrame)
+                    target.enterFrame();
+                if(target.tween)
+                    target.tween();
+                if(target.visible)
+                    target.draw();
+                if (target._remove) {
+                    this.splice(i, 1);
+                    delete target;
+                    i--;
+                    n--;
+                }   
+                target.x -= this.x;
+                target.y -= this.y;            
+            }
+        },
+        scale:function(x,y){
+            var children = this.children;
+            for(var i = 0, n = arguments.length; i < n; i++){
+                var child = children[i];
+                if(child.scale)
+                    child.scale(x,y);
+            }
+        },
+        addChild:function(sprite){
+            sprite.parent = this;
+            this.children.push(sprite);
+        },
+        addChildren:function(){
+            for(var i = 0,n = arguments.length; i < n; i++){
+                this.addChild(arguments[i]);
+            }
+        },
+    });
     Atlas.App = App;
     Atlas.Sprite = Sprite;
     Atlas.Shape = Shape;
@@ -1175,4 +1251,5 @@
     Atlas.Text = Text;
     Atlas.Scene = Scene;
     Atlas.Input = Input;
+    Atlas.Group = Group;
 })();
