@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.11
+ * Atlas.js v0.5.12
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -88,14 +88,9 @@
         return ret;
     })();
     Atlas = function () {
-        window.App = App;
-        window.Sprite = Sprite;
-        window.Text = Text;
-        window.Shape = Shape;
-        window.Scene = Scene;
-        window.Map = Map;
-        window.Input = Input;
-        window.Group = Group;
+        for(var key in Atlas){
+            window[key] = Atlas[key];
+        }
     };
     Atlas.createClass = function (superClass, obj) {
         var newClass = function () {
