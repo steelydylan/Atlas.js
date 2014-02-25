@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.5.13
+ * Atlas.js v0.5.12
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -115,8 +115,8 @@
     };
     Atlas.extendClass = function (targetclass,obj){
         for(var key in obj){
-            /*if(!targetclass.prototype[key])*/
-            targetclass.prototype[key] = obj[key];
+            if(!targetclass.prototype[key])
+                targetclass.prototype[key] = obj[key];
         }
     };
     var Util = Atlas.createClass({
@@ -152,9 +152,7 @@
             for(var i in obj)
                 this[i] = obj[i];
         },
-        getTouchPosition: function (e,num) {
-            if(!(num && e.touches[num]))
-                num = 0;
+        getTouchPosition: function (e) {
             var field = this.field;
             var rateX = parseInt(field.width) / parseInt(field.style.width);
             var rateY = parseInt(field.height) / parseInt(field.style.height);
@@ -167,9 +165,9 @@
             if (isNaN(y))
                 y = 0;
             if (e) {
-                if (!isMobile || (isMobile && e.touches[num])) {
-                    obj.x = (isMobile ? e.touches[num].pageX : e.pageX) - x;
-                    obj.y = (isMobile ? e.touches[num].pageY : e.pageY) - y;
+                if (!isMobile || (isMobile && e.touches[0])) {
+                    obj.x = (isMobile ? e.touches[0].pageX : e.pageX) - x;
+                    obj.y = (isMobile ? e.touches[0].pageY : e.pageY) - y;
                 } else {
                     obj.x = -1;
                     obj.y = -1;
@@ -185,12 +183,7 @@
         handleEvent: function(e) {
             if(this.eventEnable){
                 e.preventDefault();
-                var pos = this.getTouchPosition(e); 
-                if(e.touches)
-                    pos.touchCount = e.touches.length;
-                else
-                    pos.touchCount = 1;
-                pos.event = e; 
+                var pos = this.getTouchPosition(e);  
                 var type = e.type;              
                 if(type == "keydown" || type == "keyup"){
                     var keyup = new Object();
