@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.0
+ * Atlas.js v0.5.13
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -132,9 +132,6 @@
             eventListener.touchEnd = false;
             eventListener.keyUp = false;
             eventListener.keyDown = false;
-            eventListener.multiTouchStart = false;
-            eventListener.multiTouchMove = false;
-            eventListener.multiTouchEnd = false;
             eventListener.orientationChange = false; 
         },
         setPosition: function (x, y) {
@@ -185,14 +182,6 @@
             obj.y = parseInt(obj.y * rateY);
             return obj;
         },
-        getMultiTouchPosition: function(e){
-            var length = e.touches.length;
-            var pos = [];
-            for(var i = 0; i < length; i++){
-                pos[i] = this.getTouchPosition(e,i);
-            }
-            return pos;
-        },
         handleEvent: function(e) {
             if(this.eventEnable){
                 e.preventDefault();
@@ -210,23 +199,11 @@
                     setKeyState(keyup,keydown,e);
                 }
                 switch (type) {
-                    case 'touchstart': if(this.multiTouchStart && e.touches.length > 1)
-                                           this.multiTouchStart(this.getMultiTouchPosition(e));
-                                       else if(this.touchStart)
-                                           this.touchStart(pos); 
-                                       break;
+                    case 'touchstart': if(this.touchStart)this.touchStart(pos); break;
                     case 'mousedown': if(this.touchStart)this.touchStart(pos); break;
-                    case 'touchmove': if(this.multiTouchMove && e.touches.length > 1)
-                                           this.multiTouchMove(this.getMultiTouchPosition(e));
-                                      else if(this.touchMove)
-                                           this.touchMove(pos); 
-                                      break;
+                    case 'touchmove': if(this.touchMove)this.touchMove(pos); break;
                     case 'mousemove': if(this.touchMove)this.touchMove(pos); break;
-                    case 'touchend': if(this.multiTouchEnd && e.touches.length > 1)
-                                           this.multiTouchEnd(this.getMultiTouchPosition(e));
-                                      else if(this.touchEnd)
-                                           this.touchEnd(pos); 
-                                      break;
+                    case 'touchend': if(this.touchEnd)this.touchEnd(); break;
                     case 'mouseup': if(this.touchEnd)this.touchEnd(); break;
                     case 'keydown': if(this.keyDown)this.keyDown(keydown); break;
                     case 'keyup': if(this.keyUp)this.keyUp(keyup);break;
@@ -256,34 +233,7 @@
                 else
                     field.addEventListener("mouseup",this,false);
                 eventListener.touchEnd = true;
-            }
-            if(this.multiTouchStart && eventListener.multiTouchStart == false){
-                if(!eventListener.touchStart){
-                    if(isMobile)
-                        field.addEventListener("touchstart",this,false);
-                    else
-                        field.addEventListener("mousedown",this,false);
-                }
-                eventListener.touchStart = true;
-            }
-            if(this.multiTouchMove && eventListener.multiTouchMove== false){
-                if(!eventListener.touchMove){
-                    if(isMobile)
-                        field.addEventListener("touchmove",this,false);
-                    else
-                        field.addEventListener("mousemove",this,false);
-                }
-                eventListener.touchMove = true;
-            }
-            if(this.multiTouchEnd && eventListener.multiTouchEnd == false){
-                if(!eventListener.touchEnd){
-                    if(isMobile)
-                        field.addEventListener("touchend",this,false);
-                    else
-                        field.addEventListener("mouseup",this,false);
-                }
-                eventListener.touchEnd = true;
-            }              
+            }               
             if(this.keyUp && eventListener.keyUp == false){
                 field.addEventListener("keyup",this,false);
                 eventListener.keyUp = true;
