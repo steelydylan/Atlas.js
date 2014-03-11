@@ -1303,6 +1303,7 @@
             }
         },
     });
+    Atlas.Util = Util;
     Atlas.Thing = Thing;
     Atlas.App = App;
     Atlas.Sprite = Sprite;
