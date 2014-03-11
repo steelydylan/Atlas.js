@@ -255,7 +255,6 @@
             return this;
         },
         _rotateBy : function(obj){
-            console.log("aaa");
             if(obj.time == 0)
                 obj.toAngle = this.rot + obj.diffAngle;
             this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
