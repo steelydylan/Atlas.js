@@ -145,7 +145,7 @@
             this.rot = 0;
             this.moverIndex = 0;
             this.visible = true;
-            this.eventEnable = false;
+            this.eventEnable = true;
             var eventListener = this.eventListener;
             eventListener.touchStart = false;
             eventListener.touchMove = false;
@@ -530,7 +530,6 @@
                     var child = children[i];
                     child.ctx = this.ctx;
                     child.field = this.field;
-                    child.eventEnable = true;
                 }
             }
             if(this.ctx && this.field){
@@ -683,7 +682,6 @@
         addChild: function(child){
             child.ctx = this.ctx;
             child.field = this.field;
-            child.eventEnable = true;
             this.scene.addChild(child);
         },
         addChildren: function(){
