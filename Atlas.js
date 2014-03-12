@@ -1183,8 +1183,8 @@
                 return false;
         },
         scale: function(x,y){
-            this.scaleX = x;
-            this.scaleY = y;
+            this.scaleX *= x;
+            this.scaleY *= y;
         },
         _scaleBy: function(obj){
             if(obj.time == 0){
