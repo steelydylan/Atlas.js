@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.3
+ * Atlas.js v0.6.2
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -219,6 +219,7 @@
             return this;
         },
         _moveBy: function(obj){
+            console.log(this);
             if(obj.time == 0){
                 obj.toX = this.x + obj.diffX;
                 obj.toY = this.y + obj.diffY;
@@ -585,11 +586,8 @@
                     target.enterFrame();
                 if(target.tween)
                     target.tween();
-                if(target.visible){
-                    if(target.preDraw)
-                        target.preDraw();
+                if(target.visible)
                     target.draw();
-                }
                 if (target._remove) {
                     this.splice(i, 1);
                     delete target;
@@ -1204,14 +1202,15 @@
             var length = strings.length;
             ctx.globalAlpha = this.alpha;
             ctx.font = this.size + " " + this.font;
+            ctx.fillStyle = this.color;
             var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
             ctx.save();
-            ctx.translate(x,y);
-            ctx.fillStyle = this.color;
+            ctx.translate(scaleX*x,scaleY*y);
             ctx.rotate(this.rot);
+            ctx.translate(-scaleX*x, -scaleY*y);
             ctx.scale(scaleX,scaleY);
             for (var i = 0; i < length; i++) {
-                ctx.fillText(strings[i], 0, height);
+                ctx.fillText(strings[i], x, y+height);
                 y += height;
             }
             ctx.restore();
