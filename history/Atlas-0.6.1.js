@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.2
+ * Atlas.js v0.6.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.phpapps.jp/>
@@ -266,12 +266,6 @@
         },
         _then : function(obj){      
             obj.exec.call(this);
-        },
-        scaleBy: function(x,y,frame){
-            var obj = Tween(this,"scaleBy",frame);
-            obj.scaleX = x;
-            obj.scaleY = y;
-            return this;
         },
         setPosition: function (x, y) {
             this.x = x;
@@ -864,6 +858,12 @@
             this.alpha = 1;  
             this.field;        
         },
+        scaleBy: function(x,y,frame){
+            var obj = Tween(this,"scaleBy",frame);
+            obj.scaleX = x;
+            obj.scaleY = y;
+            return this;
+        },
         _scaleBy: function(obj){
             if(obj.time == 0){
                 obj.toWidth = this.width * obj.scaleX;
@@ -1143,8 +1143,6 @@
             this.inherit();
             this.x = 0;
             this.y = 0;
-            this.scaleX = 1;
-            this.scaleY = 1;
             this.alpha = 1;
             this.spaceWidth = 0;
             if (font)
@@ -1180,23 +1178,9 @@
             else
                 return false;
         },
-        scale: function(x,y){
-            this.scaleX = x;
-            this.scaleY = y;
-        },
-        _scaleBy: function(obj){
-            if(obj.time == 0){
-                obj.diffWidth = obj.scaleX - this.scaleX;
-                obj.diffHeight = obj.scaleY - this.scaleY;
-            }
-            this.scaleX = obj.scaleX - obj.diffWidth * (1 - obj.time / obj.frame);
-            this.scaleY = obj.scaleY - obj.diffHeight * (1 - obj.time / obj.frame)     
-        },
         draw: function () {
             var x = this.x;
             var y = this.y;
-            var scaleX = this.scaleX;
-            var scaleY = this.scaleY;
             var ctx = this.ctx;
             var strings = this.string.split('<br>');
             var length = strings.length;
@@ -1205,10 +1189,9 @@
             ctx.fillStyle = this.color;
             var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
             ctx.save();
-            ctx.translate(scaleX*x,scaleY*y);
+            ctx.translate(this.x, this.y);
             ctx.rotate(this.rot);
-            ctx.translate(-scaleX*x, -scaleY*y);
-            ctx.scale(scaleX,scaleY);
+            ctx.translate(-this.x, - this.y);
             for (var i = 0; i < length; i++) {
                 ctx.fillText(strings[i], x, y+height);
                 y += height;
