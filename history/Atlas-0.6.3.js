@@ -1,8 +1,8 @@
 ﻿/**
- * Atlas.js v0.6.4
+ * Atlas.js v0.6.3
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
- * <http://steelydylan.webcrow.jp/>
+ * <http://steelydylan.phpapps.jp/>
  * Released under the MIT license.
  */
 (function () {
@@ -304,12 +304,10 @@
                 x = 0;
             if (isNaN(y))
                 y = 0;
-            var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-            var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
             if (e) {
                 if (!isMobile || (isMobile && e.touches[num])) {
-                    obj.x = (isMobile ? e.touches[num].pageX : e.pageX) - x - scrollX;
-                    obj.y = (isMobile ? e.touches[num].pageY : e.pageY) - y - scrollY;
+                    obj.x = (isMobile ? e.touches[num].pageX : e.pageX) - x;
+                    obj.y = (isMobile ? e.touches[num].pageY : e.pageY) - y;
                 } else {
                     obj.x = -1;
                     obj.y = -1;
@@ -580,18 +578,6 @@
                 this.enterFrame();
             for (var i = 0, n = this.length; i < n; i++) {
                 var target = this[i];
-                if(!target.spriteWidth && !target.string){
-	                var obj = target.getImageSize();
-	                if(obj.width){
-		                target.setSpriteSize(obj.width,obj.height);
-		                if(!target.width){
-		                	target.setSize(obj.width,obj.height);
-		                	if(target._scaleX){
-			                	target.scale(target._scaleX,target._scaleY);
-		                	}
-		                }
-		            }
-                }
                 if(target.useEvent)
                     target.useEvent();
                 if(target.enterFrame)
@@ -757,7 +743,6 @@
         _enterFrame : function(){
             var field = this.field;
             this.ctx.clearRect(0, 0, field.width, field.height);
-            this.useEvent();
             if(this.enterFrame)
                 this.enterFrame();           
             this.scene._enterFrame();
@@ -973,18 +958,9 @@
             return false;
         },
         scale: function (sx, sy) {
-        	if(!this.width){
-	        	this._scaleX = sx;
-	        	this._scaleY = sy;
-        	}else{
-	            this.width *= sx;
-	            this.height *= sy;
-	        }
+            this.width *= sx;
+            this.height *= sy;
             return this;
-        },
-        setSize : function(w,h){
-	        this.width = w;
-	        this.height = h;
         }
     });
     var Shape = new Object();
@@ -1028,10 +1004,6 @@
     });
     var Sprite = Atlas.createClass(Thing, {
         initialize: function (name, width, height) {
-        	if(typeof width === "undefined"){
-	        	width = null;
-	        	height = null;
-        	}
             this.inherit(width,height);
             this.setImage(name,width,height);
             this.frame = 0;
@@ -1066,13 +1038,6 @@
         },
         getImage : function(){
             return images[this.img];
-        },
-        getImageSize : function(){
-	      	var obj = {};
-	      	var img = images[this.img];
-	      	obj.width = img.width;
-	      	obj.height = img.height;
-	      	return obj;  
         },
         draw: function () {
             var ctx = this.ctx;
@@ -1205,22 +1170,16 @@
         setFont: function (font) {
             this.font = "'" + font + "'";
         },
-		intersect: function(ex,ey){
-			var thisx = this.x;
-			var thisy = this.y;
-			var width = parseInt(this.size) * this.scaleX * this.string.length;
-			var height = parseInt(this.size) * this.scaleY;
-	        var x = ex - (thisx + width / 2);
-	        var y = ey - (thisy + height / 2);
-	        var r = this.rot;
-	        var s = Math.sin(-r);
-	        var c = Math.cos(-r);
-	        var xx = Math.abs(x * c - y * s);
-	        var yy = Math.abs(x * s + y * c);
-	        if (xx < width / 2.0 && yy < height / 2.0)
-	            return true;
-	        return false;
-	    },
+        intersect: function(x,y){
+            var ctx = this.ctx;
+            ctx.font = this.font;
+            var width = ctx.measureText(this.string).width;
+            var height = ctx.measureText('m').width * 1.5;
+            if(x > this.x && x < this.x + width && y > this.y - height && y  < this.y)
+                return true;
+            else
+                return false;
+        },
         scale: function(x,y){
             this.scaleX *= x;
             this.scaleY *= y;
@@ -1244,13 +1203,10 @@
             ctx.globalAlpha = this.alpha;
             ctx.font = this.size + " " + this.font;
             var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
-            ctx.fillStyle = this.color;
             ctx.save();
-            var cX = parseInt(this.size) * this.scaleX * this.string.length / 2;
-			var cY = parseInt(this.size) * this.scaleY / 2;
-            ctx.translate(x + cX,y + cY);
+            ctx.translate(x,y);
+            ctx.fillStyle = this.color;
             ctx.rotate(this.rot);
-            ctx.translate(-cX,-cY);
             ctx.scale(scaleX,scaleY);
             for (var i = 0; i < length; i++) {
                 ctx.fillText(strings[i], 0, height);
