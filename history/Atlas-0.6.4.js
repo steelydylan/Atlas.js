@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.5
+ * Atlas.js v0.6.4
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -146,7 +146,6 @@
             this.moverIndex = 0;
             this.visible = true;
             this.eventEnable = true;
-			this.drawMode = "source-over";
             var eventListener = this.eventListener;
             eventListener.touchStart = false;
             eventListener.touchMove = false;
@@ -581,7 +580,7 @@
                 this.enterFrame();
             for (var i = 0, n = this.length; i < n; i++) {
                 var target = this[i];
-                if(target.img && !target.spriteWidth && !target.string){
+                if(!target.spriteWidth && !target.string){
 	                var obj = target.getImageSize();
 	                if(obj.width){
 		                target.setSpriteSize(obj.width,obj.height);
@@ -1078,7 +1077,6 @@
         draw: function () {
             var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
             var frame = this.frame;
             var image = images[this.img];
             var SizeX = this.spriteWidth;
@@ -1244,7 +1242,6 @@
             var strings = this.string.split('<br>');
             var length = strings.length;
             ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
             ctx.font = this.size + " " + this.font;
             var height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
             ctx.fillStyle = this.color;
