@@ -583,7 +583,7 @@
                 this.enterFrame();
             for (var i = 0, n = this.length; i < n; i++) {
                 var target = this[i];
-                if(target._basicConstructor == "Sprite"){
+                if(target._basicConstructor == "Sprite" && !target.spriteWidth){
 	                var obj = target.getImageSize();
 	                if(obj.width){
 		                target.setSpriteSize(obj.width,obj.height);
