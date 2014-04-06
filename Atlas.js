@@ -6,6 +6,7 @@
  * Released under the MIT license.
  */
 (function () {
+	"use strict";
     var images = [];
     var sounds = [];
     var allLoaded = 0;
@@ -87,7 +88,7 @@
         clearKeyState(ret);
         return ret;
     })();
-    Atlas = function () {
+    var Atlas = function () {
         for(var key in Atlas){
             window[key] = Atlas[key];
         }
@@ -607,7 +608,7 @@
                 }
                 if (target._remove) {
                     this.splice(i, 1);
-                    delete target;
+                    target = null;
                     i--;
                     n--;
                 }
@@ -1345,7 +1346,7 @@
                     target.draw();
                 if (target._remove) {
                     this.splice(i, 1);
-                    delete target;
+                    target = null;
                     i--;
                     n--;
                 }   
@@ -1371,6 +1372,7 @@
             }
         },
     });
+    window.Atlas = Atlas;
     Atlas.Util = Util;
     Atlas.Thing = Thing;
     Atlas.App = App;
