@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.6
+ * Atlas.js v0.6.5
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -522,7 +522,6 @@
     var Scene = Atlas.createClass(Array, {
         initialize: function () {
             this.inherit();
-            this._basicConstructor = "Scene";
             this._remove = false;
         },
         addChild: function(sprite){
@@ -582,7 +581,7 @@
                 this.enterFrame();
             for (var i = 0, n = this.length; i < n; i++) {
                 var target = this[i];
-                if(target._basicConstructor == "Sprite"){
+                if(target.img && !target.spriteWidth && !target.string){
 	                var obj = target.getImageSize();
 	                if(obj.width){
 		                target.setSpriteSize(obj.width,obj.height);
@@ -617,7 +616,6 @@
     var App = Atlas.createClass(Util,{
         initialize: function (place) {
             this.inherit();
-            this._basicConstructor = "App";
             var css = document.createElement("style");
             css.media = 'screen';
             css.type = "text/css";
@@ -924,7 +922,7 @@
         within: function (target, range) {
             var thisx = this.x;
             var thisy = this.y;
-            if(this.parent._basicConstructor == "Group"){
+            if(this.parent.className == "Group"){
                 thisx += this.parent.x;
                 thisy += this.parent.y;
             }
@@ -994,7 +992,6 @@
     Shape.Box = Atlas.createClass(Thing, {
         initialize: function (col, width, height) {
             this.inherit(width,height);
-            this._basicConstructor = "Shape";            
             this.color = col;
         },
         draw: function () {
@@ -1016,7 +1013,6 @@
     Shape.Circle = Atlas.createClass(Thing, {
         initialize: function (col, radius) {
             this.inherit(radius * 2,0);
-            this._basicConstructor = "Shape";
             this.color = col;
             this.collisionShape = "circle";
         },
@@ -1039,7 +1035,6 @@
         	}
             this.inherit(width,height);
             this.setImage(name,width,height);
-            this._basicConstructor = "Sprite";
             this.frame = 0;
             this.alpha = 1;
         },
@@ -1183,7 +1178,6 @@
     var Text = Atlas.createClass(Util,{
         initialize : function (string, col, size, font) {
             this.inherit();
-            this._basicConstructor = "Text";
             this.x = 0;
             this.y = 0;
             this.scaleX = 1;
@@ -1324,7 +1318,7 @@
         initialize:function(){
             this.inherit();
             this.children = [];
-            this._basicConstructor = "Group";
+            this.className = "Group";
             for(var i = 0,n = arguments.length; i < n; i++){
                 this.children.push(arguments[i]);
             }
