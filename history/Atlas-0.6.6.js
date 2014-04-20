@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.7
+ * Atlas.js v0.6.6
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -730,19 +730,7 @@
             var style = this.field.style;
             style.width = width+"px";
             style.height = height+"px";
-        },      
-        getSize : function(){
-        	var size = new Object();
-	      	size.width = parseInt(this.field.style.width);
-	      	size.height = parseInt(this.field.style.height);
-	      	return size;
-        },
-        getQuality: function(){
-	      	var size = new Object();
-	      	size.width = parseInt(this.field.width);
-	      	size.height = parseInt(this.field.height);
-	      	return size;
-        },
+        },       
         loadingScene: function (scene) {
             this.preScene = scene;
             this.preScene.parent = this;
@@ -825,9 +813,6 @@
             this.preLoadInterval = setInterval(function () {
                 that._preLoadEnterFrame();
             }, 1000 / this.fps);
-        },
-        toDataURL:function(){
-	      return this.field.toDataURL();  
         },
         load: function () {
             function getExtention(fileName) {
@@ -936,46 +921,6 @@
             } else {
                 return false;
             }
-        },
-        hitTest: function(target){/*衝突判定（自分の矩形は傾いてないものとする）*/
-            if (this.collisionShape == "box") {
-            	if(target.collisionShape == "circle")
-            		return target.within(this,target.width/2);/*矩形と円の当たり判定ならwithinで実装済み*/
-            } else if (this.collisionShape == "circle") {
-                return this.within(target,this.width/2);/*矩形と円の当たり判定ならwithinで実装済み*/
-            } else {
-                return false;
-            }	 
-            var thisx = this.x;
-			var thisy = this.y;
-			var thisW = this.width;
-			var thisH = this.height;
-            var thiscX = thisx + this.width / 2;
-            var thiscY = thisy + this.height / 2;
-            var targetx = target.x;  
-            var targety = target.y;
-            var targetW = target.width;
-            var targetH = target.height; 
-            if(this.parent._basicConstructor == "Group"){
-                thisx += this.parent.x;
-                thisy += this.parent.y;
-            }  
-            if(target.rot != 0 && target.rot != Math.PI){
-			    if (target.collisionShape == "box") {
-                var centerX = targetx + targetW / 2;
-                var centerY = targety + targetH / 2;
-                var thiscX = thisx + thisW / 2;
-                var thiscY = thisy + thisH / 2;
-                var rot = -target.rot;
-                thiscX = Math.cos(rot) * (thiscX - centerX) -
-                    Math.sin(rot) * (thiscY - centerY) + centerX;
-                thiscY = Math.sin(rot) * (thiscX - centerX) +
-                    Math.cos(rot) * (thiscY - centerY) + centerY;
-                thisx = thiscX - thisW / 2;
-                thisy = thiscY - thisH / 2;
-				}  
-			}
-            return (thisx < targetx + targetW) && (targetx < thisx + thisW) && (thisy < targety + targetH) && (targety < thisy + thisH);
         },
         within: function (target, range) {
             var thisx = this.x;
