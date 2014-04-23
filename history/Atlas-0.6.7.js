@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.8
+ * Atlas.js v0.6.7
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -1056,7 +1056,6 @@
         draw: function () {
             var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
             ctx.beginPath();
             ctx.fillStyle = this.color;
             var moveX = this.x + this.width / 2;
@@ -1080,7 +1079,6 @@
         draw: function () {
             var ctx = this.ctx;
             ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
             ctx.beginPath();
             ctx.fillStyle = this.color;
             var plus = this.width / 2;
@@ -1200,8 +1198,6 @@
             var t = 0;
             var field = this.field;
             var ctx = this.ctx;
-            ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
             var fieldHeight = field.height;
             var fieldWidth = field.width;
             var frame;
