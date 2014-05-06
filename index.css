@@ -83,3 +83,7 @@ height:100%;
          width: auto;
      }
  }
+ .hero-unit{
+ 	background-image:url(./image/back.png);
+ 	color:white;
+ }
