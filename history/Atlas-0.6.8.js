@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.6.9
+ * Atlas.js v0.6.8
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -438,27 +438,6 @@
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
         },
-        HSBtoRGB : function (h,s,v){
-		    var f,i, p, q, t;
-		    var r,g,b;
-		    i = Math.floor(h / 60.0) % 6;
-		    f = (h / 60.0) - Math.floor(h / 60.0);
-		    p = Math.round(v * (1.0 - (s / 255.0)));
-		    q = Math.round(v * (1.0 - (s / 255.0) * f));
-		    t = Math.round(v * (1.0 - (s / 255.0) * (1.0 - f)));		
-		    switch(i){
-		        case 0 : r = v; g = t; b = p; break;
-		        case 1 : r = q; g = v; b = p; break;
-		        case 2 : r = p; g = v; b = t; break;
-		        case 3 : r = p; g = q; b = v; break;
-		        case 4 : r = t; g = p; b = v; break;
-		        case 5 : r = v; g = p; b = q; break;
-		    }		
-		    if(r<=15){r="0"+r.toString(16);}else{r=r.toString(16);}
-		    if(g<=15){g="0"+g.toString(16);}else{g=g.toString(16);}
-		    if(b<=15){b="0"+b.toString(16);}else{b=b.toString(16);}
-		    return "#"+ r + g + b;	        
-        },
         getSound: function (name) {
             for (var i = 0, n = sounds.length; i < n; i++) {
                 if (name == sounds[i].name)
@@ -677,13 +656,6 @@
             this.scene.ctx = this.ctx;
             this.scene.field = this.field; 
             this.scene.parent = this;
-        },
-        getCanvasURL : function(){
-	        return this.field.toDataURL();
-        },
-        getCanvasImage : function(){
-			var url = this.field.toDataURL();
-			window.open(url,'_blank');	        
         },
         colorToAlpha : function(imagename,hex){
             var img;
@@ -1277,7 +1249,7 @@
             this.scaleX = 1;
             this.scaleY = 1;
             this.alpha = 1;
-            this.spaceWidth = 7;/*append*/
+            this.spaceWidth = 0;
             if (font)
                 this.font = "'" + font + "'";
             else
@@ -1351,7 +1323,7 @@
             ctx.scale(scaleX,scaleY);
             for (var i = 0; i < length; i++) {
                 ctx.fillText(strings[i], 0, height);
-                height *= 2;
+                y += height;
             }
             ctx.restore();
             ctx.globalAlpha = 1;
