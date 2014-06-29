@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.7.0
+ * Atlas.js v0.6.9
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -9,7 +9,6 @@
 	"use strict";
     var images = [];
     var sounds = [];
-    var svgs = [];
     var allLoaded = 0;
     var isMobile = (function(){
         var userAgent = navigator.userAgent;
@@ -789,10 +788,8 @@
                 var children = this.scene;
                 for(var i = 0,n = children.length; i < n; i++){
                     var child = children[i];
-                    if(child._onLoad)
-                        child._onLoad();//システム用
                     if(child.onLoad)
-                        child.onLoad();//フック用
+                        child.onLoad();
                 } 
                 clearInterval(this.preLoadInterval);
                 var that = this;            
@@ -903,27 +900,15 @@
                         css.styleSheet.cssText = rule;
                     else
                         css.appendChild(rule);
-                } else if(ext == "svg"){
-                    var obj = document.createElement("object");
-                    obj.addEventListener("load",function () {
-                        allLoaded--;
-                        this.style.display = "none";
-                        console.log(this.data + ' is loaded');
-                    });
-                    obj.data = data;
-                    obj.name = name;
-                    document.body.appendChild(obj);
-                    allLoaded++;
-                    svgs.push(obj);
-                }else if(ext == "png" || ext == "gif" || ext == "jpeg" || ext == "jpg"){
+                } else {
                     var obj = new Image();
+                    obj.src = data;
+                    obj.name = name;
+                    allLoaded++;
                     obj.addEventListener("load",function () {
                         allLoaded--;
                         console.log(this.src + ' is loaded');
                     });
-                    obj.src = data;
-                    obj.name = name;
-                    allLoaded++;
                     images.push(obj);
                 }
             }
@@ -1089,197 +1074,7 @@
 	        this.height = h;
         }
     });
-    var Shape = Atlas.createClass(Thing,{
-        initialize : function(path,color,lineColor){
-            this.inherit(0,0);
-            this.obj = -1;
-            if(typeof path == "object"){
-                this.path = path;
-            }else if(typeof path == "string"){
-                this.setImage(path);
-            }
-            this.closeMode = true;
-            if(color)
-                this.color = color;
-            else{
-                this.color = "original";
-            }
-            if(lineColor){
-                this.strokeColor = lineColor;
-            }else{
-                this.strokeColor = "original";
-            }
-        },
-        setImage: function (path){
-            for(var i = 0,n = svgs.length; i < n; i++){
-                if(path == svgs[i].name){
-                    this.obj = i;
-                }
-            }
-        },
-        parsePath : function(path){
-            var length = {a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0};
-            var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
-            var data = [];
-            path.replace(segment, function(_, command, args){
-                var type = command.toLowerCase();
-                args = args.match(/-?[.0-9]+(?:e[-+]?\d+)?/ig);
-                args = args ? args.map(Number) : [];
-                if (type == 'm' && args.length > 2) {
-                    data.push([command].concat(args.splice(0, 2)));
-                    type = 'l';
-                    command = command == 'm' ? 'l' : 'L';
-                }
-                while (true) {
-                    if (args.length == length[type]) {
-                        args.unshift(command);
-                        if(args[0] == "q"){
-                            var obj = {method:"quadraticCurveBy",cpx:args[1],cpy:args[2],x:args[3],y:args[4]};
-                        }else if(args[0] == "Q"){
-                            var obj = {method:"quadraticCurveTo",cpx:args[1],cpy:args[2],x:args[3],y:args[4]};
-                        }else if(args[0] == "l"){
-                            var obj = {method:"lineBy",x:args[1],y:args[2]};
-                        }else if(args[0] == "L"){
-                            var obj = {method:"lineTo",x:args[1],y:args[2]};
-                        }else if(args[0] == "m"){
-                            var obj = {method:"moveBy",x:args[1],y:args[2]};
-                        }else if(args[0] == "M"){
-                            var obj = {method:"moveTo",x:args[1],y:args[2]};
-                        }else if(args[0] == "c"){
-                            var obj = {method:"bezierCurveBy",cpx1:args[1],cpy1:args[2],cpx2:args[3],cpy2:args[4],x:args[5],y:args[6]};
-                        }else if(args[0] == "C"){
-                            var obj = {method:"bezierCurveTo",cpx1:args[1],cpy1:args[2],cpx2:args[3],cpy2:args[4],x:args[5],y:args[6]};
-                        }else if(args[0] == "h"){
-                            var obj = {method:"horizontalBy",x:args[1]};
-                        }else if(args[0] == "H"){
-                            var obj = {method:"horizontalTo",x:args[1]};
-                        }else if(args[0] == "v"){
-                            var obj = {method:"verticalBy",y:args[1]};
-                        }else if(args[0] == "V"){
-                            var obj = {method:"verticalTo",y:args[1]};
-                        }else if(args[0] == "s"){
-                            var obj = {method:"bezierCurveShortBy",cpx2:args[1],cpy2:args[2],x:args[3],y:args[4]};
-                        }else if(args[0] == "S"){
-                            var obj = {method:"bezierCurveShortTo",cpx2:args[1],cpy2:args[2],x:args[3],y:args[4]};
-                        }else if(args[0] == "t"){
-                            var obj = {method:"quadraticCurveShortBy",x:args[1],y:args[2]};
-                        }else if(args[0] == "T"){
-                            var obj = {method:"quadraticCurveShortTo",x:args[1],y:args[2]};
-                        }else{
-                            var obj = {};
-                        }
-                        return data.push(obj);
-                    }
-                    data.push([command].concat(args.splice(0, length[type])));
-                }
-            });
-            return data;
-        },
-        _onLoad : function(){
-            var svgdoc  = svgs[this.obj].getSVGDocument();
-            var element = svgdoc.getElementsByTagName("path")[0];
-            var svg = svgdoc.getElementsByTagName("svg")[0];
-            var path = element.getAttribute("d");
-            if(this.color == "original"){
-                this.color = element.getAttribute("fill");
-            }
-            if(this.strokeColor == "original"){
-                this.strokeColor == element.getAttribute("stroke");
-            }
-            this.path = this.parsePath(path);
-            this.spriteWidth = parseInt(svg.getAttribute("width"));
-            this.spriteHeight = parseInt(svg.getAttribute("height"));
-            console.log(this.width);
-            if(!this.width){
-                this.width = this.spriteWidth;
-            }
-            if(!this.height){
-                this.height = this.spriteHeight;
-            }
-        },
-        draw : function(){
-            var path = this.path;
-            var ctx = this.ctx;
-            var x = 0;
-            var y = 0;
-            var tmpx = 0;
-            var tmpy = 0;
-            var rcpx = 0;
-            var rcpy = 0;
-            var width = this.width;
-            var height = this.height;
-            var scaleX = width / this.spriteWidth;
-            var scaleY = height / this.spriteHeight;
-            var cX = width / 2;
-            var cY = height / 2;
-            ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
-            ctx.save();
-            ctx.translate(this.x+cX,this.y+cY);
-            ctx.rotate(this.rot);
-            ctx.translate(-cX, -cY);
-            ctx.scale(scaleX,scaleY);
-            ctx.beginPath();
-            for(var i = 0,n = path.length; i < n; i++){
-                var p = this.path[i];
-                var method = p.method;
-                if(method == "moveTo" || method == "quadraticCurveTo" || method == "bezierCurveTo" || method == "lineTo" || method == "bezierCurveShortTo" || method ==                 "quadraticCurveShortTo"){/*絶対*/
-                    tmpx = 0;
-                    tmpy = 0;
-                    x = p.x;
-                    y = p.y;
-                }else{/*相対*/
-                    tmpx = x;
-                    tmpy = y;
-                    x += p.x;
-                    y += p.y;
-                }
-                if(method == "moveTo" || method == "moveBy"){
-                    ctx.moveTo(x,y);
-                }else if(method == "lineTo" || method == "lineBy"){
-                    ctx.lineTo(x,y);
-                }else if(method == "quadraticCurveBy" || method == "quadraticCurveTo"){
-                    ctx.quadraticCurveTo(tmpx+p.cpx,tmpy+p.cpy,x,y);
-                    rcpx = 2*x - (tmpx+p.cpx);
-                    rcpy = 2*y - (tmpy+p.cpy);
-                }else if(method == "bezierCurveTo" || method == "bezierCurveBy"){
-                    ctx.bezierCurveTo(tmpx+p.cpx1,tmpy+p.cpy1,tmpx+p.cpx2,tmpy+p.cpy2,x,y);
-                    rcpx = 2*x - (tmpx+p.cpx2);
-                    rcpy = 2*y - (tmpy+p.cpy2);
-                }else if(method == "horizontalTo" || method == "horizontalBy"){
-                    ctx.lineTo(p.x,y);
-                }else if(method == "verticalTo" || method == "verticalBy"){
-                    ctx.lineTo(x,p.y);
-                }else if(method == "bezierCurveShortBy" || method == "bezierCurveShortTo"){
-                    ctx.bezierCurveTo(rcpx,rcpy,tmpx+p.cpx2,tmpy+p.cpy2,x,y);
-                    rcpx = 2*x - (tmpx+p.cpx2);
-                    rcpy = 2*y - (tmpy+p.cpy2);
-                }else if(method == "quadraticCurveShortBy" || method == "quadraticCurveShortTo"){
-                    ctx.quadraticCurveTo(rcpx,rcpy,x,y);
-                    rcpx = 2*x - rcpx;
-                    rcpy = 2*y - rcpy;
-                }
-            }
-            if(this.closeMode){
-                ctx.closePath();
-            }
-            ctx.fillStyle = this.color;
-            ctx.fill();
-            ctx.strokeStyle = this.strokeColor;
-            ctx.stroke();
-            ctx.restore();
-        },
-        getNodeByName : function(name){
-            var path = this.path;
-            for(var i = 0,n = path.length; i < n; i++){
-                var p = path[i];
-                if(name == p.name){
-                    return p;
-                }
-            }
-            return -1;
-        },
-    });
+    var Shape = new Object();
     Shape.Box = Atlas.createClass(Thing, {
         initialize: function (col, width, height) {
             this.inherit(width,height);
@@ -1562,6 +1357,57 @@
             ctx.globalAlpha = 1;
         }
     });
+    var Input = Atlas.createClass(Text,{
+        initialize : function(image,width,height,col,font){
+            this.inherit("",col,height-5,font);
+            this.box = new Atlas.Sprite(image);
+            this.box.width = width;
+            this.box.height = height;
+            var element = document.createElement('input');
+            element.style.position = "absolute";
+            element.style.zIndex = -1;
+            element.parent = this;
+            var Body = document.getElementsByTagName("body").item(0);
+            Body.appendChild(element);
+            this.element = element;
+            element.addEventListener('input', 
+                function() {
+                    var parent = this.parent;
+                    var ctx = parent.ctx;
+                    var tmp = this.value;
+                    while(ctx.measureText(tmp).width > parent.box.width){
+                        tmp = tmp.slice(1,tmp.length);
+                    }
+                    parent.string = tmp;
+                }
+            );
+        },
+        onLoad : function(){
+            this.element.style.top = this.field.style.top;
+            this.element.style.left = this.field.style.left;
+            this.element.style.marginTop = this.field.style.marginTop;
+            this.element.style.marginLeft = this.field.style.marginLeft;
+            var box = this.box;
+            var img = box.getImage();
+            box.setSpriteSize(img.width,img.height);
+            box.field = this.field;
+            box.ctx = this.ctx;
+            box.setPosition(this.x,this.y);
+            this.parent.addChild(box);
+        },
+        enterFrame : function(){
+            var box = this.box;
+            box.setPosition(this.x,this.y);
+        },
+        touchStart : function(e){
+            if(this.box.intersect(e.x,e.y)){
+                this.element.focus();
+            }
+        },
+        getValue : function(){
+            return this.element.value;
+        }
+    });
     var Group = Atlas.createClass(Thing,{
         initialize:function(){
             this.inherit();
@@ -1622,5 +1468,6 @@
     Atlas.Map = Map;
     Atlas.Text = Text;
     Atlas.Scene = Scene;
+    Atlas.Input = Input;
     Atlas.Group = Group;
 })();
