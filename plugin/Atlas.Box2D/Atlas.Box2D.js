@@ -1,3 +1,9 @@
+/**
+ * Atlas.Box2D.js v0.1.0
+ * https://github.com/steelydylan/Atlas.js
+ * Copyright Xipher
+ * Released under the MIT license.
+ */
 (function(){
     var   b2Vec2 = Box2D.Common.Math.b2Vec2
     ,  b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -33,7 +39,6 @@
             this.x = SCALE*(this.body.GetBody().GetPosition().x - this.width/(SCALE*2));
             this.y = SCALE*(this.body.GetBody().GetPosition().y - this.height/(SCALE*2));
             this.rot = this.body.GetBody().GetAngle();
-            if(this.body.sleep){this.color = "#FFFFFF";}
         }
     };
 
