@@ -9,7 +9,7 @@
     <script type="text/javascript" src="Atlas.Box2D.js"></script>
     <script type="text/javascript">
         Atlas();
-        var SCALE = 10;
+ 
         window.onload = function(){
             var app = new App();
             app.setSize(500,500);
@@ -17,7 +17,7 @@
             app.setColor("black");
             app.centerize();
             app.fps = 60;
-            app.createGround(0,450/SCALE,2000/SCALE,0.5);
+            app.createGround(0,450,2000,0.5);
             for(var i = 0; i < 50; i++){
                 /*
                 var shape = new Shape.Box("red",app.getRand(20,40),app.getRand(20,40));
@@ -28,12 +28,8 @@
                 }
                 app.addChild(shape);
                 */
-                var shape = new PhysBox("red",
-                                        app.getRand(20,40),
-                                        app.getRand(20,40),
-                                        app.getRand(0,500),
-                                        app.getRand(0,100)
-                                        );
+                var shape = new PhysBox("red",app.getRand(20,40),app.getRand(20,40),);
+                shape.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(shape);
             };
             app.start();
