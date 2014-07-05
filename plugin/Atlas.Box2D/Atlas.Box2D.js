@@ -20,18 +20,36 @@
         ,  true                 //allow sleep
     );
     var SCALE = 10;
-    
-    PhysBox = Atlas.createClass(Atlas.Shape.Box,{
-        initialize : function(color, width, height){
-            this.inherit(color, width, height);
-            this._applyPhisics();
-            this.setPosition(0,0);
+
+    var Mixin = {
+        setPosition: function (x, y) {
+            //var pos = new b2Vec2(x/SCALE,y/SCALE);
+            this.body.GetBody().SetPosition(new b2Vec2(x/SCALE,y/SCALE));
+            this.x = x;
+            this.y = y;
+            return this;
         },
         _enterFrame : function(){
             this.x = SCALE*(this.body.GetBody().GetPosition().x - this.width/(SCALE*2));
             this.y = SCALE*(this.body.GetBody().GetPosition().y - this.height/(SCALE*2));
             this.rot = this.body.GetBody().GetAngle();
             if(this.body.sleep){this.color = "#FFFFFF";}
+        }
+    };
+
+    PhysBox = Atlas.createClass(Atlas.Shape.Box,{
+        initialize : function(color, width, height){
+            this.inherit(color, width, height);
+            this._applyPhisics();
+            this.setPosition(0,0);
+        },
+        initialize : function(color, width, height,density,friction,restitution){
+            this.inherit(color, width, height);
+            this._applyPhisics();
+            fixDef.density = density;
+            fixDef.friction = friction;
+            fixDef.restitution = restitution;
+            //this.setPosition(0,0);
         },
         _applyPhisics:function(){
             bodyDef.type = b2Body.b2_dynamicBody;
@@ -44,18 +62,11 @@
             bodyDef.position.y = this.y/SCALE;
             bodyDef.angle = this.rot;
             this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        },
-        setPosition: function (x, y) {
-            var pos = new b2Vec2(x/SCALE,y/SCALE);
-            this.body.GetBody().SetPosition(pos);
-            this.x = x;
-            this.y = y;
-            return this;
         }
     });
-    
-    
-    
+
+    Atlas.extendClass(PhysBox,Mixin);
+
     Atlas.extendClass(Atlas.App,{
         createGround:function(x,y,width,height){
             bodyDef.type = b2Body.b2_staticBody;
