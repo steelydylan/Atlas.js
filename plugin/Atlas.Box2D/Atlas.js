@@ -619,6 +619,8 @@
                 }
                 if(target.useEvent)
                     target.useEvent();
+                if(target._enterFrame)
+                    target._enterFrame();
                 if(target.enterFrame)
                     target.enterFrame();
                 if(target.tween)

@@ -10,20 +10,22 @@
          ,  b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
          ,  b2DebugDraw = Box2D.Dynamics.b2DebugDraw
       var fixDef = new b2FixtureDef;
-      fixDef.density = 1.0;
+      fixDef.density = 5;
       fixDef.friction = 0.5;
       fixDef.restitution = 0.5;
       var bodyDef = new b2BodyDef;
       bodyDef.type = b2Body.b2_dynamicBody; 
       var world = new b2World(
-         new b2Vec2(0, 100)    //gravity
+         new b2Vec2(0, 150)    //gravity
          ,  true                 //allow sleep
       );
       Atlas.extendClass(Atlas.Thing,{
-         enterFrame:function(){
-            this.x = this.body.GetBody().GetPosition().x - this.width/2;
-            this.y = this.body.GetBody().GetPosition().y - this.height/2;
-            this.rot = this.body.GetBody().GetAngle();
+         _enterFrame:function(){
+            if(this.body){
+               this.x = this.body.GetBody().GetPosition().x - this.width/2;
+               this.y = this.body.GetBody().GetPosition().y - this.height/2;
+               this.rot = this.body.GetBody().GetAngle();
+            }
          },
          applyPhisics:function(){
             bodyDef.type = b2Body.b2_dynamicBody;
@@ -36,6 +38,9 @@
             bodyDef.position.y = this.y;
             this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
          },
+         changeBody:function(){
+
+         }
       });
       Atlas.extendClass(Atlas.App,{
          createGround:function(x,y,width,height){
