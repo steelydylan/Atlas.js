@@ -24,8 +24,8 @@
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
         initialize : function(color, width, height){
             this.inherit(color, width, height);
-            this.setPosition(0,0);
             this._applyPhisics();
+            this.setPosition(0,0);
         },
         _enterFrame : function(){
             this.x = SCALE*(this.body.GetBody().GetPosition().x - this.width/(SCALE*2));
@@ -46,7 +46,8 @@
             this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         },
         setPosition: function (x, y) {
-            this.body.setPosition(x/SCALE,y/SCALE);
+            var pos = new b2Vec2(x/SCALE,y/SCALE);
+            this.body.GetBody().SetPosition(pos);
             this.x = x;
             this.y = y;
             return this;
