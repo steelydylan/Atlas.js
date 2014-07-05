@@ -43,17 +43,12 @@
     };
 
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
-        initialize : function(color, width, height){
-            this.inherit(color, width, height);
-            this._applyPhisics();
-            this.setPosition(0,0);
-        },
         initialize : function(color, width, height,density,friction,restitution){
             this.inherit(color, width, height);
             this._applyPhisics();
-            fixDef.density = density;
-            fixDef.friction = friction;
-            fixDef.restitution = restitution;
+            fixDef.density = density || 1.0;
+            fixDef.friction = friction || 0.5;
+            fixDef.restitution = restitution || 0.5;
             //this.setPosition(0,0);
         },
         _applyPhisics:function(){
