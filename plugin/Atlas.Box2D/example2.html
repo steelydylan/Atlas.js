@@ -1,28 +1,42 @@
 <html>
-   <head>
-      <title>Box2dWeb example</title>
-   </head>
-   <body>
-   </body>
-   <script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
-   <script type="text/javascript" src="Atlas.js"></script>
-   <script type="text/javascript" src="Atlas.Box2D.js"></script>
-   <script type="text/javascript">
-      Atlas();
-      window.onload = function(){
-         var app = new App();
-         app.setSize(500,500);
-         app.setQuality(500,500);
-         app.setColor("black");
-         app.centerize();
-         app.createGround(0,450,500,0.5);
-         for(var i = 0; i < 50; i++){
-            var shape = new Shape.Box("red",20,30);
-            shape.setPosition(app.getRand(0,200),app.getRand(0,200));
-            shape.applyPhisics();
-            app.addChild(shape);
-         };
-         app.start();
-      };
-   </script>
+    <head>
+        <title>Box2dWeb example</title>
+    </head>
+    <body>
+    </body>
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+    <script type="text/javascript" src="Atlas.js"></script>
+    <script type="text/javascript" src="Atlas.Box2D.js"></script>
+    <script type="text/javascript">
+        Atlas();
+        var SCALE = 10;
+        window.onload = function(){
+            var app = new App();
+            app.setSize(500,500);
+            app.setQuality(500,500);
+            app.setColor("black");
+            app.centerize();
+            app.fps = 60;
+            app.createGround(0,450/SCALE,2000/SCALE,0.5);
+            for(var i = 0; i < 50; i++){
+                /*
+                var shape = new Shape.Box("red",app.getRand(20,40),app.getRand(20,40));
+                shape.setPosition(app.getRand(50,450),app.getRand(0,100));
+                shape._applyPhisics();
+                shape.enterFrame = function(){
+                    this._enterFrame();
+                }
+                app.addChild(shape);
+                */
+                var shape = new PhysBox("red",
+                                        app.getRand(20,40),
+                                        app.getRand(20,40),
+                                        app.getRand(0,500),
+                                        app.getRand(0,100)
+                                        );
+                app.addChild(shape);
+            };
+            app.start();
+        };
+    </script>
 </html>
