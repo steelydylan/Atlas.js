@@ -62,11 +62,12 @@
 
     //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
-        initialize : function(color, width, height,density,friction,restitution){
+        initialize : function(color, width, height,body){
+            body = body || {};
             this.inherit(color, width, height);
-            fixDef.density = density || 1.0;
-            fixDef.friction = friction || 0.5;
-            fixDef.restitution = restitution || 0.5;
+            fixDef.density = body.density || 1.0;
+            fixDef.friction = body.friction || 0.5;
+            fixDef.restitution = body.restitution || 0.5;
             this._applyPhisics("Box");
         },
     });
@@ -75,11 +76,12 @@
 
     //物理演算含む丸の生成クラス
     PhysCircle = Atlas.createClass(Atlas.Shape.Circle,{
-        initialize : function(color, radius, density,friction,restitution){
+        initialize : function(color, radius, body){
+            body = body || {};
             this.inherit(color, radius);
-            fixDef.density = density || 1.0;
-            fixDef.friction = friction || 0.5;
-            fixDef.restitution = restitution || 0.5;
+            fixDef.density = body.density || 1.0;
+            fixDef.friction = body.friction || 0.5;
+            fixDef.restitution = body.restitution || 0.5;
             this._applyPhisics("Circle");
         },
     });
@@ -87,12 +89,13 @@
     Atlas.extendClass(PhysCircle,Mixin);
 
     PhysSprite = Atlas.createClass(Atlas.Sprite,{
-        initialize : function(image, width, height, type, density, friction, restitution){
+        initialize : function(image, width, height, body){
+            body = body || {};
             this.inherit(image, width, height);
-            fixDef.density = density || 1.0;
-            fixDef.friction = friction || 0.5;
-            fixDef.restitution = restitution || 0.5;
-            this._applyPhisics(type || "Box");
+            fixDef.density = body.density || 1.0;
+            fixDef.friction = body.friction || 0.5;
+            fixDef.restitution = body.restitution || 0.5;
+            this._applyPhisics(body.type || "Box");
         },
     });
 

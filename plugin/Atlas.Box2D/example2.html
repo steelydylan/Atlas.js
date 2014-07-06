@@ -34,41 +34,40 @@
                 var shape = new PhysBox("red",
                                         app.getRand(10,50),
                                         app.getRand(10,50),
-                                        Math.random() * 4 + 1,
-                                        Math.random() * 0.9 + 0.1,
-                                        Math.random() * 0.5 +0.3
-                                       );
+                                        {density:Math.random() * 4 + 1,
+                                        friction:Math.random() * 0.9 + 0.1,
+                                        restitution:Math.random() * 0.5 +0.3
+                                        });
                 shape.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(shape);     
 
                 var shape = new PhysCircle("blue",
                                            app.getRand(10,50),
-                                           Math.random() * 4 + 1,
-                                           Math.random() * 0.9 + 0.1,
-                                           Math.random() * 0.5 +0.3
-                                          );
+                                           {density:Math.random() * 4 + 1,
+                                           restitution:Math.random() * 0.5 +0.3,
+                                           friction:Math.random() * 0.9 + 0.1
+                                           });
                 shape.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(shape);
 
                 var sprite = new PhysSprite("box",
                                             30,
                                             30,
-                                            "Box",
-                                            Math.random() * 4 + 1,
-                                            Math.random() * 0.9 + 0.1,
-                                            Math.random() * 0.5 +0.3
-                                           );
+                                             {restitution:Math.random() * 0.5 +0.3,
+                                             density:Math.random() * 4 + 1,
+                                             friction:Math.random() * 0.9 + 0.1,
+                                             });
                 sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(sprite);
 
                 var sprite = new PhysSprite("maru",
                                             50,
                                             50,
-                                            "Circle",
-                                            Math.random() * 4 + 1,
-                                            Math.random() * 0.9 + 0.1,
-                                            Math.random() * 0.5 +0.3
-                                           );
+                                            {type:"Circle",
+                                             restitution:Math.random() * 0.5 +0.3,
+                                             density:Math.random() * 4 + 1,
+                                             friction:Math.random() * 0.9 + 0.1,
+                                            });
                 sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(sprite);
             };
