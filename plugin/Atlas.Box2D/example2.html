@@ -43,7 +43,7 @@
 
                 var shape = new PhysCircle("blue",
                                            app.getRand(10,50),
-                                           {density:Math.random() * 4 + 1,
+                                           {density:Math.random() * 1 + 1,
                                             restitution:Math.random() * 0.5 +0.3,
                                             friction:Math.random() * 0.9 + 0.1
                                            });
@@ -54,7 +54,7 @@
                                             30,
                                             30,
                                             {restitution:Math.random() * 0.5 +0.3,
-                                             density:Math.random() * 4 + 1,
+                                             density:Math.random() * 1 + 1,
                                              friction:Math.random() * 0.9 + 0.1,
                                             });
                 sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
@@ -65,7 +65,7 @@
                                             50,
                                             {type:"Circle",
                                              restitution:Math.random() * 0.5 +0.3,
-                                             density:Math.random() * 4 + 1,
+                                             density:Math.random() * 1 + 1,
                                              friction:Math.random() * 0.9 + 0.1,
                                             });
                 sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
@@ -81,7 +81,7 @@
                                         });
             moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
             moveshape.keyDown = function(key){
-                this.applyImpulse(1000,1000);
+                this.applyImpulse(0,-100);
             };
             app.addChild(moveshape);     
             app.start();
