@@ -1307,7 +1307,7 @@
     });
     Shape.Circle = Atlas.createClass(Thing, {
         initialize: function (col, radius) {
-            this.inherit(radius * 2,0);
+            this.inherit(radius * 2,radius * 2);
             this._basicConstructor = "Shape";
             this.color = col;
             this.collisionShape = "circle";
