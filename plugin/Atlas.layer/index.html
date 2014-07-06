@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Atlasテスト</title>
+	<script type="text/javascript" src="Atlas.js"></script>
+	<script type="text/javascript" src="Atlas.layer.js"></script>
+	<script>
+		Atlas();
+		window.onload = function(){
+			var app = new App();
+			app.setQuality(500,500);
+			app.setSize(500,500);
+			app.centerize();
+			app.load(["chara2.png","chara"],["logo.png","logo"]);
+			var sprite = new Sprite("chara",32,32);
+			sprite.setPosition(130,140);
+			var logo = new Sprite("logo",296,238);
+			logo.setPosition(150,150);
+			var layer = new Layer();
+			var sprite2 = new Sprite("chara",32,32);
+			sprite2.setPosition(10,10);
+			sprite2.moveBy(100,100,30);
+			sprite.rotateBy(Math.PI/2,30);
+			layer.addChildren(sprite,logo);
+			layer.x = -50;
+			layer.scaleBy(2,2,30).rotateBy(Math.PI/2,30).moveBy(-200,0,30);
+			app.addChildren(layer,sprite2);
+			app.start();
+		}
+	</script>
+</head>
+<body>
+</body>
+</html>

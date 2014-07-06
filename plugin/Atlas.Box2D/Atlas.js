@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.7.0
+ * Atlas.js v0.7.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -551,12 +551,20 @@
         addChild: function(sprite){
             sprite.parent = this;
             //for Group
-            if(sprite.children){
+            if(sprite._basicConstructor == "Group" || sprite._basicConstructor == "Layer"){
                 var children = sprite.children;
                 for(var i = 0,n = children.length; i < n; i++){
                     var child = children[i];
                     child.ctx = this.ctx;
                     child.field = this.field;
+                }
+                if(sprite._basicConstructor == "Layer"){
+                    if(!sprite.width){
+                        sprite.width = parseInt(this.field.style.width);
+                    }
+                    if(!sprite.height){
+                        sprite.height = parseInt(this.field.style.height);
+                    }
                 }
             }
             if(this.ctx && this.field){
@@ -956,7 +964,7 @@
         intersect: function (ex, ey) {
             var thisx = this.x;
             var thisy = this.y;
-            if(this.parent.className == "Group"){
+            if(this.parent._basicConstructor == "Group"){
                 thisx += this.parent.x;
                 thisy += this.parent.y;
             }
@@ -1214,11 +1222,14 @@
             var scaleY = height / this.spriteHeight;
             var cX = width / 2;
             var cY = height / 2;
+            var transX = this._x || this.x;
+            var transY = this._y || this.y;
+            var rot = this._rot || this.rot;
             ctx.globalAlpha = this.alpha;
             ctx.globalCompositeOperation = this.drawMode;
             ctx.save();
-            ctx.translate(this.x+cX,this.y+cY);
-            ctx.rotate(this.rot);
+            ctx.translate(transX+cX,transY+cY);
+            ctx.rotate(rot);
             ctx.translate(-cX, -cY);
             ctx.scale(scaleX,scaleY);
             ctx.beginPath();
@@ -1294,13 +1305,20 @@
             ctx.globalCompositeOperation = this.drawMode;
             ctx.beginPath();
             ctx.fillStyle = this.color;
-            var moveX = this.x + this.width / 2;
-            var moveY = this.y + this.height / 2;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
+            var width = this._width || this.width;
+            var height = this._height || this.height;
+            var moveX = x + this.width / 2;
+            var moveY = y + this.height / 2;
             ctx.save();
             ctx.translate(moveX, moveY);
-            ctx.rotate(this.rot);
+            ctx.rotate(rot);
             ctx.translate(-moveX, -moveY);
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            ctx.fillRect(x, y, this.width, this.height);
             ctx.restore();
             ctx.globalAlpha = 1;
         }
@@ -1318,8 +1336,11 @@
             ctx.globalCompositeOperation = this.drawMode;
             ctx.beginPath();
             ctx.fillStyle = this.color;
-            var plus = this.width / 2;
-            ctx.arc(this.x + plus, this.y + plus, plus, 0, Math.PI * 2, false);
+            var width = this._width || this.width;
+            var plus = width / 2;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            ctx.arc(x+ plus, y + plus, plus, 0, Math.PI * 2, false);
             ctx.fill();
             ctx.globalAlpha = 1;
         }
@@ -1381,17 +1402,22 @@
             var image = images[this.img];
             var SizeX = this.spriteWidth;
             var SizeY = this.spriteHeight;
-            var cX = this.width / 2;
-            var cY = this.height / 2;
+            var width = this._width || this.width;
+            var height = this._height || this.height;
+            var cX = width / 2;
+            var cY = height / 2;
             var numX = image.width / SizeX;
             var numY = image.height / SizeY;
-            var scaleX = this.width / SizeX;
-            var scaleY = this.height / SizeY;
+            var scaleX = width / SizeX;
+            var scaleY = height / SizeY;
             var dx = (frame % numX) * SizeX;
             var dy = (~~(frame / numX) % numY) * SizeY;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
             ctx.save();
-            ctx.translate(this.x + cX, this.y + cY);
-            ctx.rotate(this.rot);
+            ctx.translate(x + cX, y + cY);
+            ctx.rotate(rot);
             ctx.translate(-cX, -cY);
             ctx.scale(scaleX, scaleY);
             if(dx != null)
@@ -1451,6 +1477,8 @@
             var scaleY = this.height / SizeY;
             var dx = (frame % numX) * SizeX;
             var dy = (~~(frame / numX) % numY) * SizeY;
+            var transX = this._x || this.x;
+            var transY = this._y || this.y;
             while (i < y) {
                 while (t < x) {
                     frame = array[i][t];
@@ -1458,7 +1486,7 @@
                         var dx = (frame % numX) * SizeX;
                         var dy = (~~(frame / numX) % numY) * SizeY;
                         ctx.save();
-                        ctx.translate(this.x, this.y);
+                        ctx.translate(transX, transY);
                         ctx.scale(scaleX, scaleY);
                         ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
                         ctx.restore();
@@ -1537,8 +1565,9 @@
             this.scaleY = obj.scaleY - obj.diffHeight * (1 - obj.time / obj.frame)     
         },
         draw: function () {
-            var x = this.x;
-            var y = this.y;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
             var scaleX = this.scaleX;
             var scaleY = this.scaleY;
             var ctx = this.ctx;
@@ -1553,7 +1582,7 @@
             var cX = parseInt(this.size) * this.scaleX * this.string.length / 2;
 			var cY = parseInt(this.size) * this.scaleY / 2;
             ctx.translate(x + cX,y + cY);
-            ctx.rotate(this.rot);
+            ctx.rotate(rot);
             ctx.translate(-cX,-cY);
             ctx.scale(scaleX,scaleY);
             for (var i = 0; i < length; i++) {
@@ -1567,6 +1596,8 @@
     var Group = Atlas.createClass(Thing,{
         initialize:function(){
             this.inherit();
+            this.x = 0;
+            this.y = 0;
             this.children = [];
             this._basicConstructor = "Group";
             for(var i = 0,n = arguments.length; i < n; i++){
