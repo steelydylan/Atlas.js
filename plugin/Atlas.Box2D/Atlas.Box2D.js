@@ -39,7 +39,11 @@
             this.y = SCALE*(this.body.GetBody().GetPosition().y - this.height/(SCALE*2));
             this.rot = this.body.GetBody().GetAngle();
         },
-        _applyPhisics:function(shape){
+        _applyPhisics:function(shape,body){
+            body = body || {};
+            fixDef.density = body.density || 1.0;
+            fixDef.friction = body.friction || 0.5;
+            fixDef.restitution = body.restitution || 0.5;
             if(shape == "Box"){
                bodyDef.type = b2Body.b2_dynamicBody;
                fixDef.shape = new b2PolygonShape;
@@ -68,12 +72,8 @@
     //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
         initialize : function(color, width, height,body){
-            body = body || {};
             this.inherit(color, width, height);
-            fixDef.density = body.density || 1.0;
-            fixDef.friction = body.friction || 0.5;
-            fixDef.restitution = body.restitution || 0.5;
-            this._applyPhisics("Box");
+            this._applyPhisics("Box",body);
         },
     });
 
@@ -82,12 +82,8 @@
     //物理演算含む丸の生成クラス
     PhysCircle = Atlas.createClass(Atlas.Shape.Circle,{
         initialize : function(color, radius, body){
-            body = body || {};
             this.inherit(color, radius);
-            fixDef.density = body.density || 1.0;
-            fixDef.friction = body.friction || 0.5;
-            fixDef.restitution = body.restitution || 0.5;
-            this._applyPhisics("Circle");
+            this._applyPhisics("Circle",body);
         },
     });
 
@@ -95,12 +91,8 @@
 
     PhysSprite = Atlas.createClass(Atlas.Sprite,{
         initialize : function(image, width, height, body){
-            body = body || {};
             this.inherit(image, width, height);
-            fixDef.density = body.density || 1.0;
-            fixDef.friction = body.friction || 0.5;
-            fixDef.restitution = body.restitution || 0.5;
-            this._applyPhisics(body.type || "Box");
+            this._applyPhisics(body.type || "Box",body);
         },
     });
 
