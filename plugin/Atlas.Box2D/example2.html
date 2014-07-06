@@ -20,68 +20,62 @@
             app.createGround(0,450,2000,0.5);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404611189/azprtifle4fxm3zq0xbs.png","box"]);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404612044/emzjwlg8r0xbvi60x5tr.png","maru"]);
+            /*
             for(var i = 0; i < 10; i++){
-                /*
-                var shape = new Shape.Box("red",app.getRand(20,40),app.getRand(20,40));
-                shape.setPosition(app.getRand(50,450),app.getRand(0,100));
-                shape._applyPhisics();
-                shape.enterFrame = function(){
-                    this._enterFrame();
-                }
-                app.addChild(shape);
-                */
 
-                var shape = new PhysBox("red",
-                                        app.getRand(10,50),
-                                        app.getRand(10,50),
-                                        {density:Math.random() * 4 + 1,
+            var shape = new PhysBox("red",
+                                    app.getRand(10,50),
+                                    app.getRand(10,50),
+                                    {density:Math.random() * 4 + 1,
+                                     friction:Math.random() * 0.9 + 0.1,
+                                     restitution:Math.random() * 0.5 +0.3
+                                    });
+            shape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(shape);     
+
+            var shape = new PhysCircle("blue",
+                                       app.getRand(10,50),
+                                       {density:Math.random() * 1 + 1,
+                                        restitution:Math.random() * 0.5 +0.3,
+                                        friction:Math.random() * 0.9 + 0.1
+                                       });
+            shape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(shape);
+
+            var sprite = new PhysSprite("box",
+                                        30,
+                                        30,
+                                        {restitution:Math.random() * 0.5 +0.3,
+                                         density:Math.random() * 1 + 1,
                                          friction:Math.random() * 0.9 + 0.1,
-                                         restitution:Math.random() * 0.5 +0.3
                                         });
-                shape.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(shape);     
+            sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(sprite);
 
-                var shape = new PhysCircle("blue",
+            var sprite = new PhysSprite("maru",
+                                        50,
+                                        50,
+                                        {type:"Circle",
+                                         restitution:Math.random() * 0.5 +0.3,
+                                         density:Math.random() * 1 + 1,
+                                         friction:Math.random() * 0.9 + 0.1,
+                                        });
+            sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(sprite);
+        };
+        */
+
+            var moveshape = new PhysCircle("green",
                                            app.getRand(10,50),
-                                           {density:Math.random() * 1 + 1,
-                                            restitution:Math.random() * 0.5 +0.3,
-                                            friction:Math.random() * 0.9 + 0.1
+                                           {density:Math.random() * 4 + 1,
+                                            friction:Math.random() * 0.9 + 0.1,
+                                            restitution:Math.random() * 0.5 +0.3
                                            });
-                shape.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(shape);
-
-                var sprite = new PhysSprite("box",
-                                            30,
-                                            30,
-                                            {restitution:Math.random() * 0.5 +0.3,
-                                             density:Math.random() * 1 + 1,
-                                             friction:Math.random() * 0.9 + 0.1,
-                                            });
-                sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(sprite);
-
-                var sprite = new PhysSprite("maru",
-                                            50,
-                                            50,
-                                            {type:"Circle",
-                                             restitution:Math.random() * 0.5 +0.3,
-                                             density:Math.random() * 1 + 1,
-                                             friction:Math.random() * 0.9 + 0.1,
-                                            });
-                sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(sprite);
-            };
-
-            var moveshape = new PhysBox("green",
-                                        app.getRand(10,50),
-                                        app.getRand(10,50),
-                                        {density:Math.random() * 4 + 1,
-                                         friction:Math.random() * 0.9 + 0.1,
-                                         restitution:Math.random() * 0.5 +0.3
-                                        });
             moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
             moveshape.keyDown = function(key){
-                this.applyImpulse(0,-100);
+                if(key.up){this.applyImpulse(0,-1000);}
+                if(key.right){this.applyImpulse(1000,-100);}
+                if(key.left){this.applyImpulse(-1000,-100);}
             };
             app.addChild(moveshape);     
             app.start();
