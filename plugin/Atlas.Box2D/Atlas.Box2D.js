@@ -38,6 +38,25 @@
             this.x = SCALE*(this.body.GetBody().GetPosition().x - this.width/(SCALE*2));
             this.y = SCALE*(this.body.GetBody().GetPosition().y - this.height/(SCALE*2));
             this.rot = this.body.GetBody().GetAngle();
+        },
+        _applyPhisics:function(shape){
+            if(shape == "Box"){
+               bodyDef.type = b2Body.b2_dynamicBody;
+               fixDef.shape = new b2PolygonShape;
+               fixDef.shape.SetAsBox(
+                     this.width/(SCALE*2) //half width
+                ,    this.height/(SCALE*2) //half height
+               );
+            }else if(shape == "Circle"){
+               bodyDef.type = b2Body.b2_dynamicBody;
+               fixDef.shape = new b2CircleShape(
+                  this.width/SCALE/2 //radius
+               );
+            }
+            bodyDef.position.x = this.x/SCALE;
+            bodyDef.position.y = this.y/SCALE;
+            bodyDef.angle = this.rot;
+            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         }
     };
 
@@ -48,20 +67,8 @@
             fixDef.density = density || 1.0;
             fixDef.friction = friction || 0.5;
             fixDef.restitution = restitution || 0.5;
-            this._applyPhisics();
+            this._applyPhisics("Box");
         },
-        _applyPhisics:function(){
-            bodyDef.type = b2Body.b2_dynamicBody;
-            fixDef.shape = new b2PolygonShape;
-            fixDef.shape.SetAsBox(
-                this.width/(SCALE*2) //half width
-                ,  this.height/(SCALE*2) //half height
-            );
-            bodyDef.position.x = this.x/SCALE;
-            bodyDef.position.y = this.y/SCALE;
-            bodyDef.angle = this.rot;
-            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        }
     });
 
     Atlas.extendClass(PhysBox,Mixin);
@@ -73,18 +80,8 @@
             fixDef.density = density || 1.0;
             fixDef.friction = friction || 0.5;
             fixDef.restitution = restitution || 0.5;
-            this._applyPhisics();
+            this._applyPhisics("Circle");
         },
-        _applyPhisics:function(){
-            bodyDef.type = b2Body.b2_dynamicBody;
-            fixDef.shape = new b2CircleShape(
-                this.width/SCALE/2 //radius
-            );
-            bodyDef.position.x = this.x/SCALE;
-            bodyDef.position.y = this.y/SCALE;
-            bodyDef.angle = this.rot;
-            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        }
     });
 
     Atlas.extendClass(PhysCircle,Mixin);
@@ -97,24 +94,6 @@
             fixDef.restitution = restitution || 0.5;
             this._applyPhisics(type || "Box");
         },
-        _applyPhisics:function(type){
-            bodyDef.type = b2Body.b2_dynamicBody;
-            if(type == "Box"){
-                fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(
-                    this.width/(SCALE*2) //half width
-                    ,  this.height/(SCALE*2) //half height
-                );
-            }else{
-                fixDef.shape = new b2CircleShape(
-                    this.width/SCALE/2 //radius
-                );
-            }
-            bodyDef.position.x = this.x/SCALE;
-            bodyDef.position.y = this.y/SCALE;
-            bodyDef.angle = this.rot;
-            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        }
     });
 
     Atlas.extendClass(PhysSprite,Mixin);
