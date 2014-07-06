@@ -40,7 +40,7 @@
             this.rot = this.body.GetBody().GetAngle();
         }
     };
-    
+
     //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
         initialize : function(color, width, height,density,friction,restitution){
@@ -88,6 +88,36 @@
     });
 
     Atlas.extendClass(PhysCircle,Mixin);
+
+    PhysSprite = Atlas.createClass(Atlas.Sprite,{
+        initialize : function(image, width, height, type, density, friction, restitution){
+            this.inherit(image, width, height);
+            fixDef.density = density || 1.0;
+            fixDef.friction = friction || 0.5;
+            fixDef.restitution = restitution || 0.5;
+            this._applyPhisics(type || "Box");
+        },
+        _applyPhisics:function(type){
+            bodyDef.type = b2Body.b2_dynamicBody;
+            if(type == "Box"){
+                fixDef.shape = new b2PolygonShape;
+                fixDef.shape.SetAsBox(
+                    this.width/(SCALE*2) //half width
+                    ,  this.height/(SCALE*2) //half height
+                );
+            }else{
+                fixDef.shape = new b2CircleShape(
+                    this.width/SCALE/2 //radius
+                );
+            }
+            bodyDef.position.x = this.x/SCALE;
+            bodyDef.position.y = this.y/SCALE;
+            bodyDef.angle = this.rot;
+            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        }
+    });
+
+    Atlas.extendClass(PhysSprite,Mixin);
 
     Atlas.extendClass(Atlas.App,{
         createGround:function(x,y,width,height){

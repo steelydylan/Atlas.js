@@ -18,6 +18,8 @@
             app.centerize();
             app.fps = 60;
             app.createGround(0,450,2000,0.5);
+            app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404611189/azprtifle4fxm3zq0xbs.png","box"]);
+            app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404612044/emzjwlg8r0xbvi60x5tr.png","maru"]);
             for(var i = 0; i < 10; i++){
                 /*
                 var shape = new Shape.Box("red",app.getRand(20,40),app.getRand(20,40));
@@ -29,22 +31,46 @@
                 app.addChild(shape);
                 */
 
-                var shape = new PhysBox("red",app.getRand(10,50),app.getRand(10,50),
+                var shape = new PhysBox("red",
+                                        app.getRand(10,50),
+                                        app.getRand(10,50),
                                         Math.random() * 4 + 1,
                                         Math.random() * 0.9 + 0.1,
                                         Math.random() * 0.5 +0.3
                                        );
                 shape.setPosition(app.getRand(0,500),app.getRand(0,100));
                 app.addChild(shape);     
-                 
-                var shapemaru = new PhysCircle("blue",
+
+                var shape = new PhysCircle("blue",
                                            app.getRand(10,50),
                                            Math.random() * 4 + 1,
                                            Math.random() * 0.9 + 0.1,
                                            Math.random() * 0.5 +0.3
                                           );
-                shapemaru.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(shapemaru);
+                shape.setPosition(app.getRand(0,500),app.getRand(0,100));
+                app.addChild(shape);
+
+                var sprite = new PhysSprite("box",
+                                            30,
+                                            30,
+                                            "Box",
+                                            Math.random() * 4 + 1,
+                                            Math.random() * 0.9 + 0.1,
+                                            Math.random() * 0.5 +0.3
+                                           );
+                sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+                app.addChild(sprite);
+
+                var sprite = new PhysSprite("maru",
+                                            50,
+                                            50,
+                                            1,
+                                            Math.random() * 4 + 1,
+                                            Math.random() * 0.9 + 0.1,
+                                            Math.random() * 0.5 +0.3
+                                           );
+                sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+                app.addChild(sprite);
             };
             app.start();
         };
