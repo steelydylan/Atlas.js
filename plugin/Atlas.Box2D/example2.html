@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Box2dWeb example</title>
+        <title>Atlas for Box2D</title>
     </head>
     <body>
     </body>
@@ -18,7 +18,7 @@
             app.centerize();
             app.fps = 60;
             app.createGround(0,450,2000,0.5);
-            for(var i = 0; i < 100; i++){
+            for(var i = 0; i < 10; i++){
                 /*
                 var shape = new Shape.Box("red",app.getRand(20,40),app.getRand(20,40));
                 shape.setPosition(app.getRand(50,450),app.getRand(0,100));
@@ -28,13 +28,23 @@
                 }
                 app.addChild(shape);
                 */
+
                 var shape = new PhysBox("red",app.getRand(10,50),app.getRand(10,50),
                                         Math.random() * 4 + 1,
                                         Math.random() * 0.9 + 0.1,
                                         Math.random() * 0.5 +0.3
                                        );
                 shape.setPosition(app.getRand(0,500),app.getRand(0,100));
-                app.addChild(shape);
+                app.addChild(shape);     
+                 
+                var shapemaru = new PhysCircle("blue",
+                                           app.getRand(10,50),
+                                           Math.random() * 4 + 1,
+                                           Math.random() * 0.9 + 0.1,
+                                           Math.random() * 0.5 +0.3
+                                          );
+                shapemaru.setPosition(app.getRand(0,500),app.getRand(0,100));
+                app.addChild(shapemaru);
             };
             app.start();
         };

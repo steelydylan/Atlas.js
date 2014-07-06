@@ -29,7 +29,6 @@
 
     var Mixin = {
         setPosition: function (x, y) {
-            //var pos = new b2Vec2(x/SCALE,y/SCALE);
             this.body.GetBody().SetPosition(new b2Vec2(x/SCALE,y/SCALE));
             this.x = x;
             this.y = y;
@@ -41,15 +40,15 @@
             this.rot = this.body.GetBody().GetAngle();
         }
     };
-
+    
+    //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
         initialize : function(color, width, height,density,friction,restitution){
             this.inherit(color, width, height);
-            this._applyPhisics();
             fixDef.density = density || 1.0;
             fixDef.friction = friction || 0.5;
             fixDef.restitution = restitution || 0.5;
-            //this.setPosition(0,0);
+            this._applyPhisics();
         },
         _applyPhisics:function(){
             bodyDef.type = b2Body.b2_dynamicBody;
@@ -67,6 +66,29 @@
 
     Atlas.extendClass(PhysBox,Mixin);
 
+    //物理演算含む丸の生成クラス
+    PhysCircle = Atlas.createClass(Atlas.Shape.Circle,{
+        initialize : function(color, radius, density,friction,restitution){
+            this.inherit(color, radius);
+            fixDef.density = density || 1.0;
+            fixDef.friction = friction || 0.5;
+            fixDef.restitution = restitution || 0.5;
+            this._applyPhisics();
+        },
+        _applyPhisics:function(){
+            bodyDef.type = b2Body.b2_dynamicBody;
+            fixDef.shape = new b2CircleShape(
+                this.width/SCALE/2 //radius
+            );
+            bodyDef.position.x = this.x/SCALE;
+            bodyDef.position.y = this.y/SCALE;
+            bodyDef.angle = this.rot;
+            this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        }
+    });
+
+    Atlas.extendClass(PhysCircle,Mixin);
+
     Atlas.extendClass(Atlas.App,{
         createGround:function(x,y,width,height){
             bodyDef.type = b2Body.b2_staticBody;
@@ -74,7 +96,19 @@
             bodyDef.position.y = y/SCALE;
             fixDef.shape = new b2PolygonShape;
             fixDef.shape.SetAsBox(width/SCALE, height/SCALE);
-            world.CreateBody(bodyDef).CreateFixture(fixDef);  
+            world.CreateBody(bodyDef).CreateFixture(fixDef); 
+
+            bodyDef.position.x = 0;
+            bodyDef.position.y = 0;
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsBox(0, 1000/SCALE);
+            world.CreateBody(bodyDef).CreateFixture(fixDef); 
+
+            bodyDef.position.x = 500/SCALE;
+            bodyDef.position.y = 0/SCALE;
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsBox(0/SCALE, 1000/SCALE);
+            world.CreateBody(bodyDef).CreateFixture(fixDef); 
         },
         enterFrame:function(){
             world.Step(
