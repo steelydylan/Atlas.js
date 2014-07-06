@@ -57,7 +57,12 @@
             bodyDef.position.y = this.y/SCALE;
             bodyDef.angle = this.rot;
             this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        },
+        applyImpulse:function(x,y){
+            this.body.GetBody().ApplyImpulse(new b2Vec2(x/SCALE,y/SCALE));
+            //this.body.applyImpulse(x/SCALE,y/SCALE);
         }
+            
     };
 
     //物理演算含む箱の生成クラス
