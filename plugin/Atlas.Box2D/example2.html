@@ -72,7 +72,7 @@
                 app.addChild(sprite);
             };
 
-            var moveshape = new PhysBox("red",
+            var moveshape = new PhysBox("green",
                                         app.getRand(10,50),
                                         app.getRand(10,50),
                                         {density:Math.random() * 4 + 1,
@@ -81,7 +81,7 @@
                                         });
             moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
             moveshape.keyDown = function(key){
-                this.applyImpulse(200,200);
+                this.applyImpulse(1000,1000);
             };
             app.addChild(moveshape);     
             app.start();

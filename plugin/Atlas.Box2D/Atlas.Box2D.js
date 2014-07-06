@@ -59,7 +59,7 @@
             this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         },
         applyImpulse:function(x,y){
-            this.body.GetBody().ApplyImpulse(new b2Vec2(x/SCALE,y/SCALE));
+            this.body.GetBody().ApplyImpulse(new b2Vec2(x/SCALE,y/SCALE),this.body.GetBody().GetWorldCenter());
             //this.body.applyImpulse(x/SCALE,y/SCALE);
         }
             
