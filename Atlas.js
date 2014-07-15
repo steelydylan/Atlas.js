@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Atlas.js v0.7.2
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
@@ -714,18 +714,19 @@
                 this.enterFrame();           
             this.scene._enterFrame();
         },
-        pushScene: function(scene){
+        pushScene: function(scene){/*ここをなおす*/
             var ctx = this.ctx;
             var field = this.field;
-            var children = this.scene;
+            var children = this.scene.children;
             for(var i = 0,n = children.length; i < n; i++){
                 var target = children[i];
                 target.eventEnable = false;
                 if(target.onSceneremoved)
                     target.onSceneRemoved();
             }
-            for(var i = 0,n = scene.length; i < n; i++){
-                var obj = scene[i];
+            children = scene.children;
+            for(var i = 0,n = children.length; i < n; i++){
+                var obj = children[i];
                 obj.ctx = ctx;
                 obj.field = field;
                 obj.eventEnable = true;
