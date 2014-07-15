@@ -22,7 +22,7 @@
     var bodyDef = new b2BodyDef;
     bodyDef.type = b2Body.b2_dynamicBody; 
     var world = new b2World(
-        new b2Vec2(0, 10)    //gravity
+        new b2Vec2(0, 20)    //gravity
         ,  true                 //allow sleep
     );
     var SCALE = 10;
@@ -65,6 +65,11 @@
         applyImpulse:function(x,y){
             this.body.GetBody().ApplyImpulse(new b2Vec2(x,y),this.body.GetBody().GetWorldCenter());
             //this.body.applyImpulse(x/SCALE,y/SCALE);
+        },
+        joint:function(obj1, axis){
+            var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+            axis = axis || this.body.GetBody().GetWorldCenter();
+            jointDef.Initialize(obj1.body.GetBody(), this.body.GetBody(), axis);
         }
             
     };
