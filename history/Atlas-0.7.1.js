@@ -1,12 +1,12 @@
-/**
- * Atlas.js v0.7.2
+﻿/**
+ * Atlas.js v0.7.1
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
  * Released under the MIT license.
  */
 (function () {
-    "use strict";
+	"use strict";
     var images = [];
     var sounds = [];
     var svgs = [];
@@ -138,7 +138,7 @@
         obj[kind] = true;
         return obj;
     };
-    Atlas.Util = Atlas.createClass({
+    var Util = Atlas.createClass({
         isMobile: isMobile,
         orientation: orientation,
         initialize: function(){
@@ -148,7 +148,7 @@
             this.moverIndex = 0;
             this.visible = true;
             this.eventEnable = true;
-            this.drawMode = "source-over";
+			this.drawMode = "source-over";
             var eventListener = this.eventListener;
             eventListener.touchStart = false;
             eventListener.touchMove = false;
@@ -440,25 +440,25 @@
             return ~~(Math.random() * (b - a + 1)) + a;
         },
         HSBtoRGB : function (h,s,v){
-            var f,i, p, q, t;
-            var r,g,b;
-            i = Math.floor(h / 60.0) % 6;
-            f = (h / 60.0) - Math.floor(h / 60.0);
-            p = Math.round(v * (1.0 - (s / 255.0)));
-            q = Math.round(v * (1.0 - (s / 255.0) * f));
-            t = Math.round(v * (1.0 - (s / 255.0) * (1.0 - f)));        
-            switch(i){
-                case 0 : r = v; g = t; b = p; break;
-                case 1 : r = q; g = v; b = p; break;
-                case 2 : r = p; g = v; b = t; break;
-                case 3 : r = p; g = q; b = v; break;
-                case 4 : r = t; g = p; b = v; break;
-                case 5 : r = v; g = p; b = q; break;
-            }       
-            if(r<=15){r="0"+r.toString(16);}else{r=r.toString(16);}
-            if(g<=15){g="0"+g.toString(16);}else{g=g.toString(16);}
-            if(b<=15){b="0"+b.toString(16);}else{b=b.toString(16);}
-            return "#"+ r + g + b;          
+		    var f,i, p, q, t;
+		    var r,g,b;
+		    i = Math.floor(h / 60.0) % 6;
+		    f = (h / 60.0) - Math.floor(h / 60.0);
+		    p = Math.round(v * (1.0 - (s / 255.0)));
+		    q = Math.round(v * (1.0 - (s / 255.0) * f));
+		    t = Math.round(v * (1.0 - (s / 255.0) * (1.0 - f)));		
+		    switch(i){
+		        case 0 : r = v; g = t; b = p; break;
+		        case 1 : r = q; g = v; b = p; break;
+		        case 2 : r = p; g = v; b = t; break;
+		        case 3 : r = p; g = q; b = v; break;
+		        case 4 : r = t; g = p; b = v; break;
+		        case 5 : r = v; g = p; b = q; break;
+		    }		
+		    if(r<=15){r="0"+r.toString(16);}else{r=r.toString(16);}
+		    if(g<=15){g="0"+g.toString(16);}else{g=g.toString(16);}
+		    if(b<=15){b="0"+b.toString(16);}else{b=b.toString(16);}
+		    return "#"+ r + g + b;	        
         },
         getSound: function (name) {
             for (var i = 0, n = sounds.length; i < n; i++) {
@@ -542,7 +542,112 @@
                 return !sound.paused;
         }
     });
-    Atlas.App = Atlas.createClass(Atlas.Util,{
+    var Scene = Atlas.createClass(Array, {
+        initialize: function () {
+            this.inherit();
+            this._basicConstructor = "Scene";
+            this._remove = false;
+        },
+        addChild: function(sprite){
+            sprite.parent = this;
+            //for Group
+            if(sprite._basicConstructor == "Group" || sprite._basicConstructor == "Layer"){
+                var children = sprite.children;
+                for(var i = 0,n = children.length; i < n; i++){
+                    var child = children[i];
+                    child.ctx = this.ctx;
+                    child.field = this.field;
+                }
+                if(sprite._basicConstructor == "Layer"){
+                    if(!sprite.width){
+                        sprite.width = parseInt(this.field.style.width);
+                    }
+                    if(!sprite.height){
+                        sprite.height = parseInt(this.field.style.height);
+                    }
+                }
+            }
+            if(this.ctx && this.field){
+                sprite.ctx = this.ctx;
+                sprite.field = this.field;
+            }
+            this.push(sprite);
+        },
+        addChildren: function () {
+            for(var i = 0, n = arguments.length; i < n; i++){
+                this.addChild(arguments[i]);
+            }
+        },
+        getChild: function(obj){    
+            var array = this.getChildren(obj);
+            var ret = array[0];
+            if(!ret)
+                ret = null; 
+            return ret;
+        },
+        getChildren: function(obj){    
+            var ret = [];       
+            for(var i = 0, n = this.length; i < n; i++){
+                var flag = true;
+                for(var key in obj){
+                    if(obj[key] != this[i][key])
+                        flag = false;
+                }
+                if(flag == true){
+                    ret.push(this[i]);
+                }
+            }
+            return ret;
+        },
+        remove: function(){
+            this._remove = true;
+        },
+        setImage : function(image){
+            this.image = image;
+        },
+        setColor : function(color){
+            this.color = color;
+        },
+        _enterFrame: function (e) {
+            if(this.enterFrame)
+                this.enterFrame();
+            for (var i = 0, n = this.length; i < n; i++) {
+                var target = this[i];
+                if(target._basicConstructor == "Sprite" && !target.spriteWidth){
+	                var obj = target.getImageSize();
+	                if(obj.width){
+		                target.setSpriteSize(obj.width,obj.height);
+		                if(!target.width){
+		                	target.setSize(obj.width,obj.height);
+		                	if(target._scaleX){
+			                	target.scale(target._scaleX,target._scaleY);
+		                	}
+		                }
+		            }
+                }
+                if(target.useEvent)
+                    target.useEvent();
+                if(target._enterFrame)
+                    target._enterFrame();
+                if(target.enterFrame)
+                    target.enterFrame();
+                if(target.tween)
+                    target.tween();
+                if(target.visible){
+                    if(target.preDraw)
+                        target.preDraw();
+                    target.draw();
+                }
+                if (target._remove) {
+                    this.splice(i, 1);
+                    target = null;
+                    i--;
+                    n--;
+                }
+            }
+        }
+    });
+    var App = Atlas.createClass(Util,{
         initialize: function (place) {
             this.inherit();
             this._basicConstructor = "App";
@@ -585,11 +690,11 @@
             this.scene.parent = this;
         },
         getCanvasURL : function(){
-            return this.field.toDataURL();
+	        return this.field.toDataURL();
         },
         getCanvasImage : function(){
-            var url = this.field.toDataURL();
-            window.open(url,'_blank');          
+			var url = this.field.toDataURL();
+			window.open(url,'_blank');	        
         },
         colorToAlpha : function(imagename,hex){
             var img;
@@ -666,16 +771,16 @@
             style.height = height+"px";
         },      
         getSize : function(){
-            var size = new Object();
-            size.width = parseInt(this.field.style.width);
-            size.height = parseInt(this.field.style.height);
-            return size;
+        	var size = new Object();
+	      	size.width = parseInt(this.field.style.width);
+	      	size.height = parseInt(this.field.style.height);
+	      	return size;
         },
         getQuality: function(){
-            var size = new Object();
-            size.width = parseInt(this.field.width);
-            size.height = parseInt(this.field.height);
-            return size;
+	      	var size = new Object();
+	      	size.width = parseInt(this.field.width);
+	      	size.height = parseInt(this.field.height);
+	      	return size;
         },
         loadingScene: function (scene) {
             this.preScene = scene;
@@ -763,7 +868,7 @@
             }, 1000 / this.fps);
         },
         toDataURL:function(){
-          return this.field.toDataURL();  
+	      return this.field.toDataURL();  
         },
         load: function () {
             function getExtention(fileName) {
@@ -834,7 +939,7 @@
             }
         },
     });
-    Atlas.Thing = Atlas.createClass(Atlas.Util,{
+    var Thing = Atlas.createClass(Util,{
         initialize: function(width,height){
             this.inherit();
             this.x = 0;
@@ -857,23 +962,25 @@
             this.height = obj.toHeight - obj.diffHeight * (1 - obj.time / obj.frame);           
         },
         intersect: function (ex, ey) {
-            var thisx = this._x || this.x;
-            var thisy = this._y || this.y;
-            var thisw = this._width || this.width;
-            var thish = this._height || this.height;
-            var r = this._rot || this.rot;
+            var thisx = this.x;
+            var thisy = this.y;
+            if(this.parent._basicConstructor == "Group"){
+                thisx += this.parent.x;
+                thisy += this.parent.y;
+            }
             if (this.collisionShape == "box") {
-                var x = ex - (thisx + thisw / 2);
-                var y = ey - (thisy + thish / 2);
+                var x = ex - (thisx + this.width / 2);
+                var y = ey - (thisy + this.height / 2);
+                var r = this.rot;
                 var s = Math.sin(-r);
                 var c = Math.cos(-r);
                 var xx = Math.abs(x * c - y * s);
                 var yy = Math.abs(x * s + y * c);
-                if (xx < thisw / 2.0 && yy < thish / 2.0)
+                if (xx < this.width / 2.0 && yy < this.height / 2.0)
                     return true;
                 return false;
             } else if (this.collisionShape == "circle") {
-                var radius = thisw / 2;
+                var radius = this.width / 2;
                 var x = ex - (thisx + radius);
                 var y = ey - (thisy + radius);
                 if (Math.sqrt(x * x + y * y) < radius)
@@ -884,90 +991,89 @@
             }
         },
         hitTest: function(target){/*衝突判定（自分の矩形は傾いてないものとする）*/
-            var thisx = this._x || this.x;
-            var thisy = this._y || this.y;
-            var thisW = this._width || this.width;
-            var thisH = this._height || this.height;
-            var thiscX = thisx + thisW / 2;
-            var thiscY = thisy + thisH / 2;
-            var targetx = target._x || target.x;  
-            var targety = target._y || target.y;
-            var targetW = target._width || target.width;
-            var targetH = target._height || target.height;
-            var targetr = target._rot || target.rot;
             if (this.collisionShape == "box") {
-                if(target.collisionShape == "circle")
-                    return target.within(this,targetW/2);/*矩形と円の当たり判定ならwithinで実装済み*/
+            	if(target.collisionShape == "circle")
+            		return target.within(this,target.width/2);/*矩形と円の当たり判定ならwithinで実装済み*/
             } else if (this.collisionShape == "circle") {
-                return this.within(target,thisW/2);/*矩形と円の当たり判定ならwithinで実装済み*/
+                return this.within(target,this.width/2);/*矩形と円の当たり判定ならwithinで実装済み*/
             } else {
                 return false;
-            }      
-            if(targetr != 0 && targetr != Math.PI){
-                if (target.collisionShape == "box") {
+            }	 
+            var thisx = this.x;
+			var thisy = this.y;
+			var thisW = this.width;
+			var thisH = this.height;
+            var thiscX = thisx + this.width / 2;
+            var thiscY = thisy + this.height / 2;
+            var targetx = target.x;  
+            var targety = target.y;
+            var targetW = target.width;
+            var targetH = target.height; 
+            if(this.parent._basicConstructor == "Group"){
+                thisx += this.parent.x;
+                thisy += this.parent.y;
+            }  
+            if(target.rot != 0 && target.rot != Math.PI){
+			    if (target.collisionShape == "box") {
                 var centerX = targetx + targetW / 2;
                 var centerY = targety + targetH / 2;
                 var thiscX = thisx + thisW / 2;
                 var thiscY = thisy + thisH / 2;
-                var rot = - targetr;
+                var rot = -target.rot;
                 thiscX = Math.cos(rot) * (thiscX - centerX) -
                     Math.sin(rot) * (thiscY - centerY) + centerX;
                 thiscY = Math.sin(rot) * (thiscX - centerX) +
                     Math.cos(rot) * (thiscY - centerY) + centerY;
                 thisx = thiscX - thisW / 2;
                 thisy = thiscY - thisH / 2;
-                }  
-            }
+				}  
+			}
             return (thisx < targetx + targetW) && (targetx < thisx + thisW) && (thisy < targety + targetH) && (targety < thisy + thisH);
         },
         within: function (target, range) {
-            var thisx = this._x || this.x;
-            var thisy = this._y || this.y;
-            var thisw = this._width || this.width;
-            var thish = this._height || this.height;
-            var thisr = this._rot || this.rot;
-            var targetx = target._x || target.x;
-            var targety = target._y || target.y;
-            var targetw = target._width || target.width;
-            var targeth = target._height || target.height;
-            var targetr = target._rot || target.rot;
+            var thisx = this.x;
+            var thisy = this.y;
+            if(this.parent._basicConstructor == "Group"){
+                thisx += this.parent.x;
+                thisy += this.parent.y;
+            }
             if (this.collisionShape == "box") {
-                var thiscX = thisx + thisw / 2;
-                var thiscY = thisy + thish / 2;
+                var thiscX = thisx + this.width / 2;
+                var thiscY = thisy + this.height / 2;
             } else if (this.collisionShape == "circle") {
-                var radius = thisw / 2;
+                var radius = this.width / 2;
                 var thiscX = thisx + radius;
                 var thiscY = thisy + radius;
             } else {
                 return false;
             }
             if (target.collisionShape == "box") {
-                var centerX = targetx + targetw / 2;
-                var centerY = targety + targeth / 2;
-                var rot = - targetr;
+                var centerX = target.x + target.width / 2;
+                var centerY = target.y + target.height / 2;
+                var rot = -target.rot;
                 var cx = Math.cos(rot) * (thiscX - centerX) -
                     Math.sin(rot) * (thiscY - centerY) + centerX;
                 var cy = Math.sin(rot) * (thiscX - centerX) +
                     Math.cos(rot) * (thiscY - centerY) + centerY;
                 var x, y;
-                if (cx < targetx)
-                    x = targetx;
-                else if (cx > targetx + targetw)
-                    x = targetx + targetw;
+                if (cx < target.x)
+                    x = target.x;
+                else if (cx > target.x + target.width)
+                    x = target.x + target.width;
                 else
                     x = cx;
-                if (cy < targety)
-                    y = targety;
-                else if (cy > targety + targeth)
-                    y = targety + targeth;
+                if (cy < target.y)
+                    y = target.y;
+                else if (cy > target.y + target.height)
+                    y = target.y + target.height;
                 else
                     y = cy;
                 var a = Math.abs(cx - x);
                 var b = Math.abs(cy - y);
             } else if (target.collisionShape == "circle") {
-                var tradius = targetw / 2;
-                var x = targetx + tradius;
-                var y = targety + tradius;
+                var tradius = target.width / 2;
+                var x = target.x + tradius;
+                var y = target.y + tradius;
                 var a = Math.abs(thiscX - x);
                 var b = Math.abs(thiscY - y);
                 range += tradius;
@@ -979,21 +1085,21 @@
             return false;
         },
         scale: function (sx, sy) {
-            if(!this.width){
-                this._scaleX = sx;
-                this._scaleY = sy;
-            }else{
-                this.width *= sx;
-                this.height *= sy;
-            }
+        	if(!this.width){
+	        	this._scaleX = sx;
+	        	this._scaleY = sy;
+        	}else{
+	            this.width *= sx;
+	            this.height *= sy;
+	        }
             return this;
         },
         setSize : function(w,h){
-            this.width = w;
-            this.height = h;
+	        this.width = w;
+	        this.height = h;
         }
     });
-    Atlas.Shape = Atlas.createClass(Atlas.Thing,{
+    var Shape = Atlas.createClass(Thing,{
         initialize : function(path,color,lineColor){
             this.inherit(0,0);
             this.obj = -1;
@@ -1187,7 +1293,7 @@
             return -1;
         },
     });
-    Atlas.Shape.Box = Atlas.createClass(Atlas.Thing, {
+    Shape.Box = Atlas.createClass(Thing, {
         initialize: function (col, width, height) {
             this.inherit(width,height);
             this._basicConstructor = "Shape";            
@@ -1217,7 +1323,7 @@
             ctx.globalAlpha = 1;
         }
     });
-    Atlas.Shape.Circle = Atlas.createClass(Atlas.Thing, {
+    Shape.Circle = Atlas.createClass(Thing, {
         initialize: function (col, radius) {
             this.inherit(radius * 2,radius * 2);
             this._basicConstructor = "Shape";
@@ -1239,12 +1345,12 @@
             ctx.globalAlpha = 1;
         }
     });
-    Atlas.Sprite = Atlas.createClass(Atlas.Thing, {
+    var Sprite = Atlas.createClass(Thing, {
         initialize: function (name, width, height) {
-            if(typeof width === "undefined"){
-                width = null;
-                height = null;
-            }
+        	if(typeof width === "undefined"){
+	        	width = null;
+	        	height = null;
+        	}
             this.inherit(width,height);
             this.setImage(name,width,height);
             this._basicConstructor = "Sprite";
@@ -1282,11 +1388,11 @@
             return images[this.img];
         },
         getImageSize : function(){
-            var obj = {};
-            var img = images[this.img];
-            obj.width = img.width;
-            obj.height = img.height;
-            return obj;  
+	      	var obj = {};
+	      	var img = images[this.img];
+	      	obj.width = img.width;
+	      	obj.height = img.height;
+	      	return obj;  
         },
         draw: function () {
             var ctx = this.ctx;
@@ -1320,7 +1426,7 @@
             ctx.globalAlpha = 1;
         }
     });
-    Atlas.Map = Atlas.createClass(Atlas.Sprite, {
+    var Map = Atlas.createClass(Sprite, {
         initialize: function (name, width, height) {
             this.inherit(name,width,height);
             this.drawData;
@@ -1330,10 +1436,10 @@
             var array = this.hitData;
             var x = array[0].length;
             var y = array.length;
-            var width = this._width || this.width;
-            var height = this._height || this.height;
-            var posX = this._x || this.x;
-            var posY = this._y || this.y;
+            var width = this.width;
+            var height = this.height;
+            var posX = this.x;
+            var posY = this.y;
             for (var i = 0; i < y; i++) {
                 for (var t = 0; t < x; t++) {
                     if (array[i][t] == 1 && posX + t * width < ex && ex < posX + (t + 1) * width
@@ -1347,10 +1453,10 @@
             var array = this.drawData;
             var x = array[0].length;
             var y = array.length;
-            var width = this._width || this.width;
-            var height = this._height || this.height;
-            var px = this._x || this.x;
-            var py = this._y || this.y;
+            var width = this.width;
+            var height = this.height;
+            var px = this.x;
+            var py = this.y;
             var i = 0;
             var t = 0;
             var field = this.field;
@@ -1363,14 +1469,16 @@
             var image = images[this.img];
             var SizeX = this.spriteWidth;
             var SizeY = this.spriteHeight;
-            var cX = width / 2;
-            var cY = height / 2;
+            var cX = this.width / 2;
+            var cY = this.height / 2;
             var numX = image.width / SizeX;
             var numY = image.height / SizeY;
             var scaleX = this.width / SizeX;
             var scaleY = this.height / SizeY;
-            var posX = px;
-            var posY = py;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
+            var transX = this._x || this.x;
+            var transY = this._y || this.y;
             while (i < y) {
                 while (t < x) {
                     frame = array[i][t];
@@ -1378,22 +1486,24 @@
                         var dx = (frame % numX) * SizeX;
                         var dy = (~~(frame / numX) % numY) * SizeY;
                         ctx.save();
-                        ctx.translate(posX, posY);
+                        ctx.translate(transX, transY);
                         ctx.scale(scaleX, scaleY);
                         ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
                         ctx.restore();
                     }
-                    posX += width;
+                    this.x += width;
                     t++;
                 }
-                posY += height;
-                posX = px;
+                this.y += height;
                 i++;
+                this.x = px;
                 t = 0;
             }
+            this.x = px;
+            this.y = py;
         }
     });
-    Atlas.Text = Atlas.createClass(Atlas.Util,{
+    var Text = Atlas.createClass(Util,{
         initialize : function (string, col, size, font) {
             this.inherit();
             this._basicConstructor = "Text";
@@ -1426,22 +1536,22 @@
         setFont: function (font) {
             this.font = "'" + font + "'";
         },
-        intersect: function(ex,ey){
-            var thisx = this._x || this.x;
-            var thisy = this._y || this.y;
-            var width = parseInt(this.size) * this.scaleX * this.string.length;
-            var height = parseInt(this.size) * this.scaleY;
-            var x = ex - (thisx + width / 2);
-            var y = ey - (thisy + height / 2);
-            var r = this._rot || this.rot;
-            var s = Math.sin(-r);
-            var c = Math.cos(-r);
-            var xx = Math.abs(x * c - y * s);
-            var yy = Math.abs(x * s + y * c);
-            if (xx < width / 2.0 && yy < height / 2.0)
-                return true;
-            return false;
-        },
+		intersect: function(ex,ey){
+			var thisx = this.x;
+			var thisy = this.y;
+			var width = parseInt(this.size) * this.scaleX * this.string.length;
+			var height = parseInt(this.size) * this.scaleY;
+	        var x = ex - (thisx + width / 2);
+	        var y = ey - (thisy + height / 2);
+	        var r = this.rot;
+	        var s = Math.sin(-r);
+	        var c = Math.cos(-r);
+	        var xx = Math.abs(x * c - y * s);
+	        var yy = Math.abs(x * s + y * c);
+	        if (xx < width / 2.0 && yy < height / 2.0)
+	            return true;
+	        return false;
+	    },
         scale: function(x,y){
             this.scaleX *= x;
             this.scaleY *= y;
@@ -1470,7 +1580,7 @@
             ctx.fillStyle = this.color;
             ctx.save();
             var cX = parseInt(this.size) * this.scaleX * this.string.length / 2;
-            var cY = parseInt(this.size) * this.scaleY / 2;
+			var cY = parseInt(this.size) * this.scaleY / 2;
             ctx.translate(x + cX,y + cY);
             ctx.rotate(rot);
             ctx.translate(-cX,-cY);
@@ -1483,20 +1593,47 @@
             ctx.globalAlpha = 1;
         }
     });
-    Atlas.Group = Atlas.createClass(Atlas.Thing,{
+    var Group = Atlas.createClass(Thing,{
         initialize:function(){
-            this.children = [];
             this.inherit();
             this.x = 0;
             this.y = 0;
+            this.children = [];
             this._basicConstructor = "Group";
+            for(var i = 0,n = arguments.length; i < n; i++){
+                this.children.push(arguments[i]);
+            }
         },
         draw: function () {
             var children = this.children;
             for(var i = 0,n = children.length; i < n; i++){
-                var target = children[i];  
-                target._x = target.x - this.x;
-                target._y = this.y - this.y;            
+                var target = children[i];
+                target.x += this.x;
+                target.y += this.y;
+                if(target.useEvent)
+                    target.useEvent();
+                if(target.enterFrame)
+                    target.enterFrame();
+                if(target.tween)
+                    target.tween();
+                if(target.visible)
+                    target.draw();
+                if (target._remove) {
+                    this.splice(i, 1);
+                    target = null;
+                    i--;
+                    n--;
+                }   
+                target.x -= this.x;
+                target.y -= this.y;            
+            }
+        },
+        scale:function(x,y){
+            var children = this.children;
+            for(var i = 0, n = arguments.length; i < n; i++){
+                var child = children[i];
+                if(child.scale)
+                    child.scale(x,y);
             }
         },
         addChild:function(sprite){
@@ -1508,245 +1645,15 @@
                 this.addChild(arguments[i]);
             }
         },
-        getChild: function(obj){    
-            var array = this.getChildren(obj);
-            var ret = array[0];
-            if(!ret)
-                ret = null; 
-            return ret;
-        },
-        getChildren: function(obj){    
-            var ret = [];
-            var children = this.children;       
-            for(var i = 0, n = children.length; i < n; i++){
-                var flag = true;
-                for(var key in obj){
-                    if(key == "$not"){
-                        for(var key2 in obj["$not"]){
-                            if(obj["$not"][key2] == children[i][key2]){
-                                flag = false;
-                            }
-                        }
-                    }else{
-                        if(obj[key] != children[i][key])
-                            flag = false;
-                    }
-                }
-                if(flag == true){
-                    ret.push(children[i]);
-                }
-            }
-            return ret;
-        },
-        removeChild:function(obj){
-            var child = this.getChild(obj);
-            child.remove();
-        },
-        removeChildren:function(obj){
-            var children = this.getChildren(obj);
-            for(var i = 0,n = children.length; i < n; i++){
-                children[i].remove();
-            }
-        },
-    });
-    Atlas.Scene = Atlas.createClass(Atlas.Group, {
-        initialize: function () {
-            this.inherit();
-            this._basicConstructor = "Scene";
-            this._remove = false;
-        },
-        addChild: function(sprite){
-            sprite.parent = this;
-            if(this.ctx && this.field){
-                sprite.ctx = this.ctx;
-                sprite.field = this.field;
-            }
-            this.children.push(sprite);
-            if(sprite._basicConstructor == "Group" || sprite._basicConstructor == "Layer"){
-                var children = sprite.children;
-                for(var i = 0,n = children.length; i < n; i++){
-                    var child = children[i];
-                    if(!child.ctx){
-                        child.ctx = this.ctx;
-                        child.field = this.field;
-                        this.children.push(child);
-                    }
-                }
-            }
-        },
-        setImage : function(image){
-            this.image = image;
-        },
-        setColor : function(color){
-            this.color = color;
-        },
-        _enterFrame: function (e) {
-            if(this.enterFrame)
-                this.enterFrame();
-            var children = this.children;
-            for (var i = 0, n = children.length; i < n; i++) {
-                var target = children[i];
-                if (target._remove) {
-                    children.splice(i, 1);
-                    target = null;
-                    i--;
-                    n--;
-                    continue;
-                }
-                if(target._basicConstructor == "Sprite" && !target.spriteWidth){
-                    /*スプライトのサイズが決まってなかった場合自動で設定*/
-                    var obj = target.getImageSize();
-                    if(obj.width){
-                        target.setSpriteSize(obj.width,obj.height);
-                        if(!target.width){
-                            target.setSize(obj.width,obj.height);
-                            if(target._scaleX){
-                                target.scale(target._scaleX,target._scaleY);
-                            }
-                        }
-                    }
-                }
-                if(target.useEvent)
-                    target.useEvent();
-                if(target._enterFrame)
-                    target._enterFrame();
-                if(target.enterFrame)
-                    target.enterFrame();
-                if(target.tween)
-                    target.tween();
-                if(target.visible){
-                    if(target.preDraw)
-                        target.preDraw();
-                    target.draw();
-                }
-            }
-        }
-    });
-    Atlas.Layer = Atlas.createClass(Atlas.Group,{
-        initialize:function(){
-            this.inherit();
-            this.rot = 0;
-            this._basicConstructor = "Layer";
-            this.firstWidth = 100;
-            this.firstHeight = 100;
-            this.height = 100;
-            this.width = 100;
-            this.scaleX = 1;
-            this.scaleY = 1;
-        },
-        fitToChildren:function(){
-            var children = this.children;
-            this.x = null;
-            this.y = null;
-            this.width = 0;
-            this.height = 0;
-            for(var i = 0,n = children.length; i < n; i++){
-                var child = children[i];
-                var x = child.x;
-                var y = child.y;
-                var width = child.width;
-                var height = child.height;
-                var centerX = child.x + child.width/2;
-                var centerY = child.y + child.height/2;
-                var rot = child.rot % (2 * Math.PI);
-                if(rot < 0){
-                    rot += (2 * Math.PI);
-                }
-                if(0 <= rot && rot <= Math.PI / 2){
-                    var x1 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
-                    var x2 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y - centerY) + centerX;
-                    var y1 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y - centerY) + centerY;
-                    var y2 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
-                }else if(Math.PI/2 < rot && rot <= Math.PI){
-                    var x1 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
-                    var x2 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y - centerY) + centerX;
-                    var y1 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
-                    var y2 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y - centerY) + centerY;
-                }else if(Math.PI < rot && rot <= 3 / 2 * Math.PI){
-                    var x1 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y - centerY) + centerX;
-                    var x2 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
-                    var y1 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
-                    var y2 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y - centerY) + centerY;
-                }else if(3 / 2 * Math.PI < rot && rot <= 2 * Math.PI){
-                    var x1 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y - centerY) + centerX;
-                    var x2 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
-                    var y1 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y - centerY) + centerY;
-                    var y2 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
-                }
-                if(!this.x || this.x > x1){
-                    this.x = x1;
-                }
-                if(!this.y || this.y > y1){
-                    this.y = y1;
-                }
-                if(this.width < x2){
-                    this.width = x2;
-                }
-                if(this.height < y2){
-                    this.height = y2;
-                }
-            }
-            this.width -= this.x;
-            this.height -= this.y;
-            this.firstWidth = this.width;
-            this.firstHeight = this.height;
-            for(var i = 0,n = children.length; i < n; i++){
-                var child = children[i];
-                child._x = child.x;
-                child._y = child.y;
-                child.x -= this.x;
-                child.y -= this.y;
-            }
-            return this;
-        },
-        remove:function(){
-            var children = this.children;
-            var parent = this.parent;
-            for(var i = 0,n = children.length; i < n; i++){
-                var child = children[i];
-                child.x = child._x;
-                child.y = child._y;
-                child.width = child._width;
-                child.height = child._height;
-                child.rot = child._rot;
-                child._x = null;
-                child._y = null;
-                child._width = null;
-                child._height = null;
-                child._rot = null;
-                child.grouped = false;
-                child.parent = parent;
-            }
-            this.children = [];
-            this._remove = true;
-            return this;
-        },
-        _setAbsPos:function(child){
-            var centerX = (this.width / 2);
-            var centerY = (this.height / 2);
-            var rot = this.rot;
-            child.Cx = (this.scaleX*child.x + child._width / 2);
-            child.Cy = (this.scaleY*child.y + child._height / 2);
-            child.startRot = true;          
-            var cx = Math.cos(rot)*(child.Cx - centerX) - Math.sin(rot)*(child.Cy - centerY) + centerX;//this.width/2
-            var cy = Math.sin(rot)*(child.Cx - centerX) + Math.cos(rot)*(child.Cy - centerY) + centerY;//this.height/2
-            child._x = cx - (child._width/2);
-            child._y = cy - (child._height/2);
-            child._x += this.x;
-            child._y += this.y;
-        },
-        draw: function () {
-            var children = this.children;
-            this.scaleX = this.width/this.firstWidth;
-            this.scaleY = this.height/this.firstHeight;
-            for(var i = 0,n = children.length; i < n; i++){
-                var target = children[i];
-                target._rot = target.rot + this.rot;
-                target._width = this.scaleX * target.width;
-                target._height = this.scaleY * target.height;
-                this._setAbsPos(target);          
-            }
-        },
     });
     window.Atlas = Atlas;
+    Atlas.Util = Util;
+    Atlas.Thing = Thing;
+    Atlas.App = App;
+    Atlas.Sprite = Sprite;
+    Atlas.Shape = Shape;
+    Atlas.Map = Map;
+    Atlas.Text = Text;
+    Atlas.Scene = Scene;
+    Atlas.Group = Group;
 })();
