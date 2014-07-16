@@ -108,7 +108,8 @@
             wheel2.setPosition(-30,0);
             wheel2.Rjoint(boxBody);
             cart.addChildren(boxBody,wheel,wheel2);
-            cart.fitToChildren().setPosition(200,200);
+            cart.fitToChildren().setPosition(0,0).rot = -Math.PI*9/4;
+            console.log(cart.width);
             app.addChild(cart);
             app.start();
         };
