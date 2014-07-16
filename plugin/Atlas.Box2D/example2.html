@@ -98,14 +98,14 @@
                                        20,
                                        {restitution:0}
                                       );
-            wheel.setPosition(230,400);
+            wheel.setRelativePos(30,0,boxBody);
             wheel.Rjoint(boxBody);
             app.addChild(wheel);
             var wheel = new PhysCircle("blue",
                                        20,
                                        {restitution:0}
                                       );
-            wheel.setPosition(170,400);
+            wheel.setRelativePos(-30,0,boxBody);
             wheel.Rjoint(boxBody);
             app.addChild(wheel);
             app.start();

@@ -34,6 +34,10 @@
             //this.y = y;
             return this;
         },
+        setRelativePos:function(x,y,obj){
+            var pos = obj.body.GetBody().GetPosition();
+            this.body.GetBody().SetPosition(new b2Vec2(x/SCALE+pos.x,y/SCALE+pos.y))
+        },
         _enterFrame : function(){
             this.x = SCALE*(this.body.GetBody().GetPosition().x - this.width/(SCALE*2));
             this.y = SCALE*(this.body.GetBody().GetPosition().y - this.height/(SCALE*2));
