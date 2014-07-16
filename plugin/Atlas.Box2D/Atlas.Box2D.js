@@ -68,8 +68,8 @@
         },
         Rjoint:function(obj1, axis){
             var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
-            axis = axis || obj1.body.GetBody().GetWorldCenter();
-            jointDef.Initialize(obj1.body.GetBody(), this.body.GetBody(), axis);
+            axis = axis || this.body.GetBody().GetWorldCenter();
+            jointDef.Initialize(this.body.GetBody(), obj1.body.GetBody(), axis);
             var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
         },
         Djoint:function(obj, axis1, axis2, option){
