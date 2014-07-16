@@ -66,15 +66,26 @@
             this.body.GetBody().ApplyImpulse(new b2Vec2(x,y),this.body.GetBody().GetWorldCenter());
             //this.body.applyImpulse(x/SCALE,y/SCALE);
         },
-        joint:function(obj1, axis){
+        Rjoint:function(obj1, axis){
             var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             axis = axis || this.body.GetBody().GetWorldCenter();
             jointDef.Initialize(obj1.body.GetBody(), this.body.GetBody(), axis);
             var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
-        }
-
+        },
+        Djoint:function(obj, axis1, axis2, option){
+            var jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef();
+            axis1 = axis1 || this.body.GetBody().GetWorldCenter();
+            axis2 = axis2 || this.body.GetBody().GetWorldCenter();
+            jointDef.Initialize(obj.body.GetBody(), this.body.GetBody(), axis1, axis2);
+            //jointDef.frequencyHz  = option.frequency || 1;//小さい数字にするほどジョイントがよく伸びる。０で動かない？
+            //jointDef.dampingRatio = option.dampingRatio || 0;//上で設定した伸縮の減衰率 ０で減衰なし、１で最大減衰
+            //jointDef.length = option.length || 2.0;//自然な状態でのアンカー間の距離
+            jointDef.frequencyHz  = 1; 
+            jointDef.dampingRatio = 0;
+            jointDef.length = 2.0;
+            var joint = Box2D.Dynamics.Joints.b2DistanceJoint(world.CreateJoint(jointDef));
+        },
     };
-
     //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{
         initialize : function(color, width, height,body){

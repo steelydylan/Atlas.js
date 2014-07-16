@@ -88,15 +88,15 @@
                                      );
             //boxBody.setPosition(200,400);
             boxBody.keyDown = function(key){
-                if(key.up){this.applyImpulse(0,-5);}
-                if(key.right){this.applyImpulse(5,-2);}
-                if(key.left){this.applyImpulse(-5,-2);}
+                if(key.up){this.applyImpulse(0,-3);}
+                if(key.right){this.applyImpulse(3,-2);}
+                if(key.left){this.applyImpulse(-3,-2);}
             };
             var wheel = new PhysCircle("blue",
                                        20,
                                        {restitution:0}
                                       );
-            wheel.joint(boxBody);
+            wheel.Djoint(boxBody);
             app.addChild(boxBody);
             app.addChild(wheel);
             app.start();
