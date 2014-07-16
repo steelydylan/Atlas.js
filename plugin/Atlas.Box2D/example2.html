@@ -9,7 +9,6 @@
     <script type="text/javascript" src="Atlas.Box2D.js"></script>
     <script type="text/javascript">
         Atlas();
-
         window.onload = function(){
             var app = new App();
             app.setSize(500,500);
@@ -17,6 +16,9 @@
             app.setColor("black");
             app.centerize();
             app.fps = 60;
+            
+            app.setSCALE(100);//１メートルあたりのピクセル数
+            
             app.createGround(0,450,2000,0.5);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404611189/azprtifle4fxm3zq0xbs.png","box"]);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404612044/emzjwlg8r0xbvi60x5tr.png","maru"]);
@@ -80,18 +82,18 @@
             */
             //app.addChild(moveshape);
             var boxBody = new PhysBox("green",
-                                      50,
+                                      100,
                                       20,
                                       {restitution:0}
                                      );
             //boxBody.setPosition(200,400);
             boxBody.keyDown = function(key){
-                if(key.up){this.applyImpulse(0,-100);}
-                if(key.right){this.applyImpulse(100,-10);}
-                if(key.left){this.applyImpulse(-100,-10);}
+                if(key.up){this.applyImpulse(0,-5);}
+                if(key.right){this.applyImpulse(5,-2);}
+                if(key.left){this.applyImpulse(-5,-2);}
             };
             var wheel = new PhysCircle("blue",
-                                       50,
+                                       20,
                                        {restitution:0}
                                       );
             wheel.joint(boxBody);

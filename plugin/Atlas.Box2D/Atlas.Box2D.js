@@ -22,11 +22,11 @@
     var bodyDef = new b2BodyDef;
     bodyDef.type = b2Body.b2_dynamicBody; 
     var world = new b2World(
-        new b2Vec2(0, 20)    //gravity
+        new b2Vec2(0, 10)    //gravity
         ,  true                 //allow sleep
     );
-    var SCALE = 10;
 
+    var SCALE = 100;
     var Mixin = {
         setPosition: function (x, y) {
             this.body.GetBody().SetPosition(new b2Vec2(x/SCALE,y/SCALE));
@@ -45,17 +45,17 @@
             fixDef.friction = body.friction || 0.5;
             fixDef.restitution = body.restitution || 0.5;
             if(shape == "Box"){
-               bodyDef.type = b2Body.b2_dynamicBody;
-               fixDef.shape = new b2PolygonShape;
-               fixDef.shape.SetAsBox(
-                     this.width/(SCALE*2) //half width
-                ,    this.height/(SCALE*2) //half height
-               );
+                bodyDef.type = b2Body.b2_dynamicBody;
+                fixDef.shape = new b2PolygonShape;
+                fixDef.shape.SetAsBox(
+                    this.width/(SCALE*2) //half width
+                    ,    this.height/(SCALE*2) //half height
+                );
             }else if(shape == "Circle"){
-               bodyDef.type = b2Body.b2_dynamicBody;
-               fixDef.shape = new b2CircleShape(
-                  this.width/SCALE/2 //radius
-               );
+                bodyDef.type = b2Body.b2_dynamicBody;
+                fixDef.shape = new b2CircleShape(
+                    this.width/SCALE/2 //radius
+                );
             }
             bodyDef.position.x = this.x/SCALE;
             bodyDef.position.y = this.y/SCALE;
@@ -70,8 +70,9 @@
             var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             axis = axis || this.body.GetBody().GetWorldCenter();
             jointDef.Initialize(obj1.body.GetBody(), this.body.GetBody(), axis);
+            var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
         }
-            
+
     };
 
     //物理演算含む箱の生成クラス
@@ -132,5 +133,8 @@
             );
             world.ClearForces();
         },
+        setSCALE : function(size){
+            SCALE = size;
+        }
     });   
 })();
