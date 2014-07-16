@@ -16,9 +16,9 @@
             app.setColor("black");
             app.centerize();
             app.fps = 60;
-            
+
             app.setSCALE(100);//１メートルあたりのピクセル数
-            
+
             app.createGround(0,450,2000,0.5);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404611189/azprtifle4fxm3zq0xbs.png","box"]);
             app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404612044/emzjwlg8r0xbvi60x5tr.png","maru"]);
@@ -91,15 +91,18 @@
                 if(key.up){this.applyImpulse(0,-3);}
                 if(key.right){this.applyImpulse(3,-2);}
                 if(key.left){this.applyImpulse(-3,-2);}
+                if(key.down){this.setPosition(200,300);}
             };
             var wheel = new PhysCircle("blue",
                                        20,
                                        {restitution:0}
                                       );
             wheel.Djoint(boxBody);
+            boxBody.setPosition(200,400);
             app.addChild(boxBody);
             app.addChild(wheel);
             app.start();
+
         };
     </script>
 </html>

@@ -30,8 +30,8 @@
     var Mixin = {
         setPosition: function (x, y) {
             this.body.GetBody().SetPosition(new b2Vec2(x/SCALE,y/SCALE));
-            this.x = x;
-            this.y = y;
+            //this.x = x;
+            //this.y = y;
             return this;
         },
         _enterFrame : function(){
@@ -68,7 +68,7 @@
         },
         Rjoint:function(obj1, axis){
             var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
-            axis = axis || this.body.GetBody().GetWorldCenter();
+            axis = axis || obj1.body.GetBody().GetWorldCenter();
             jointDef.Initialize(obj1.body.GetBody(), this.body.GetBody(), axis);
             var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
         },
@@ -77,12 +77,11 @@
             axis1 = axis1 || this.body.GetBody().GetWorldCenter();
             axis2 = axis2 || this.body.GetBody().GetWorldCenter();
             jointDef.Initialize(obj.body.GetBody(), this.body.GetBody(), axis1, axis2);
-            //jointDef.frequencyHz  = option.frequency || 1;//小さい数字にするほどジョイントがよく伸びる。０で動かない？
-            //jointDef.dampingRatio = option.dampingRatio || 0;//上で設定した伸縮の減衰率 ０で減衰なし、１で最大減衰
-            //jointDef.length = option.length || 2.0;//自然な状態でのアンカー間の距離
-            jointDef.frequencyHz  = 1; 
-            jointDef.dampingRatio = 0;
-            jointDef.length = 2.0;
+            option = option || {};
+            jointDef.frequencyHz  = option.frequency || 1;//小さい数字にするほどジョイントがよく伸びる。０で動かない？
+            jointDef.dampingRatio = option.dampingRatio || 0.5;//上で設定した伸縮の減衰率 ０で減衰なし、１で最大減衰
+            jointDef.length = option.length || 1.0;//自然な状態でのアンカー間の距離
+            jointDef.collideConnected == true;
             var joint = Box2D.Dynamics.Joints.b2DistanceJoint(world.CreateJoint(jointDef));
         },
     };
