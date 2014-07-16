@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <title>Atlas for Box2D</title>
+    </head>
+    <body>
+    </body>
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+    <script type="text/javascript" src="Atlas.min.js"></script>
+    <script type="text/javascript" src="Atlas.Box2D.js"></script>
+    <script type="text/javascript">
+        Atlas();
+        window.onload = function(){
+            var app = new App();
+            app.setSize(500,500);
+            app.setQuality(500,500);
+            app.setColor("black");
+            app.centerize();
+            app.fps = 60;
+
+            app.setSCALE(100);//１メートルあたりのピクセル数
+
+            app.createGround(0,450,2000,0.5);
+            app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404611189/azprtifle4fxm3zq0xbs.png","box"]);
+            app.load(["http://res.cloudinary.com/dx1fyzpwl/image/upload/v1404612044/emzjwlg8r0xbvi60x5tr.png","maru"]);
+            /*
+            for(var i = 0; i < 10; i++){
+
+            var shape = new PhysBox("red",
+                                    app.getRand(10,50),
+                                    app.getRand(10,50),
+                                    {density:Math.random() * 4 + 1,
+                                     friction:Math.random() * 0.9 + 0.1,
+                                     restitution:Math.random() * 0.5 +0.3
+                                    });
+            shape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(shape);     
+
+            var shape = new PhysCircle("blue",
+                                       app.getRand(10,50),
+                                       {density:Math.random() * 1 + 1,
+                                        restitution:Math.random() * 0.5 +0.3,
+                                        friction:Math.random() * 0.9 + 0.1
+                                       });
+            shape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(shape);
+
+            var sprite = new PhysSprite("box",
+                                        30,
+                                        30,
+                                        {restitution:Math.random() * 0.5 +0.3,
+                                         density:Math.random() * 1 + 1,
+                                         friction:Math.random() * 0.9 + 0.1,
+                                        });
+            sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(sprite);
+
+            var sprite = new PhysSprite("maru",
+                                        50,
+                                        50,
+                                        {type:"Circle",
+                                         restitution:Math.random() * 0.5 +0.3,
+                                         density:Math.random() * 1 + 1,
+                                         friction:Math.random() * 0.9 + 0.1,
+                                        });
+            sprite.setPosition(app.getRand(0,500),app.getRand(0,100));
+            app.addChild(sprite);
+        };
+        */
+            /*
+            var moveshape = new PhysCircle("green",
+                                           app.getRand(10,50),
+                                           {density:Math.random() * 4 + 1,
+                                            friction:Math.random() * 0.9 + 0.1,
+                                            restitution:Math.random() * 0.5 +0.3
+                                           });
+            moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            moveshape.keyDown = function(key){
+                if(key.up){this.applyImpulse(0,-1000);}
+                if(key.right){this.applyImpulse(1000,-100);}
+                if(key.left){this.applyImpulse(-1000,-100);}
+            };
+            */
+            //app.addChild(moveshape);
+            var cart = new Layer();
+
+            var boxBody = new PhysBox("green",
+                                      100,
+                                      20,
+                                      {restitution:0}
+                                     );
+            boxBody.setPosition(0,0);
+            boxBody.keyDown = function(key){
+                if(key.up){this.applyImpulse(0,-3);}
+                if(key.right){this.applyImpulse(3,-2);}
+                if(key.left){this.applyImpulse(-3,-2);}
+                if(key.down){this.applyImpulse(-3,-2);}
+            };
+            var wheel = new PhysCircle("blue",
+                                       20,
+                                       {restitution:0}
+                                      );
+            wheel.setPosition(30,0);
+            wheel.Rjoint(boxBody);
+            var wheel2 = new PhysCircle("blue",
+                                       20,
+                                       {restitution:0}
+                                      );
+            wheel2.setPosition(-30,0);
+            wheel2.Rjoint(boxBody);
+            cart.addChildren(boxBody,wheel,wheel2);
+            cart.fitToChildren().setPosition(200,200);
+            app.addChild(cart);
+            app.start();
+        };
+    </script>
+</html>
