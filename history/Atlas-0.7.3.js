@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.7.4
+ * Atlas.js v0.7.3
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -689,13 +689,12 @@
             this.useEvent();
             var ctx = this.ctx;
             ctx.clearRect(0, 0, field.width, field.height);
-            if (allLoaded > 0){
-                if(this.preScene)
-                    this.preScene._enterFrame();
+            if (allLoaded > 0 && this.preScene){
+                this.preScene._enterFrame();
             }else{
                 if(this.onLoad)
                     this.onLoad(); 
-                var children = this.scene.children;
+                var children = this.scene;
                 for(var i = 0,n = children.length; i < n; i++){
                     var child = children[i];
                     if(child._onLoad)
@@ -1098,6 +1097,7 @@
             this.path = this.parsePath(path);
             this.spriteWidth = parseInt(svg.getAttribute("width"));
             this.spriteHeight = parseInt(svg.getAttribute("height"));
+            console.log(this.width);
             if(!this.width){
                 this.width = this.spriteWidth;
             }
@@ -1106,9 +1106,6 @@
             }
         },
         draw : function(){
-            if(!this.path){
-                this._onLoad();
-            }
             var path = this.path;
             var ctx = this.ctx;
             var x = 0;
