@@ -1,5 +1,5 @@
 ﻿/**
- * Atlas.js v0.7.3
+ * Atlas.js v0.7.2
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -435,9 +435,6 @@
         },
         remove: function(){
             this._remove = true;
-        },
-        leave: function(){
-            this._leave = true;
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
@@ -1499,8 +1496,8 @@
             var children = this.children;
             for(var i = 0,n = children.length; i < n; i++){
                 var target = children[i];  
-                target._x = target.x + this.x;
-                target._y = this.y + this.y;            
+                target._x = target.x - this.x;
+                target._y = this.y - this.y;            
             }
         },
         addChild:function(sprite){
@@ -1640,22 +1637,19 @@
         },
         fitToChildren:function(){
             var children = this.children;
-            var postx = this.x;
-            var posty = this.y;
             this.x = null;
             this.y = null;
             this.width = 0;
             this.height = 0;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
-                var x = child._x || child.x;
-                var y = child._y || child.y;
-                var width = child._width || child.width;
-                var height = child._height || child.height;
-                var centerX = x + (width/2);
-                var centerY = y + (height/2);
-                var rot = child._rot || child.rot;
-                rot = rot % (2 * Math.PI);
+                var x = child.x;
+                var y = child.y;
+                var width = child.width;
+                var height = child.height;
+                var centerX = child.x + child.width/2;
+                var centerY = child.y + child.height/2;
+                var rot = child.rot % (2 * Math.PI);
                 if(rot < 0){
                     rot += (2 * Math.PI);
                 }
@@ -1699,39 +1693,30 @@
             this.firstHeight = this.height;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
-                if(!child._x){
-                    child._x = child.x;
-                    child._y = child.y;
-                    child.x -= this.x;
-                    child.y -= this.y;
-                }else{
-                    child.x += postx - this.x;
-                    child.y += posty - this.y;
-                }
+                child._x = child.x;
+                child._y = child.y;
+                child.x -= this.x;
+                child.y -= this.y;
             }
             return this;
         },
-        release:function(child){
-            var parent = this.parent;
-            child.x = child._x;
-            child.y = child._y;
-            child.width = child._width;
-            child.height = child._height;
-            child.rot = child._rot;
-            child._x = null;
-            child._y = null;
-            child._width = null;
-            child._height = null;
-            child._rot = null;
-            child.grouped = false;
-            child._leave = false;
-            child.parent = parent;
-        },
         remove:function(){
             var children = this.children;
+            var parent = this.parent;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
-                this.release(child);
+                child.x = child._x;
+                child.y = child._y;
+                child.width = child._width;
+                child.height = child._height;
+                child.rot = child._rot;
+                child._x = null;
+                child._y = null;
+                child._width = null;
+                child._height = null;
+                child._rot = null;
+                child.grouped = false;
+                child.parent = parent;
             }
             this.children = [];
             this._remove = true;
@@ -1757,17 +1742,10 @@
             this.scaleY = this.height/this.firstHeight;
             for(var i = 0,n = children.length; i < n; i++){
                 var target = children[i];
-                if(target._leave){
-                    children.splice(i, 1);
-                    this.release(target);
-                    i--;
-                    n--;
-                    continue;                   
-                }  
                 target._rot = target.rot + this.rot;
                 target._width = this.scaleX * target.width;
                 target._height = this.scaleY * target.height;
-                this._setAbsPos(target);        
+                this._setAbsPos(target);          
             }
         },
     });
