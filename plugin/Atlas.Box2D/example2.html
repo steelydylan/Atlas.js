@@ -5,7 +5,7 @@
     <body>
     </body>
     <script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
-    <script type="text/javascript" src="Atlas.min.js"></script>
+    <script type="text/javascript" src="Atlas.js"></script>
     <script type="text/javascript" src="Atlas.Box2D.js"></script>
     <script type="text/javascript">
         Atlas();
@@ -66,21 +66,25 @@
             app.addChild(sprite);
         };
         */
-            /*
+            
             var moveshape = new PhysCircle("green",
                                            app.getRand(10,50),
                                            {density:Math.random() * 4 + 1,
                                             friction:Math.random() * 0.9 + 0.1,
-                                            restitution:Math.random() * 0.5 +0.3
+                                            restitution:Math.random() * 0.5 +0.3,
+                                            type:"static"
                                            });
-            moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            //moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
+            moveshape.setPosition(400,400);
+            /*
             moveshape.keyDown = function(key){
                 if(key.up){this.applyImpulse(0,-1000);}
                 if(key.right){this.applyImpulse(1000,-100);}
                 if(key.left){this.applyImpulse(-1000,-100);}
             };
             */
-            //app.addChild(moveshape);
+            app.addChild(moveshape);
+            
             var boxBody = new PhysBox("green",
                                       100,
                                       20,
@@ -91,7 +95,7 @@
                 if(key.up){this.applyImpulse(0,-3);}
                 if(key.right){this.applyImpulse(3,-2);}
                 if(key.left){this.applyImpulse(-3,-2);}
-                if(key.down){this.applyImpulse(-3,-2);}
+                if(key.down){this.applyImpulse(2,0);}
             };
             app.addChild(boxBody);
             var wheel = new PhysCircle("blue",
@@ -108,8 +112,10 @@
             wheel.setRelativePos(-30,0,boxBody);
             wheel.Rjoint(boxBody);
             app.addChild(wheel);
+            
             app.start();
 
         };
+        
     </script>
 </html>

@@ -48,15 +48,18 @@
             fixDef.density = body.density || 1.0;
             fixDef.friction = body.friction || 0.5;
             fixDef.restitution = body.restitution || 0.5;
+                        
+            bodyDef.type = b2Body.b2_dynamicBody;
+            if(body.type == "static"){
+                bodyDef.type = b2Body.b2_staticBody;
+            }
             if(shape == "Box"){
-                bodyDef.type = b2Body.b2_dynamicBody;
                 fixDef.shape = new b2PolygonShape;
                 fixDef.shape.SetAsBox(
                     this.width/(SCALE*2) //half width
                     ,    this.height/(SCALE*2) //half height
                 );
             }else if(shape == "Circle"){
-                bodyDef.type = b2Body.b2_dynamicBody;
                 fixDef.shape = new b2CircleShape(
                     this.width/SCALE/2 //radius
                 );
