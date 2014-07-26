@@ -115,7 +115,7 @@
     PhysSprite = Atlas.createClass(Atlas.Sprite,{
         initialize : function(image, width, height, body){
             this.inherit(image, width, height);
-            this._applyPhisics(body.type || "Box",body);
+            this._applyPhisics(body.shape || "Box",body);
         },
     });
 
