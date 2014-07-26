@@ -73,13 +73,14 @@
             this.body.GetBody().ApplyImpulse(new b2Vec2(x,y),this.body.GetBody().GetWorldCenter());
             //this.body.applyImpulse(x/SCALE,y/SCALE);
         },
-        Rjoint:function(obj1, axis){
+        jointR:function(obj,x,y, axis){
+            this.setRelativePos(x,y,obj)
             var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             axis = axis || this.body.GetBody().GetWorldCenter();
-            jointDef.Initialize(this.body.GetBody(), obj1.body.GetBody(), axis);
+            jointDef.Initialize(this.body.GetBody(), obj.body.GetBody(), axis);
             var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
         },
-        Djoint:function(obj, axis1, axis2, option){
+        jointD:function(obj, axis1, axis2, option){
             var jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef();
             axis1 = axis1 || this.body.GetBody().GetWorldCenter();
             axis2 = axis2 || this.body.GetBody().GetWorldCenter();

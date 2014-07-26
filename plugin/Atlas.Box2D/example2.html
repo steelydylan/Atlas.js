@@ -103,16 +103,16 @@
                                        {restitution:0,
                                         shape:"Circle"
                                        });
-            wheel.setRelativePos(30,0,boxBody);
-            wheel.Rjoint(boxBody);
+            //wheel.setRelativePos(30,0,boxBody);
+            wheel.jointR(boxBody,30,0);
             app.addChild(wheel);
             var wheel = new PhysSprite("maru",
                                        50,50,
                                        {restitution:0,
                                         shape:"Circle"
                                        });
-            wheel.setRelativePos(-30,0,boxBody);
-            wheel.Rjoint(boxBody);
+            //wheel.setRelativePos(-30,0,boxBody);
+            wheel.jointR(boxBody,-30,0);
             app.addChild(wheel);
             
             app.start();
