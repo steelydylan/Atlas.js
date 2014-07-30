@@ -15,6 +15,7 @@
     ,  b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
     ,  b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
     ,  b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+    ,  joints = Box2D.Dynamics.Joints
     var fixDef = new b2FixtureDef;
     fixDef.density = 1;
     fixDef.friction = 0.5;
@@ -73,46 +74,52 @@
             this.body.GetBody().ApplyImpulse(new b2Vec2(x,y),this.body.GetBody().GetWorldCenter());
             //this.body.applyImpulse(x/SCALE,y/SCALE);
         },
-        jointR:function(obj,x,y, axis){
+        jointR:function(obj,x,y, motor,axis){
+            motor = motor || {};
             this.setRelativePos(x,y,obj)
-            var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+            var jointDef = new joints.b2RevoluteJointDef();
             axis = axis || this.body.GetBody().GetWorldCenter();
+            // 回転速度の設定（6秒で1回転ぐらい）
+            jointDef.motorSpeed = motor.speed || 0;
+            // トルクの設定（大きいほど坂道に強くなる）
+            jointDef.maxMotorTorque = motor.torque || 0;
+            // 車輪を回すようにする
+            jointDef.enableMotor = true;
             jointDef.Initialize(this.body.GetBody(), obj.body.GetBody(), axis);
-            var joint= Box2D.Dynamics.Joints.b2RevoluteJoint(world.CreateJoint(jointDef));
+            var joint= joints.b2RevoluteJoint(world.CreateJoint(jointDef));
         },
-        jointD:function(obj, axis1, axis2, option){
-            var jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef();
-            axis1 = axis1 || this.body.GetBody().GetWorldCenter();
-            axis2 = axis2 || this.body.GetBody().GetWorldCenter();
-            jointDef.Initialize(obj.body.GetBody(), this.body.GetBody(), axis1, axis2);
+        jointD:function(obj, option){
+            var jointDef = new joints.b2DistanceJointDef();
             option = option || {};
+            var axis1 = option.axis1 || this.body.GetBody().GetWorldCenter();
+            var axis2 = option.axis2 || this.body.GetBody().GetWorldCenter();
+            jointDef.Initialize(obj.body.GetBody(), this.body.GetBody(), axis1, axis2);
             jointDef.frequencyHz  = option.frequency || 1;//小さい数字にするほどジョイントがよく伸びる。０で動かない？
             jointDef.dampingRatio = option.dampingRatio || 0.5;//上で設定した伸縮の減衰率 ０で減衰なし、１で最大減衰
             jointDef.length = option.length || 1.0;//自然な状態でのアンカー間の距離
             jointDef.collideConnected == true;
-            var joint = Box2D.Dynamics.Joints.b2DistanceJoint(world.CreateJoint(jointDef));
+            var joint = joints.b2DistanceJoint(world.CreateJoint(jointDef));
         },
         jointMCreate:function(x,y,force){
-            var jointDef = new Box2D.Dynamics.Joints.b2MouseJointDef();
+            var jointDef = new joints.b2MouseJointDef();
             jointDef.bodyA = world.GetGroundBody();
             jointDef.bodyB = this.body.GetBody();
             jointDef.target = this.body.GetBody().GetWorldCenter();
             jointDef.maxForce = force || 10;
             jointDef.collideConnected = true;
-            jointDef.dampingRatio = 0;
+            jointDef.dampingRatio = 1;
             this._mouseJoint = world.CreateJoint(jointDef);
         },
         jointMSetPosition:function(x,y){
             if(this._mouseJoint){
                 this._mouseJoint.SetTarget(new b2Vec2(x/SCALE,y/SCALE));
-                this.body.GetBody().SetAwake(true);
             }                        
         },
         jointMDestroy:function(){
             world.DestroyJoint(this._mouseJoint);
             this._mouseJoint = null; 
         },
-        
+
 
     };
     //物理演算含む箱の生成クラス

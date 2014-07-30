@@ -67,15 +67,24 @@
         };
         */
 
-            var moveshape = new PhysCircle("blue",
+            var staticShape = new PhysCircle("blue",
                                            app.getRand(10,50),
                                            {density:Math.random() * 4 + 1,
                                             friction:Math.random() * 0.9 + 0.1,
                                             restitution:Math.random() * 0.5 +0.3,
                                             type:"static"
                                            });
-            //moveshape.setPosition(app.getRand(0,500),app.getRand(0,100));
-            moveshape.setPosition(400,300);
+            staticShape.setPosition(400,300);
+            app.addChild(staticShape);
+            var moveShape = new PhysCircle("blue",
+                                           app.getRand(10,20),
+                                           {density:Math.random() + 1,
+                                            friction:Math.random() * 0.9 + 0.1,
+                                            restitution:Math.random() * 0.5 +0.3,
+                                           });
+            moveShape.setPosition(200,300);
+            moveShape.jointD(staticShape);
+            app.addChild(moveShape);
             /*
             moveshape.keyDown = function(key){
                 if(key.up){this.applyImpulse(0,-1000);}
@@ -83,7 +92,7 @@
                 if(key.left){this.applyImpulse(-1000,-100);}
             };
             */
-            app.addChild(moveshape);
+            
 
             var boxBody = new PhysBox("red",
                                       100,
@@ -113,7 +122,7 @@
                                          shape:"Circle"
                                         });
             //wheel.setRelativePos(30,0,boxBody);
-            wheel.jointR(boxBody,30,0);
+            wheel.jointR(boxBody,30,0,{speed:1,torque:1});
             app.addChild(wheel);
             var wheel = new PhysSprite("maru",
                                        50,50,
@@ -121,7 +130,7 @@
                                         shape:"Circle"
                                        });
             //wheel.setRelativePos(-30,0,boxBody);
-            wheel.jointR(boxBody,-30,0);
+            wheel.jointR(boxBody,-30,0,{speed:1,torque:1});
             app.addChild(wheel);
 
             app.start();
