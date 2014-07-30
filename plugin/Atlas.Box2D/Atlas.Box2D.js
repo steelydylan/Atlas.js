@@ -48,7 +48,7 @@
             fixDef.density = body.density || 1.0;
             fixDef.friction = body.friction || 0.5;
             fixDef.restitution = body.restitution || 0.5;
-                        
+
             bodyDef.type = b2Body.b2_dynamicBody;
             if(body.type == "static"){
                 bodyDef.type = b2Body.b2_staticBody;
@@ -92,6 +92,28 @@
             jointDef.collideConnected == true;
             var joint = Box2D.Dynamics.Joints.b2DistanceJoint(world.CreateJoint(jointDef));
         },
+        jointMCreate:function(x,y,force){
+            var jointDef = new Box2D.Dynamics.Joints.b2MouseJointDef();
+            jointDef.bodyA = world.GetGroundBody();
+            jointDef.bodyB = this.body.GetBody();
+            jointDef.target = this.body.GetBody().GetWorldCenter();
+            jointDef.maxForce = force || 10;
+            jointDef.collideConnected = true;
+            jointDef.dampingRatio = 0;
+            this._mouseJoint = world.CreateJoint(jointDef);
+        },
+        jointMSetPosition:function(x,y){
+            if(this._mouseJoint){
+                this._mouseJoint.SetTarget(new b2Vec2(x/SCALE,y/SCALE));
+                this.body.GetBody().SetAwake(true);
+            }                        
+        },
+        jointMDestroy:function(){
+            world.DestroyJoint(this._mouseJoint);
+            this._mouseJoint = null; 
+        },
+        
+
     };
     //物理演算含む箱の生成クラス
     PhysBox = Atlas.createClass(Atlas.Shape.Box,{

@@ -442,7 +442,7 @@
         HSBtoRGB : function (h,s,v){
             var f,i, p, q, t;
             var r,g,b;
-            i = Math.floor(h / 60.0) % 6;
+            i = Math.floor(Math.floor(h / 60.0) % 6);
             f = (h / 60.0) - Math.floor(h / 60.0);
             p = Math.round(v * (1.0 - (s / 255.0)));
             q = Math.round(v * (1.0 - (s / 255.0) * f));
