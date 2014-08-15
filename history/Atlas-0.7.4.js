@@ -1,5 +1,5 @@
-/**
- * Atlas.js v0.7.5
+﻿/**
+ * Atlas.js v0.7.4
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -85,7 +85,7 @@
         } 
     };
     var keydown = (function(){       
-        var ret = {};
+        var ret = new Object();
         clearKeyState(ret);
         return ret;
     })();
@@ -106,7 +106,7 @@
                 if(this.initialize)
                     this.initialize.apply(this, arguments);
             };
-        } else if (typeof superClass == "object" && obj == void 0) {
+        } else if (typeof superClass == "object" && obj == null) {
             obj = superClass;
         }
         for (var key in obj) {
@@ -127,7 +127,7 @@
         if(target && target.and){
             var obj = target;
         }else{
-            var obj = {};
+            var obj = new Object();
             mover.push(obj);
         }
         obj.time = 0;
@@ -142,7 +142,7 @@
         isMobile: isMobile,
         orientation: orientation,
         initialize: function(){
-            this.eventListener = {};
+            this.eventListener = new Object();
             this.mover = [];
             this.rot = 0;
             this.moverIndex = 0;
@@ -208,7 +208,7 @@
             return this;
         },
         _moveTo : function(obj){
-            if(obj.time === 0){
+            if(obj.time == 0){
                 obj.diffX = obj.toX - this.x;
                 obj.diffY = obj.toY - this.y;
             }
@@ -222,7 +222,7 @@
             return this;
         },
         _moveBy: function(obj){
-            if(obj.time === 0){
+            if(obj.time == 0){
                 obj.toX = this.x + obj.diffX;
                 obj.toY = this.y + obj.diffY;
             }
@@ -257,7 +257,7 @@
             return this;
         },
         _rotateBy : function(obj){
-            if(obj.time === 0)
+            if(obj.time == 0)
                 obj.toAngle = this.rot + obj.diffAngle;
             this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
         },
@@ -376,28 +376,28 @@
         useEvent: function(){
             var field = this.field;
             var eventListener = this.eventListener;
-            if(this.touchStart && eventListener.touchStart === false){
+            if(this.touchStart && eventListener.touchStart == false){
                 if(isMobile)
                     field.addEventListener("touchstart",this,false);
                 else
                     field.addEventListener("mousedown",this,false);
                 eventListener.touchStart = true;
                 }
-            if(this.touchMove && eventListener.touchMove === false){
+            if(this.touchMove && eventListener.touchMove == false){
                 if(isMobile)
                     field.addEventListener("touchmove",this,false);
                 else
                     field.addEventListener("mousemove",this,false);
                 eventListener.touchMove = true;
             }
-            if(this.touchEnd && eventListener.touchEnd === false){
+            if(this.touchEnd && eventListener.touchEnd == false){
                 if(isMobile)
                     field.addEventListener("touchend",this,false);
                 else
                     field.addEventListener("mouseup",this,false);
                 eventListener.touchEnd = true;
             }
-            if(this.multiTouchStart && eventListener.multiTouchStart === false){
+            if(this.multiTouchStart && eventListener.multiTouchStart == false){
                 if(!eventListener.touchStart){
                     if(isMobile)
                         field.addEventListener("touchstart",this,false);
@@ -406,7 +406,7 @@
                 }
                 eventListener.touchStart = true;
             }
-            if(this.multiTouchMove && eventListener.multiTouchMove === false){
+            if(this.multiTouchMove && eventListener.multiTouchMove== false){
                 if(!eventListener.touchMove){
                     if(isMobile)
                         field.addEventListener("touchmove",this,false);
@@ -415,7 +415,7 @@
                 }
                 eventListener.touchMove = true;
             }
-            if(this.multiTouchEnd && eventListener.multiTouchEnd === false){
+            if(this.multiTouchEnd && eventListener.multiTouchEnd == false){
                 if(!eventListener.touchEnd){
                     if(isMobile)
                         field.addEventListener("touchend",this,false);
@@ -424,11 +424,11 @@
                 }
                 eventListener.touchEnd = true;
             }              
-            if(this.keyUp && eventListener.keyUp === false){
+            if(this.keyUp && eventListener.keyUp == false){
                 field.addEventListener("keyup",this,false);
                 eventListener.keyUp = true;
             }
-            if(this.keyDown && eventListener.keyDown === false){
+            if(this.keyDown && eventListener.keyDown == false){
                 field.addEventListener("keydown",this,false);
                 eventListener.keyDown = true;
             }
@@ -442,28 +442,7 @@
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
         },
-        rgbToHex : function(r,g,b){
-            var rgb = b | (g << 8) | (r << 16);
-            return '#' + (0x1000000 + rgb).toString(16).slice(1);
-        },
-        hexToRgb : function(color,opacity){
-            if(typeof color == Number){
-                opacity = color;
-                color = null;
-            }
-            var hex = color || this.color;
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            if(opacity){
-                return result ?
-                "rgba("+parseInt(result[1], 16)+","+parseInt(result[2], 16)+","+parseInt(result[3], 16)+","+opacity+")"
-                : null; 
-            }else{
-                 return result ? 
-                "rgb("+parseInt(result[1], 16)+","+parseInt(result[2], 16)+","+parseInt(result[3], 16)+")"
-                : null;               
-            }
-        },
-        hsbToHex : function (h,s,v){
+        HSBtoRGB : function (h,s,v){
             var f,i, p, q, t;
             var r,g,b;
             i = Math.floor(h / 60.0) % 6;
@@ -592,11 +571,11 @@
             if (isMobile) {
                 field.style.width = window.innerWidth+"px";//mobile default
                 field.style.height = window.innerHeight+"px";//mobile default
-                field.addEventListener("touchstart",function(){if(this.tabIndex != -1)this.focus()});
+                field.addEventListener("touchstart",function(){this.focus()});
             } else {
                 field.style.width = 480+"px";
                 field.style.height = 620+"px"; 
-                field.addEventListener("mousedown",function(){if(this.tabIndex != -1)this.focus()});
+                field.addEventListener("mousedown",function(){this.focus()});
                 field.addEventListener("keyup",function(){clearKeyState(keydown);},false);
             }
             this._css = css;
@@ -607,12 +586,6 @@
             this.scene.ctx = this.ctx;
             this.scene.field = this.field; 
             this.scene.parent = this;
-        },
-        clearLockMode : function(){
-            this.field.tabIndex = '-1';
-        },
-        setLockMode : function(){
-            this.field.tabIndex = '1';
         },
         getCanvasURL : function(){
             return this.field.toDataURL();
@@ -696,13 +669,13 @@
             style.height = height+"px";
         },      
         getSize : function(){
-            var size = {};
+            var size = new Object();
             size.width = parseInt(this.field.style.width);
             size.height = parseInt(this.field.style.height);
             return size;
         },
         getQuality: function(){
-            var size = {};
+            var size = new Object();
             size.width = parseInt(this.field.width);
             size.height = parseInt(this.field.height);
             return size;
@@ -845,7 +818,6 @@
                     obj.addEventListener("load",function () {
                         allLoaded--;
                         this.style.display = "none";
-                        this.loaded = true;
                         console.log(this.data + ' is loaded');
                     });
                     obj.data = data;
@@ -857,7 +829,6 @@
                     var obj = new Image();
                     obj.addEventListener("load",function () {
                         allLoaded--;
-                        this.loaded = true;
                         console.log(this.src + ' is loaded');
                     });
                     obj.src = data;
@@ -877,11 +848,11 @@
             this.width = width;
             this.height = height; 
             this.collisionShape = "box";
-            this.prepared = false;/*描画の準備が完了*/
-            this.alpha = 1;         
+            this.alpha = 1;  
+            this.field;        
         },
         _scaleBy: function(obj){
-            if(obj.time === 0){
+            if(obj.time == 0){
                 obj.toWidth = this.width * obj.scaleX;
                 obj.toHeight = this.height * obj.scaleY;
                 obj.diffWidth = obj.toWidth - this.width;
@@ -937,10 +908,12 @@
             } else {
                 return false;
             }      
-            if(targetr !== 0 && targetr != Math.PI){
+            if(targetr != 0 && targetr != Math.PI){
                 if (target.collisionShape == "box") {
                 var centerX = targetx + targetW / 2;
                 var centerY = targety + targetH / 2;
+                var thiscX = thisx + thisW / 2;
+                var thiscY = thisy + thisH / 2;
                 var rot = - targetr;
                 thiscX = Math.cos(rot) * (thiscX - centerX) -
                     Math.sin(rot) * (thiscY - centerY) + centerX;
@@ -1029,21 +1002,22 @@
         initialize : function(path,color,lineColor){
             this.inherit(0,0);
             this.obj = -1;
-            this._basicConstructor = "Shape";
-            this.color = color || "original"; 
-            this.strokeColor = lineColor || "original";
-            this.colorStops = [];
             if(typeof path == "object"){
                 this.path = path;
             }else if(typeof path == "string"){
                 this.setImage(path);
             }
             this.closeMode = true;
-            this.strokeMode = true;
-        },
-        setSpriteSize:function (width,height){
-            this.spriteWidth = width;
-            this.spriteHeight = height;
+            if(color)
+                this.color = color;
+            else{
+                this.color = "original";
+            }
+            if(lineColor){
+                this.strokeColor = lineColor;
+            }else{
+                this.strokeColor = "original";
+            }
         },
         setImage: function (path){
             for(var i = 0,n = svgs.length; i < n; i++){
@@ -1052,25 +1026,7 @@
                 }
             }
         },
-        getImage : function(){
-            return svgs[this.obj];
-        },
-        getImageName : function(){
-            return svgs[this.obj].data;
-        },
-        parsePolygon : function(polygon){
-            var pols = polygon.split(" ");
-            var data = [];
-            for(var i = 0,n = pols.length - 1; i < n; i++){
-                var pt = pols[i].split(",");
-                var x = Number(pt[0]);
-                var y = Number(pt[1]);
-                var obj = {method:"lineTo",x:x,y:y};
-                data.push(obj);
-            }
-            return data;
-        },
-        parsePath : function(path){/*SVGのpath要素を解析*/
+        parsePath : function(path){
             var length = {a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0};
             var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
             var data = [];
@@ -1128,146 +1084,26 @@
             });
             return data;
         },
-        isLoaded : function(){
-            var image = this.getImage();
-            if(image.loaded && this.ctx){
-                return true;
-            }else{
-                return false;
-            }
-        },
-        setLinearGradient : function(x1,y1,x2,y2){
-            var ctx = this.ctx;
-            this.gradientStyle = {x1:x1,y1:y1,x2:x2,y2:y2};
-            this.gradientType = 1; 
-        },
-        setRadialGradient : function(x1, y1, r1, x2, y2, r2){
-            var ctx = this.ctx;
-            if(!x2){
-                x2 = x1;
-                y2 = y1;
-                r2 = r2;
-            }
-            this.gradientStyle = {x1:x1,y1:y1,r1:r1,x2:x2,y2:y2,r2:r2};
-            this.gradientType = 2; 
-        },
-        _addColorStops : function(stops){
-            var grad = this.color;
-            for(var i = 0,n = stops.length; i < n; i++){
-                var stop = stops[i];
-                var color = stop.color;
-                grad.addColorStop(stop.offset,color);
-            }
-            this.color = grad;
-        },
-        setColorStops : function(stops){
-            this.colorStops = stops;
-            var style = this.gradientStyle;
-            if(this.gradientType == 1){
-                this.color = this.ctx.createLinearGradient(style.x1,style.y1,style.x2,style.y2);
-            }else if(this.gradientType == 2){
-                this.color = this.ctx.createRadialGradient(style.x1,style.y1,style.r1,style.x2,style.y2,style.r2);
-            }
-            this._addColorStops(stops);
-        },
-        addColorStops : function(stops){
-            for(var i = 0,n = stops.length; i < n; i++){
-                this.colorStops.push(stops[i]);
-            }
-            this._addColorStops(stops);
-        },
-        removeColorStopAt : function(num){
-            this.colorStops.splice(num,1);
-            this.setColorStops(this.colorStops);
-        },
-        getGradientType : function(){
-            var type = this.gradientType;
-            if(type == 1){
-                return "linear";
-            }else if(type == 2){
-                return "radial";
-            }else{
-                return "single";
-            }
-        },
         _onLoad : function(){
             var svgdoc  = svgs[this.obj].getSVGDocument();
-            var element = svgdoc.getElementsByTagName("path")[0] || svgdoc.getElementsByTagName("circle")[0] || svgdoc.getElementsByTagName("rect")[0] || svgdoc.getElementsByTagName("polygon")[0];
+            var element = svgdoc.getElementsByTagName("path")[0];
             var svg = svgdoc.getElementsByTagName("svg")[0];
-            var color = svg.getElementsByTagName("linearGradient")[0] || svgdoc.getElementsByTagName("radialGradient")[0];
-            if(color){
-                var stopsEle = color.getElementsByTagName("stop");
-                var stops = [];
-                for(var i = 0,n = stopsEle.length; i < n; i++){
-                    var ele = stopsEle[i];
-                    var obj = {};
-                    obj.offset = ele.getAttribute("offset");
-                    var styleCol = ele.style.stopColor.toString();
-                    var op = ele.style.stopOpacity;
-                    if(op){
-                        styleCol = styleCol.replace("rgb","rgba");
-                        styleCol = styleCol.replace(")",","+op+")");
-                    }
-                    obj.color = styleCol;
-                    stops.push(obj);
-                }
-                if(color.tagName == "linearGradient"){
-                    var x1 = Number(color.getAttribute("x1"));
-                    var x2 = Number(color.getAttribute("x2"));
-                    var y1 = Number(color.getAttribute("y1"));
-                    var y2 = Number(color.getAttribute("y2"));
-                    this.setLinearGradient(x1,y1,x2,y2);
-                }else if(color.tagName == "radialGradient"){
-                    var cx = Number(color.getAttribute("cx"));
-                    var cy = Number(color.getAttribute("cy"));
-                    var r = Number(color.getAttribute("r"));
-                    this.setRadialGradient(cx,cy,0,cx,cy,r);
-                }
-                this.setColorStops(stops);
-            }
+            var path = element.getAttribute("d");
             if(this.color == "original"){
                 this.color = element.getAttribute("fill");
             }
             if(this.strokeColor == "original"){
                 this.strokeColor == element.getAttribute("stroke");
             }
-            if(element.tagName == "path"){
-                var path = element.getAttribute("d");
-                this.path = this.parsePath(path);
-            }else if(element.tagName == "circle"){
-                var radius = element.getAttribute("r");
-                var array = [];
-                array.push({method:"circle",r:radius});
-                this.path = array;
-            }else if(element.tagName == "polygon"){
-                var points = element.getAttribute("points");
-                this.path = this.parsePolygon(points);
-            }else if(element.tagName == "rect"){
-                var width = element.getAttribute("width");
-                var height = element.getAttribute("height");
-                var array = [];
-                array.push({method:"rect",width:width,height:height});
-                this.path = array;
-            }
-            if(this.spriteWidth == void 0){
-                this.spriteWidth = parseInt(svg.getAttribute("width"));
-                this.spriteHeight = parseInt(svg.getAttribute("height"));
-                if(!this.spriteWidth){
-                    var viewBox = svg.getAttribute("viewBox");
-                    if(viewBox){
-                        var data = viewBox.split(" ");
-                        this.spriteWidth = data[2];
-                        this.spriteHeight = data[3];
-                    }
-                }
-            }
+            this.path = this.parsePath(path);
+            this.spriteWidth = parseInt(svg.getAttribute("width"));
+            this.spriteHeight = parseInt(svg.getAttribute("height"));
             if(!this.width){
                 this.width = this.spriteWidth;
             }
             if(!this.height){
                 this.height = this.spriteHeight;
             }
-            this.prepared = true;
         },
         draw : function(){
             if(!this.path){
@@ -1301,31 +1137,18 @@
             for(var i = 0,n = path.length; i < n; i++){
                 var p = this.path[i];
                 var method = p.method;
-                if(method == "moveTo" || method == "horizontalTo" || method == "verticalTo" || method == "quadraticCurveTo" || method == "bezierCurveTo" || method == "lineTo" || method == "bezierCurveShortTo" || method == "quadraticCurveShortTo"){/*絶対*/
+                if(method == "moveTo" || method == "quadraticCurveTo" || method == "bezierCurveTo" || method == "lineTo" || method == "bezierCurveShortTo" || method ==                 "quadraticCurveShortTo"){/*絶対*/
                     tmpx = 0;
                     tmpy = 0;
-                    if(p.x || p.x == 0){
-                        x = p.x;
-                    }
-                    if(p.y || p.y == 0){
-                        y = p.y;
-                    }
+                    x = p.x;
+                    y = p.y;
                 }else{/*相対*/
                     tmpx = x;
                     tmpy = y;
-                    if(p.x){
-                        x += p.x;
-                    }
-                    if(p.y){
-                        y += p.y;
-                    }
+                    x += p.x;
+                    y += p.y;
                 }
-                if(method == "circle"){
-                    var r = p.r;
-                    ctx.arc(x + r, y + r, r, 0, Math.PI * 2, false);
-                }else if(method == "rect"){
-                    ctx.fillRect(x,y,p.width,p.height);
-                }else if(method == "moveTo" || method == "moveBy"){
+                if(method == "moveTo" || method == "moveBy"){
                     ctx.moveTo(x,y);
                 }else if(method == "lineTo" || method == "lineBy"){
                     ctx.lineTo(x,y);
@@ -1338,9 +1161,9 @@
                     rcpx = 2*x - (tmpx+p.cpx2);
                     rcpy = 2*y - (tmpy+p.cpy2);
                 }else if(method == "horizontalTo" || method == "horizontalBy"){
-                    ctx.lineTo(x,y);
+                    ctx.lineTo(p.x,y);
                 }else if(method == "verticalTo" || method == "verticalBy"){
-                    ctx.lineTo(x,y);
+                    ctx.lineTo(x,p.y);
                 }else if(method == "bezierCurveShortBy" || method == "bezierCurveShortTo"){
                     ctx.bezierCurveTo(rcpx,rcpy,tmpx+p.cpx2,tmpy+p.cpy2,x,y);
                     rcpx = 2*x - (tmpx+p.cpx2);
@@ -1357,9 +1180,7 @@
             ctx.fillStyle = this.color;
             ctx.fill();
             ctx.strokeStyle = this.strokeColor;
-            if(this.strokeMode){
-                ctx.stroke();
-            }
+            ctx.stroke();
             ctx.restore();
         },
         getNodeByName : function(name){
@@ -1398,7 +1219,7 @@
             ctx.translate(-moveX, -moveY);
             var x = this._x || this.x;
             var y = this._y || this.y;
-            ctx.fillRect(x, y, width, height);
+            ctx.fillRect(x, y, this.width, this.height);
             ctx.restore();
             ctx.globalAlpha = 1;
         }
@@ -1466,27 +1287,6 @@
         },
         getImage : function(){
             return images[this.img];
-        },
-        isLoaded : function(){
-            var image = this.getImage();
-            if(image.loaded && this.ctx){
-                return true;
-            }else{
-                return false;
-            }
-        },
-        _onLoad : function(){
-            var obj = this.getImageSize();
-            if(obj.width){
-                this.setSpriteSize(obj.width,obj.height);
-                if(!this.width){
-                    this.setSize(obj.width,obj.height);
-                    if(this._scaleX){
-                        this.scale(this._scaleX,this._scaleY);
-                    }
-                }
-            }
-            this.prepared = true;
         },
         getImageSize : function(){
             var obj = {};
@@ -1800,17 +1600,19 @@
                     n--;
                     continue;
                 }
-                if(target._basicConstructor == "Sprite" 
-                || target._basicConstructor == "Map"
-                || target._basicConstructor == "Shape"){
-                    if(target.isLoaded() && !target.prepared){
-                        target._onLoad();
-                        if(target.onLoad){
-                            /*フックを登録していたら*/
-                            target.onLoad();
+                if(target._basicConstructor == "Sprite" && !target.spriteWidth){
+                    /*スプライトのサイズが決まってなかった場合自動で設定*/
+                    var obj = target.getImageSize();
+                    if(obj.width){
+                        target.setSpriteSize(obj.width,obj.height);
+                        if(!target.width){
+                            target.setSize(obj.width,obj.height);
+                            if(target._scaleX){
+                                target.scale(target._scaleX,target._scaleY);
+                            }
                         }
                     }
-                }/*ロードが終わったオブジェクトの描画準備を完了させる*/
+                }
                 if(target.useEvent)
                     target.useEvent();
                 if(target._enterFrame)
@@ -1820,6 +1622,8 @@
                 if(target.tween)
                     target.tween();
                 if(target.visible){
+                    if(target.preDraw)
+                        target.preDraw();
                     target.draw();
                 }
             }
