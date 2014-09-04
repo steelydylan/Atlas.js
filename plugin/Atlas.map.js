@@ -127,8 +127,22 @@
             rooms[connect_list[i][0]], rooms[connect_list[i][1]])
         }
     };
-    Atlas.extendClass(Atlas.Map,{
-        getRandMap : function (width, height, complexity) {
+    Atlas.rougueMap = Atlas.createClass(Atlas.Map,{
+        initialize:function(img,width,height){
+            this.inherit(img,width,height);
+            this.mapRule =  {
+                wallTopLeft:0,
+                wallTop:1,
+                wallTopRight:2,
+                wallLeft:3,
+                wall:4,
+                wallRight:5,
+                wallBottomLeft:6,
+                wallBottom:7,
+                wallBottomRight:8
+            };
+        },
+        setRandMap : function (width, height, complexity) {
             C = complexity;
             MapData = new Array(height);
             for (var j = 0; j < height; j++) {
@@ -142,6 +156,14 @@
             fillArray(rooms);
             make_corrider(partition, rooms);
             this.hitData = MapData;
+            //this.createVisualMap();
         },
+
+        setVisualMap : function(){
+        },
+
+        setChipMap : function(rule){
+            this.mapRule = rule;
+        }
     });
 })();

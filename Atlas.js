@@ -1376,7 +1376,7 @@
     Atlas.Shape.Box = Atlas.createClass(Atlas.Thing, {
         initialize: function (col, width, height) {
             this.inherit(width,height);
-            this._basicConstructor = "Shape";            
+            this._basicConstructor = "Shape.Box";            
             this.color = col;
         },
         draw: function () {
@@ -1406,7 +1406,7 @@
     Atlas.Shape.Circle = Atlas.createClass(Atlas.Thing, {
         initialize: function (col, radius) {
             this.inherit(radius * 2,radius * 2);
-            this._basicConstructor = "Shape";
+            this._basicConstructor = "Shape.Circle";
             this.color = col;
             this.collisionShape = "circle";
         },
