@@ -1,5 +1,5 @@
 /**
- * Atlas.js v0.7.5
+ * Atlas.js v0.7.6
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -117,10 +117,56 @@
     };
     Atlas.extendClass = function (targetclass,obj){
         for(var key in obj){
-            /*if(!targetclass.prototype[key])*/
             targetclass.prototype[key] = obj[key];
         }
     };
+    Atlas.extendClass(Array,{
+        forEach:function(fn){
+            for(var i = 0,n = this.length; i < n; i++){
+                fn(this[i]);
+            }
+        },
+        reduce:function(fn){
+            var h = 0;
+            for(var i = 0,n = this.length; i < n; i++){
+                h = fn(h,this[i]);
+            }
+            return h;
+        },
+        reduceRight:function(fn){
+            var h = 0;
+            for(var i = this.length - 1; i >= 0; i--){
+                h = fn(h,this[i]);
+            }
+            return h;
+        },
+        map:function(fn){
+            for(var i = 0,n = this.length; i < n; i++){
+                this[i] = fn(this[i]);
+            }
+            return this;
+        },
+        max:function(fn){
+            var max = null;
+            for(var i = 0,n = this.length; i < n; i++){
+                var ret = fn(this[i]);
+                if(max === null || max < ret){
+                    max = ret;
+                }
+            }
+            return max;
+        },
+        min:function(fn){
+            var min = null;
+            for(var i = 0,n = this.length; i < n; i++){
+                var ret = fn(this[i]);
+                if(min === null || min > ret){
+                    min = ret;
+                }
+            }
+            return min;    
+        }
+    })
     var Tween = function(that,kind,frame){
         var mover = that.mover;
         var target = mover[mover.length - 1];
@@ -620,6 +666,12 @@
         getCanvasImage : function(){
             var url = this.field.toDataURL();
             window.open(url,'_blank');          
+        },
+        getChild:function(){
+            return this.scene.getChild();
+        },
+        getChildren:function(){
+            return this.scene.getChildren();
         },
         colorToAlpha : function(imagename,hex){
             var img;
@@ -1697,14 +1749,6 @@
             this.x = 0;
             this.y = 0;
             this._basicConstructor = "Group";
-        },
-        draw: function () {
-            var children = this.children;
-            for(var i = 0,n = children.length; i < n; i++){
-                var target = children[i];  
-                target._x = target.x + this.x;
-                target._y = this.y + this.y;            
-            }
         },
         addChild:function(sprite){
             sprite.parent = this;

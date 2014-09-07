@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	<script src="./Atlas.js"></script>
+	<script>
+		Atlas();
+		window.onload = function(){
+			var app = new App("test");
+			app.setSize(500,500);
+			app.setQuality(500,500);
+			for(var i = 0; i < 20; i++){
+				var box = new Shape.Box("black",20,20);
+				box.x = box.getRand(0,500);
+				box.y = box.getRand(0,500);
+				box.i = i;
+				app.addChild(box);
+			}
+			var arr = [1,2,3];
+			console.log(arr.min(function(e){return e*3}));
+			app.enterFrame = function(){
+				this.getChildren().forEach(function(child){
+					child.x++;
+				})
+			}
+			app.start();
+		}
+	</script>
+</head>
+<body>
+	<canvas id="test"></canvas>
+</body>
+</html>
