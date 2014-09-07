@@ -5,7 +5,7 @@
  * <http://steelydylan.webcrow.jp/>
  * Released under the MIT license.
  */
-(function () {
+;(function () {
     "use strict";
     var images = [];
     var sounds = [];
