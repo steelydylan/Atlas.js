@@ -18,6 +18,7 @@
 			}
 			var arr = [1,2,3];
 			console.log(arr.min(function(e){return e*3}));
+			console.log(arr.reduceRight(function(e,i){return e + i}))
 			app.enterFrame = function(){
 				this.getChildren().forEach(function(child){
 					child.x++;

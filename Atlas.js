@@ -121,25 +121,25 @@
         }
     };
     Atlas.extendClass(Array,{
-        forEach:function(fn){
-            for(var i = 0,n = this.length; i < n; i++){
-                fn(this[i]);
-            }
-        },
-        reduce:function(fn){
-            var h = 0;
-            for(var i = 0,n = this.length; i < n; i++){
-                h = fn(h,this[i]);
-            }
-            return h;
-        },
-        reduceRight:function(fn){
-            var h = 0;
-            for(var i = this.length - 1; i >= 0; i--){
-                h = fn(h,this[i]);
-            }
-            return h;
-        },
+        // forEach:function(fn){
+        //     for(var i = 0,n = this.length; i < n; i++){
+        //         fn(this[i]);
+        //     }
+        // },
+        // reduce:function(fn){
+        //     var h = 0;
+        //     for(var i = 0,n = this.length; i < n; i++){
+        //         h = fn(h,this[i]);
+        //     }
+        //     return h;
+        // },
+        // reduceRight:function(fn){
+        //     var h = 0;
+        //     for(var i = this.length - 1; i >= 0; i--){
+        //         h = fn(h,this[i]);
+        //     }
+        //     return h;
+        // },
         map:function(fn){
             for(var i = 0,n = this.length; i < n; i++){
                 this[i] = fn(this[i]);
