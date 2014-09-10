@@ -166,7 +166,15 @@
             }
             return min;    
         }
-    })
+    });
+    Atlas.main = function(fn){
+        Atlas._main = fn;
+    }
+    window.addEventListener("load",function(){
+        if(Atlas._main){
+            Atlas._main();
+        }
+    });
     var Tween = function(that,kind,frame){
         var mover = that.mover;
         var target = mover[mover.length - 1];

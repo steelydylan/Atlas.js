@@ -5,7 +5,7 @@
 	<script src="./Atlas.js"></script>
 	<script>
 		Atlas();
-		window.onload = function(){
+		Atlas.main(function(){
 			var app = new App("test");
 			app.setSize(500,500);
 			app.setQuality(500,500);
@@ -16,16 +16,16 @@
 				box.i = i;
 				app.addChild(box);
 			}
-			var arr = [1,2,3];
-			console.log(arr.min(function(e){return e*3}));
-			console.log(arr.reduceRight(function(e,i){return e + i}))
 			app.enterFrame = function(){
 				this.getChildren().forEach(function(child){
 					child.x++;
 				})
 			}
+			app.touchStart = function(){
+				func();
+			}
 			app.start();
-		}
+		});
 	</script>
 </head>
 <body>
