@@ -1,5 +1,5 @@
 /**
- * Atlas.js v0.7.6
+ * Atlas.js v0.7.7
  * https://github.com/steelydylan/Atlas.js
  * Copyright steelydylan
  * <http://steelydylan.webcrow.jp/>
@@ -857,20 +857,20 @@
         toDataURL:function(){
           return this.field.toDataURL();  
         },
-        load: function () {
-            function getExtention(fileName) {
-                var ret;
-                if (!fileName) {
-                    return ret;
-                }
-                var fileTypes = fileName.split(".");
-                var len = fileTypes.length;
-                if (len === 0) {
-                    return ret;
-                }
-                ret = fileTypes[len - 1];
+        getExtention:function(fileName){
+            var ret;
+            if (!fileName) {
                 return ret;
             }
+            var fileTypes = fileName.split(".");
+            var len = fileTypes.length;
+            if (len === 0) {
+                return ret;
+            }
+            ret = fileTypes[len - 1];
+            return ret;
+        },
+        load: function () {
             for (var i = 0, n = arguments.length; i < n; i++) {
                 var obj = arguments[i];
                 if(obj instanceof Array){
@@ -880,7 +880,11 @@
                     var data = obj;
                     var name = obj;
                 }
-                var ext = getExtention(data);
+                if(data.match("data:image/png")){
+                    var ext = "png";
+                }else{
+                    var ext = this.getExtention(data);
+                }
                 if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
                     var obj = new Audio(data);
                     obj.name = name;
@@ -1537,7 +1541,7 @@
         },
         _onLoad : function(){
             var obj = this.getImageSize();
-            if(obj.width){
+            if(!this.width && obj.width){
                 this.setSpriteSize(obj.width,obj.height);
                 if(!this.width){
                     this.setSize(obj.width,obj.height);
@@ -1612,51 +1616,53 @@
         },
         draw: function () {
             var array = this.drawData;
-            var x = array[0].length;
-            var y = array.length;
-            var width = this._width || this.width;
-            var height = this._height || this.height;
-            var px = this._x || this.x;
-            var py = this._y || this.y;
-            var i = 0;
-            var t = 0;
-            var field = this.field;
-            var ctx = this.ctx;
-            ctx.globalAlpha = this.alpha;
-            ctx.globalCompositeOperation = this.drawMode;
-            var fieldHeight = field.height;
-            var fieldWidth = field.width;
-            var frame;
-            var image = images[this.img];
-            var SizeX = this.spriteWidth;
-            var SizeY = this.spriteHeight;
-            var cX = width / 2;
-            var cY = height / 2;
-            var numX = image.width / SizeX;
-            var numY = image.height / SizeY;
-            var scaleX = this.width / SizeX;
-            var scaleY = this.height / SizeY;
-            var posX = px;
-            var posY = py;
-            while (i < y) {
-                while (t < x) {
-                    frame = array[i][t];
-                    if (frame >= 0 && fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0) {
-                        var dx = (frame % numX) * SizeX;
-                        var dy = (~~(frame / numX) % numY) * SizeY;
-                        ctx.save();
-                        ctx.translate(posX, posY);
-                        ctx.scale(scaleX, scaleY);
-                        ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
-                        ctx.restore();
+            if(array && array[0]){
+                var x = array[0].length;
+                var y = array.length;
+                var width = this._width || this.width;
+                var height = this._height || this.height;
+                var px = this._x || this.x;
+                var py = this._y || this.y;
+                var i = 0;
+                var t = 0;
+                var field = this.field;
+                var ctx = this.ctx;
+                ctx.globalAlpha = this.alpha;
+                ctx.globalCompositeOperation = this.drawMode;
+                var fieldHeight = field.height;
+                var fieldWidth = field.width;
+                var frame;
+                var image = images[this.img];
+                var SizeX = this.spriteWidth;
+                var SizeY = this.spriteHeight;
+                var cX = width / 2;
+                var cY = height / 2;
+                var numX = image.width / SizeX;
+                var numY = image.height / SizeY;
+                var scaleX = this.width / SizeX;
+                var scaleY = this.height / SizeY;
+                var posX = px;
+                var posY = py;
+                while (i < y) {
+                    while (t < x) {
+                        frame = array[i][t];
+                        if (frame >= 0 && fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0) {
+                            var dx = (frame % numX) * SizeX;
+                            var dy = (~~(frame / numX) % numY) * SizeY;
+                            ctx.save();
+                            ctx.translate(posX, posY);
+                            ctx.scale(scaleX, scaleY);
+                            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+                            ctx.restore();
+                        }
+                        posX += width;
+                        t++;
                     }
-                    posX += width;
-                    t++;
+                    posY += height;
+                    posX = px;
+                    i++;
+                    t = 0;
                 }
-                posY += height;
-                posX = px;
-                i++;
-                t = 0;
             }
         }
     });
