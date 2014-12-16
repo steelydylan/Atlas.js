@@ -1,0 +1,13 @@
+{
+	"name":"Atlas.js",
+	"description":"ブラウザで動作する教育用JSゲームエンジン",
+	"homepage":"http://horicdesign.com",
+	"license":"MIT License",
+	"version":"0.7.8",
+	"dependencies":{
+		"gulp":"*",
+		"gulp-rename":"*",
+		"gulp-uglify":"*",
+		"gulp-header":"*"
+	}
+}

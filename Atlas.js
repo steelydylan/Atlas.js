@@ -169,7 +169,7 @@
     });
     Atlas.main = function(fn){
         Atlas._main = fn;
-    }
+    };
     window.addEventListener("load",function(){
         if(Atlas._main){
             Atlas._main();
@@ -178,11 +178,9 @@
     var Tween = function(that,kind,frame){
         var mover = that.mover;
         var target = mover[mover.length - 1];
+        var obj = {};
         if(target && target.and){
-            var obj = target;
-        }else{
-            var obj = {};
-            mover.push(obj);
+            obj = target;
         }
         obj.time = 0;
         if(frame)
@@ -335,7 +333,7 @@
             return this;
         },
         saveData: function(key){
-            var obj = new Object();
+            var obj = {};
             for(var i in this){
                 if(typeof(this[i]) != 'function')
                     obj[i] = this[i];
@@ -353,7 +351,7 @@
             var field = this.field;
             var rateX = parseInt(field.width) / parseInt(field.style.width);
             var rateY = parseInt(field.height) / parseInt(field.style.height);
-            var obj = new Object();
+            var obj = {};
             var margin = field.getBoundingClientRect();
             var x = parseInt(margin.left);
             var y = parseInt(margin.top);
@@ -398,7 +396,7 @@
                 pos.event = e; 
                 var type = e.type;              
                 if(type == "keydown" || type == "keyup"){
-                    var keyup = new Object();
+                    var keyup = {};
                     for(var i in keydown)
                         keyup[i] = keydown[i];
                     setKeyState(keyup,keydown,e);
@@ -495,6 +493,15 @@
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
+        },
+        getRandText : function(limit){
+            var ret = "";
+            var strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var length = strings.length;
+            for(var i = 0; i < limit; i++){
+                ret += strings.charAt(Math.floor(this.getRand(0,length)));
+            }
+            return ret;
         },
         rgbToHex : function(r,g,b){
             var rgb = b | (g << 8) | (r << 16);
@@ -646,11 +653,11 @@
             if (isMobile) {
                 field.style.width = window.innerWidth+"px";//mobile default
                 field.style.height = window.innerHeight+"px";//mobile default
-                field.addEventListener("touchstart",function(){if(this.tabIndex != -1)this.focus()});
+                field.addEventListener("touchstart",function(){if(this.tabIndex != -1)this.focus();});
             } else {
                 field.style.width = 480+"px";
                 field.style.height = 620+"px"; 
-                field.addEventListener("mousedown",function(){if(this.tabIndex != -1)this.focus()});
+                field.addEventListener("mousedown",function(){if(this.tabIndex != -1)this.focus();});
                 field.addEventListener("keyup",function(){clearKeyState(keydown);},false);
             }
             this._css = css;
@@ -816,7 +823,7 @@
                     target.onSceneRemoved();
             }
             children = scene.children;
-            for(var i = 0,n = children.length; i < n; i++){
+            for(i = 0,n = children.length; i < n; i++){
                 var obj = children[i];
                 obj.ctx = ctx;
                 obj.field = field;
@@ -871,14 +878,28 @@
             return ret;
         },
         load: function () {
+            var musicLoaded = function(){
+                allLoaded--;
+                console.log(this.src + " is loaded");
+            };
+            var svgLoaded = function () {
+                allLoaded--;
+                this.style.display = "none";
+                this.loaded = true;
+                console.log(this.data + ' is loaded');
+            };
+            var imgLoaded = function () {
+                allLoaded--;
+                this.loaded = true;
+                console.log(this.src + ' is loaded');
+            };
             for (var i = 0, n = arguments.length; i < n; i++) {
                 var obj = arguments[i];
+                var data = obj;
+                var name = obj;
                 if(obj instanceof Array){
                     var data = obj[0];
                     var name = obj[1];
-                }else{
-                    var data = obj;
-                    var name = obj;
                 }
                 if(data.match("data:image/png")){
                     var ext = "png";
@@ -889,10 +910,7 @@
                     var obj = new Audio(data);
                     obj.name = name;
                     allLoaded++;
-                    obj.addEventListener("canplaythrough", function () {
-                        allLoaded--;
-                        console.log(this.src + " is loaded");
-                    });
+                    obj.addEventListener("canplaythrough",musicLoaded);
                     sounds.push(obj);
                 } else if(ext == "TTF" || ext == "ttf"){
                     var css = this._css;
@@ -906,12 +924,7 @@
                         css.appendChild(rule);
                 } else if(ext == "svg"){
                     var obj = document.createElement("object");
-                    obj.addEventListener("load",function () {
-                        allLoaded--;
-                        this.style.display = "none";
-                        this.loaded = true;
-                        console.log(this.data + ' is loaded');
-                    });
+                    obj.addEventListener("load",svgLoaded);
                     obj.data = data;
                     obj.name = name;
                     document.body.appendChild(obj);
@@ -919,11 +932,7 @@
                     svgs.push(obj);
                 }else if(ext == "png" || ext == "gif" || ext == "jpeg" || ext == "jpg"){
                     var obj = new Image();
-                    obj.addEventListener("load",function () {
-                        allLoaded--;
-                        this.loaded = true;
-                        console.log(this.src + ' is loaded');
-                    });
+                    obj.addEventListener("load",imgLoaded);
                     obj.src = data;
                     obj.name = name;
                     allLoaded++;
@@ -2026,7 +2035,7 @@
                 target._height = this.scaleY * target.height;
                 this._setAbsPos(target);        
             }
-        },
+        }
     });
     window.Atlas = Atlas;
 })();
