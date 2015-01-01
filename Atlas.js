@@ -229,7 +229,7 @@
                 if(obj.then)
                     this._then(obj);
                 obj.time++;         
-                if(obj.time > obj.frame){
+                if(obj.time >= obj.frame){
                     this.moverIndex++;
                     if(this.moverIndex == length){
                         if(obj.loop)
