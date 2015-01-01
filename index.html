@@ -7,23 +7,10 @@
 		Atlas();
 		Atlas.main(function(){
 			var app = new App("test");
-			app.setSize(500,500);
-			app.setQuality(500,500);
-			for(var i = 0; i < 20; i++){
-				var box = new Shape.Box("black",20,20);
-				box.x = box.getRand(0,500);
-				box.y = box.getRand(0,500);
-				box.i = i;
-				app.addChild(box);
-			}
-			app.enterFrame = function(){
-				this.getChildren().forEach(function(child){
-					child.x++;
-				})
-			}
-			app.touchStart = function(){
-				func();
-			}
+			app.load(["logo.png","logo"]);
+			var sprite = new Sprite("logo");
+			sprite.moveBy(100,100,30);
+			app.addChild(sprite);
 			app.start();
 		});
 	</script>

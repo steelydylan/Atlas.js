@@ -1,10 +1,9 @@
 /**
- * Atlas.js v0.7.7
- * https://github.com/steelydylan/Atlas.js
- * Copyright steelydylan
- * <http://steelydylan.webcrow.jp/>
- * Released under the MIT license.
- */
+* Atlas.js - ブラウザで動作する教育用JSゲームエンジン
+* @version v0.7.8
+* @link http://horicdesign.com
+* @license MIT License
+*/
 ;(function () {
     "use strict";
     var images = [];
@@ -257,6 +256,7 @@
             var obj = Tween(this,"moveTo",frame);
             obj.toX = x;
             obj.toY = y;
+            this.mover.push(obj);
             return this;
         },
         _moveTo : function(obj){
@@ -271,6 +271,7 @@
             var obj = Tween(this,"moveBy",frame);
             obj.diffX = x;
             obj.diffY = y;
+            this.mover.push(obj);
             return this;
         },
         _moveBy: function(obj){
@@ -305,6 +306,7 @@
         },
         rotateBy : function(angle,frame){
             var obj = Tween(this,"rotateBy",frame);
+            this.mover.push(obj);
             obj.diffAngle = angle;
             return this;
         },
@@ -316,6 +318,7 @@
         then : function(fn,frame){
             var obj = Tween(this,"then",frame);
             obj.exec = fn;
+            this.mover.push(obj);
             return this;
         },
         _then : function(obj){      
@@ -325,6 +328,7 @@
             var obj = Tween(this,"scaleBy",frame);
             obj.scaleX = x;
             obj.scaleY = y;
+            this.mover.push(obj);
             return this;
         },
         setPosition: function (x, y) {
@@ -1515,6 +1519,7 @@
             obj.array = array;
             obj.frameRate = frameRate;
             obj.frameIdx = 0;
+            this.mover.push(obj);
             return this;
         },
         _animate: function(obj){
