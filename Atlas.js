@@ -2007,7 +2007,7 @@
             var children = this.children;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
-                this.release(child);
+                this.releaseChild(child);
             }
             this.children = [];
             this._remove = true;
@@ -2050,7 +2050,7 @@
                 var target = children[i];
                 if(target._leave){
                     children.splice(i, 1);
-                    this.release(target);
+                    this.releaseChild(target);
                     i--;
                     n--;
                     continue;                   
