@@ -1987,7 +1987,7 @@
             }
             return this;
         },
-        release:function(child){
+        releaseChild:function(child){
             var parent = this.parent;
             child.x = child._x;
             child.y = child._y;
@@ -2003,7 +2003,7 @@
             child._leave = false;
             child.parent = parent;
         },
-        releaseAll:function(){
+        releaseAllChildren:function(){
             var children = this.children;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
@@ -2013,7 +2013,14 @@
             this._remove = true;
             return this;
         },
-        removeAll:function(){
+        removeChildrenByProperty:function(obj){
+            var children = this.getChildren(obj);
+            for(var i = 0, n = children.length; i < n; i++){
+                children[i].remove();
+            }
+            return this;
+        },
+        removeAllChildren:function(){
             var children = this.children;
             var parent = this.parent;
             for(var i = 0,n = children.length; i < n; i++){
