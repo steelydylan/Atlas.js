@@ -1781,6 +1781,11 @@
         addChild:function(sprite){
             sprite.parent = this;
             this.children.push(sprite);
+            if(this.parent){
+                sprite.ctx = this.parent.ctx;
+                sprite.field = this.parent.field;
+                this.parent.children.push(sprite);
+            }
         },
         addChildren:function(){
             for(var i = 0,n = arguments.length; i < n; i++){
@@ -1998,7 +2003,7 @@
             child._leave = false;
             child.parent = parent;
         },
-        remove:function(){
+        releaseAll:function(){
             var children = this.children;
             for(var i = 0,n = children.length; i < n; i++){
                 var child = children[i];
@@ -2006,6 +2011,14 @@
             }
             this.children = [];
             this._remove = true;
+            return this;
+        },
+        removeAll:function(){
+            var children = this.children;
+            var parent = this.parent;
+            for(var i = 0,n = children.length; i < n; i++){
+                children[i].remove();
+            }
             return this;
         },
         _setAbsPos:function(child){
