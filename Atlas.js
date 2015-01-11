@@ -1,6 +1,6 @@
 /**
 * Atlas.js - ブラウザで動作する教育用JSゲームエンジン
-* @version v0.7.8
+* @version v0.7.9
 * @link http://horicdesign.com
 * @license MIT License
 */
@@ -2048,7 +2048,7 @@
             this.scaleY = this.height/this.firstHeight;
             for(var i = 0,n = children.length; i < n; i++){
                 var target = children[i];
-                if(target._leave){
+                if(target._leave || target._remove){
                     children.splice(i, 1);
                     this.releaseChild(target);
                     i--;
