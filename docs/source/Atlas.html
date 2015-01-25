@@ -1,0 +1,2503 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span>* Atlas.js v0.7.9 - ブラウザで動作する教育用JSゲームエンジン
+* https://github.com/steelydylan/Atlas.js
+* MIT Licensed
+* Copyright (C) 2013 steelydylan http://horicdesign.com
+*/
+;(function () {
+    &quot;use strict&quot;;
+    var images = [];
+    var sounds = [];
+    var svgs = [];
+    var allLoaded = 0;
+    var isMobile = (function(){
+        var userAgent = navigator.userAgent;
+        if((userAgent.indexOf(&#39;iPhone&#39;) &gt; 0 &amp;&amp; userAgent.indexOf(&#39;iPad&#39;) == -1) || userAgent.indexOf(&#39;iPod&#39;) &gt; 0 || userAgent.indexOf(&#39;Android&#39;) &gt; 0)
+            return true;
+        else
+            return false;
+    })();
+    var orientation = (function (e){
+       var mq = window.matchMedia(&quot;(orientation: portrait)&quot;);
+       var orientation = &quot;&quot;;
+       if (mq.matches)
+           return &quot;portrait&quot;;
+       else
+           return &quot;landscape&quot;;
+    })();
+    var setKeyState = function(ret,e){
+        var which = e.which;
+        switch (which) {
+            case 13:
+                ret.enter = true;
+            break;
+            case 16:
+                ret.shift = true;
+            break;
+            case 32:
+                ret.space = true;
+            break;
+                case 39: // Key[→]
+                ret.right = true;
+            break;
+            case 37: // Key[←]
+                ret.left = true;
+            break;
+            case 38: // Key[↑]
+                ret.up = true;
+            break;
+            case 40: // Key[↓]
+                ret.down = true;
+            break;
+            case 8:
+                ret.backspace = true;
+            break;
+        }
+        if(e.metaKey){
+            ret.command = true;
+        }
+        for(var i = 0; i &lt; 26; i++){
+            if(i + 65 == which){
+                var chr = String.fromCharCode(i+97);
+                ret[chr] = true;
+                break;
+            }
+        }
+    };
+    var clearKeyState = function(ret){
+        ret.enter = false;
+        ret.command = false;
+        ret.shift = false;
+        ret.space = false;
+        ret.right = false;
+        ret.left = false;
+        ret.up = false;
+        ret.down = false;
+        ret.backspace = false;
+        for(var i = 0; i &lt; 26; i++){
+            ret[String.fromCharCode(i+97)] = false;
+        } 
+    };
+    var keydown = (function(){       
+        var ret = {};
+        clearKeyState(ret);
+        return ret;
+    })();
+    var Atlas = function () {
+        for(var key in Atlas){
+            window[key] = Atlas[key];
+        }
+    };
+    Atlas.createClass = function (superClass, obj) {
+        var newClass = function () {
+            this.initialize.apply(this, arguments);
+        };
+        if (typeof superClass == &quot;function&quot; &amp;&amp; typeof obj == &quot;object&quot;) {
+            newClass.prototype = Object.create(superClass.prototype);
+            newClass.prototype.inherit = function () {                
+                this.initialize = this.superClass.prototype.initialize;
+                this.superClass = this.superClass.prototype.superClass;
+                if(this.initialize)
+                    this.initialize.apply(this, arguments);
+            };
+        } else if (typeof superClass == &quot;object&quot; &amp;&amp; obj == void 0) {
+            obj = superClass;
+        }
+        for (var key in obj) {
+            newClass.prototype[key] = obj[key];
+        }
+        newClass.prototype.superClass = superClass;
+        return newClass;
+    };
+    Atlas.extendClass = function (targetclass,obj){
+        for(var key in obj){
+            targetclass.prototype[key] = obj[key];
+        }
+    };
+<span id='Array'>    /**
+</span>     * @class Array
+     */
+    Atlas.extendClass(Array,{
+        map:function(fn){
+            for(var i = 0,n = this.length; i &lt; n; i++){
+                this[i] = fn(this[i]);
+            }
+            return this;
+        },
+<span id='Array-method-max'>        /**
+</span>         * @method max
+         * @param fn Function
+         * 配列の値に関して関数を実行した値のうち一番大きな値を返す
+         **/
+        max:function(fn){
+            var max = null;
+            for(var i = 0,n = this.length; i &lt; n; i++){
+                var ret = fn(this[i]);
+                if(max === null || max &lt; ret){
+                    max = ret;
+                }
+            }
+            return max;
+        },
+<span id='Array-method-min'>        /**
+</span>         * @method min
+         * @param fn Function
+         * 配列の値に関して関数を実行した値のうち一番小さな値を返す
+         **/
+        min:function(fn){
+            var min = null;
+            for(var i = 0,n = this.length; i &lt; n; i++){
+                var ret = fn(this[i]);
+                if(min === null || min &gt; ret){
+                    min = ret;
+                }
+            }
+            return min;    
+        },
+<span id='Array-method-clone'>        /**
+</span>         * @method clone
+         * 配列をコピーして返す
+         **/
+        clone:function() {
+            if ( this[0].constructor == Array ) {
+                var ar, n;
+                ar = new Array( this.length );
+                for ( n = 0; n &lt; ar.length; n++ ) {
+                    ar[n] = this[n].clone();
+                }
+                return ar;
+            }
+            return Array.apply( null, this );
+        }
+    });
+    Atlas.main = function(fn){
+        Atlas._main = fn;
+    };
+    window.addEventListener(&quot;load&quot;,function(){
+        if(Atlas._main){
+            Atlas._main();
+        }
+    });
+    var Tween = function(that,kind,frame){
+        var mover = that.mover;
+        var target = mover[mover.length - 1];
+        var obj = {};
+        if(target &amp;&amp; target.and){
+            obj = target;
+        }
+        obj.time = 0;
+        if(frame)
+            obj.frame = frame;
+        obj.loop = false;
+        obj.and = false;
+        obj[kind] = true;
+        return obj;
+    };
+<span id='Atlas-Util'>    /**
+</span>     * @class Atlas.Util
+     **/
+    Atlas.Util = Atlas.createClass({
+        isMobile: isMobile,
+        orientation: orientation,
+        initialize: function(){
+            this.eventListener = {};
+            this.mover = [];
+            this.rot = 0;
+            this.moverIndex = 0;
+            this.visible = true;
+            this.eventEnable = true;
+            this.drawMode = &quot;source-over&quot;;
+            var eventListener = this.eventListener;
+            eventListener.touchStart = false;
+            eventListener.touchMove = false;
+            eventListener.touchEnd = false;
+            eventListener.keyUp = false;
+            eventListener.keyDown = false;
+            eventListener.multiTouchStart = false;
+            eventListener.multiTouchMove = false;
+            eventListener.multiTouchEnd = false;
+            eventListener.orientationChange = false; 
+        },
+        tween: function(){
+            var mover = this.mover;
+            var length = mover.length;
+            if(this.moverIndex &lt; length){           
+                var obj = mover[this.moverIndex];
+                if(obj.animate)
+                    this._animate(obj);
+                if(obj.moveTo)
+                    this._moveTo(obj);
+                if(obj.moveBy)
+                    this._moveBy(obj);   
+                if(obj.rotateBy)
+                    this._rotateBy(obj); 
+                if(obj.scaleBy)
+                    this._scaleBy(obj);
+                if(obj.then)
+                    this._then(obj);
+                obj.time++;         
+                if(obj.time &gt;= obj.frame){
+                    this.moverIndex++;
+                    if(this.moverIndex == length){
+                        if(obj.loop)
+                            this._refresh();
+                        else 
+                            this.stop();
+                    }
+                }
+            }
+        },
+<span id='Atlas-Util-method-isQueEmpty'>        /**
+</span>         * @method isQueEmpty
+         * アニメーション用のキューが空かどうかを判定する
+         **/
+        isQueEmpty:function(){
+            return this.mover.length ? false : true;
+        },
+        _refresh: function(){
+            this.moverIndex = 0;
+            var mover = this.mover;
+            for(var i = 0, n = mover.length; i &lt; n; i++){
+                var obj = mover[i];
+                if(obj.time)
+                    obj.time = 0;
+            }
+        },
+<span id='Atlas-Util-method-moveTo'>        /**
+</span>         * @method moveTo
+         * オフジェクトを(x,y)の座標にframeフレームで移動させる
+         * @param x {Number}
+         * @param y {Number}
+         * @param frame {Number}
+         **/
+        moveTo: function(x,y,frame){
+            var obj = Tween(this,&quot;moveTo&quot;,frame);
+            obj.toX = x;
+            obj.toY = y;
+            this.mover.push(obj);
+            return this;
+        },
+        _moveTo : function(obj){
+            if(obj.time === 0){
+                obj.diffX = obj.toX - this.x;
+                obj.diffY = obj.toY - this.y;
+            }
+            this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
+            this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
+        },
+<span id='Atlas-Util-method-moveTo'>        /**
+</span>         * @method moveTo
+         * 現在の座標位置からframeフレームで(x,y)移動させる
+         * @param x {Number}
+         * @param y {Number}
+         * @param frame {Number}
+         **/
+        moveBy: function(x,y,frame){
+            var obj = Tween(this,&quot;moveBy&quot;,frame);
+            obj.diffX = x;
+            obj.diffY = y;
+            this.mover.push(obj);
+            return this;
+        },
+        _moveBy: function(obj){
+            if(obj.time === 0){
+                obj.toX = this.x + obj.diffX;
+                obj.toY = this.y + obj.diffY;
+            }
+            this.x = obj.toX - obj.diffX * (1 - obj.time / obj.frame);
+            this.y = obj.toY - obj.diffY * (1 - obj.time / obj.frame);
+        },
+<span id='Atlas-Util-method-delay'>        /**
+</span>         * @method delay
+         * アニメーションをframeフレーム待つ
+         * @param frame {Number}
+         **/
+        delay: function(frame){
+            var obj = Tween(this,&quot;delay&quot;,frame);
+            this.mover.push(obj);
+            return this;
+        },
+<span id='Atlas-Util-method-and'>        /**
+</span>         * @method and
+         * アニメーションを二つ定義する
+         * @example
+         * sprite.moveBy(100,100,30).and().rotateBy(Math.PI,30);
+         **/
+        and : function(){
+            var mover = this.mover;
+            var target = mover[mover.length - 1];
+            if(target)
+                target.and = true;
+            return this;
+        },
+<span id='Atlas-Util-method-stop'>        /**
+</span>         * @method stop
+         * アニメーションを中止する
+         **/
+        stop : function(){
+            this.mover  = [];
+            this.moverIndex = 0;
+            return this;
+        },
+<span id='Atlas-Util-method-loop'>        /**
+</span>         * @method loop
+         * アニメーションをループする
+         * @example loop
+         * sprite.moveBy(100,100,30).and().rotateBy(Math.PI,30).loop();
+         **/
+        loop : function(){
+            var obj = this.mover[this.mover.length-1];
+            obj.loop = true;
+            return this;
+        },
+<span id='Atlas-Util-method-rotateBy'>        /**
+</span>        * @method rotateBy
+        * @param angle {Number}
+        * @param frame {Number}
+        * frameフレームでangle（ラジアン）回転させる
+        **/
+        rotateBy : function(angle,frame){
+            var obj = Tween(this,&quot;rotateBy&quot;,frame);
+            this.mover.push(obj);
+            obj.diffAngle = angle;
+            return this;
+        },
+        _rotateBy : function(obj){
+            if(obj.time === 0)
+                obj.toAngle = this.rot + obj.diffAngle;
+            this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
+        },
+<span id='Atlas-Util-method-then'>        /**
+</span>        * @method then
+        * アニメーションの途中に関数を実行する
+        **/
+        then : function(fn,frame){
+            var obj = Tween(this,&quot;then&quot;,frame);
+            obj.exec = fn;
+            this.mover.push(obj);
+            return this;
+        },
+        _then : function(obj){      
+            obj.exec.call(this);
+        },
+<span id='Atlas-Util-method-scaleBy'>        /**
+</span>         * @method scaleBy
+         * @param x Number
+         * @param y Number
+         * @param frame Number
+         * frameフレームで横にx倍、縦にy倍拡大する
+         **/
+        scaleBy: function(x,y,frame){
+            var obj = Tween(this,&quot;scaleBy&quot;,frame);
+            obj.scaleX = x;
+            obj.scaleY = y;
+            this.mover.push(obj);
+            return this;
+        },
+<span id='Atlas-Util-method-setPosition'>        /**
+</span>         * @method setPosition
+         * @param x Number
+         * @param y Number
+         * オフジェクトを座標(x,y)に移動
+         **/
+        setPosition: function (x, y) {
+            this.x = x;
+            this.y = y;
+            return this;
+        },
+        saveData: function(key){
+            var obj = {};
+            for(var i in this){
+                if(typeof(this[i]) != &#39;function&#39;){
+                    obj[i] = this[i];
+                }
+            }
+            localStorage.setItem(key,JSON.stringify(obj));          
+        },
+        getData: function(key){
+            var obj = JSON.parse(localStorage.getItem(key));
+            for(var i in obj){
+                this[i] = obj[i];
+            }
+        },
+<span id='Atlas-Util-method-getTouchPosition'>        /**
+</span>         * @method getTouchPosition
+         * @param e eventオブジェクト
+         * @param num Number
+         * eventオブジェクトからキャンバスの押された位置座標を取得
+         **/
+        getTouchPosition: function (e,num) {
+            if(!(num &amp;&amp; e.touches[num]))
+                num = 0;
+            var field = this.field;
+            var rateX = parseInt(field.width) / parseInt(field.style.width);
+            var rateY = parseInt(field.height) / parseInt(field.style.height);
+            var obj = {};
+            var margin = field.getBoundingClientRect();
+            var x = parseInt(margin.left);
+            var y = parseInt(margin.top);
+            if (isNaN(x))
+                x = 0;
+            if (isNaN(y))
+                y = 0;
+            var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+            var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+            if (e) {
+                if (!isMobile || (isMobile &amp;&amp; e.touches[num])) {
+                    obj.x = (isMobile ? e.touches[num].pageX : e.pageX) - x - scrollX;
+                    obj.y = (isMobile ? e.touches[num].pageY : e.pageY) - y - scrollY;
+                } else {
+                    obj.x = -1;
+                    obj.y = -1;
+                }
+            }else{
+                obj.x = event.x - x;
+                obj.y = event.y - y;
+            }
+            obj.x = parseInt(obj.x * rateX);
+            obj.y = parseInt(obj.y * rateY);
+            return obj;
+        },
+        getMultiTouchPosition: function(e){
+            var length = e.touches.length;
+            var pos = [];
+            for(var i = 0; i &lt; length; i++){
+                pos[i] = this.getTouchPosition(e,i);
+            }
+            return pos;
+        },
+        handleEvent: function(e) {
+            if(this.eventEnable){
+                e.preventDefault();
+                var pos = this.getTouchPosition(e); 
+                if(e.touches)
+                    pos.touchCount = e.touches.length;
+                else
+                    pos.touchCount = 1;
+                pos.event = e; 
+                var type = e.type;              
+                switch (type) {
+                    case &#39;touchstart&#39;: if(this.multiTouchStart &amp;&amp; e.touches.length &gt; 1)
+                                           this.multiTouchStart(this.getMultiTouchPosition(e));
+                                       else if(this.touchStart)
+                                           this.touchStart(pos); 
+                                       break;
+                    case &#39;mousedown&#39;: if(this.touchStart)this.touchStart(pos); break;
+                    case &#39;touchmove&#39;: if(this.multiTouchMove &amp;&amp; e.touches.length &gt; 1)
+                                           this.multiTouchMove(this.getMultiTouchPosition(e));
+                                      else if(this.touchMove)
+                                           this.touchMove(pos); 
+                                      break;
+                    case &#39;mousemove&#39;: if(this.touchMove)this.touchMove(pos); break;
+                    case &#39;touchend&#39;: if(this.multiTouchEnd &amp;&amp; e.touches.length &gt; 1)
+                                           this.multiTouchEnd(this.getMultiTouchPosition(e));
+                                      else if(this.touchEnd)
+                                           this.touchEnd(pos); 
+                                      break;
+                    case &#39;mouseup&#39;: if(this.touchEnd)this.touchEnd(); break;
+                    case &#39;keydown&#39;: if(this.keyDown)this.keyDown(keydown); break;
+                    case &#39;keyup&#39;: if(this.keyUp)this.keyUp();break;
+                }
+            }
+        },
+        useEvent: function(){
+            var field = this.field;
+            var eventListener = this.eventListener;
+            if(this.touchStart &amp;&amp; eventListener.touchStart === false){
+                if(isMobile)
+                    field.addEventListener(&quot;touchstart&quot;,this,false);
+                else
+                    field.addEventListener(&quot;mousedown&quot;,this,false);
+                eventListener.touchStart = true;
+                }
+            if(this.touchMove &amp;&amp; eventListener.touchMove === false){
+                if(isMobile)
+                    field.addEventListener(&quot;touchmove&quot;,this,false);
+                else
+                    field.addEventListener(&quot;mousemove&quot;,this,false);
+                eventListener.touchMove = true;
+            }
+            if(this.touchEnd &amp;&amp; eventListener.touchEnd === false){
+                if(isMobile)
+                    field.addEventListener(&quot;touchend&quot;,this,false);
+                else
+                    field.addEventListener(&quot;mouseup&quot;,this,false);
+                eventListener.touchEnd = true;
+            }
+            if(this.multiTouchStart &amp;&amp; eventListener.multiTouchStart === false){
+                if(!eventListener.touchStart){
+                    if(isMobile)
+                        field.addEventListener(&quot;touchstart&quot;,this,false);
+                    else
+                        field.addEventListener(&quot;mousedown&quot;,this,false);
+                }
+                eventListener.touchStart = true;
+            }
+            if(this.multiTouchMove &amp;&amp; eventListener.multiTouchMove === false){
+                if(!eventListener.touchMove){
+                    if(isMobile)
+                        field.addEventListener(&quot;touchmove&quot;,this,false);
+                    else
+                        field.addEventListener(&quot;mousemove&quot;,this,false);
+                }
+                eventListener.touchMove = true;
+            }
+            if(this.multiTouchEnd &amp;&amp; eventListener.multiTouchEnd === false){
+                if(!eventListener.touchEnd){
+                    if(isMobile)
+                        field.addEventListener(&quot;touchend&quot;,this,false);
+                    else
+                        field.addEventListener(&quot;mouseup&quot;,this,false);
+                }
+                eventListener.touchEnd = true;
+            }              
+            if(this.keyUp &amp;&amp; eventListener.keyUp === false){
+                field.addEventListener(&quot;keyup&quot;,this,false);
+                eventListener.keyUp = true;
+            }
+            if(this.keyDown &amp;&amp; eventListener.keyDown === false){
+                field.addEventListener(&quot;keydown&quot;,this,false);
+                eventListener.keyDown = true;
+            }
+        },
+<span id='Atlas-Util-method-remove'>        /**
+</span>         * @method remove
+         * オブジェクトをゲームから除外
+         **/
+        remove: function(){
+            this._remove = true;
+        },
+<span id='Atlas-Util-method-leave'>        /**
+</span>         * @method leave
+         * オブジェクトをAppインスタンスやLayerインスタンスから引き離す
+         **/
+        leave: function(){
+            this._leave = true;
+        },
+<span id='Atlas-Util-method-getRand'>        /**
+</span>         * @method getRand
+         * @param a Number
+         * @param b Number
+         * a ~ bの間のランダムな数字を取得
+         **/
+        getRand: function (a, b) {
+            return ~~(Math.random() * (b - a + 1)) + a;
+        },
+<span id='Atlas-Util-method-getRandText'>        /**
+</span>         * @method getRandText
+         * @param limit Number
+         * limitまでの文字数で文字列を取得
+         **/
+        getRandText : function(limit){
+            var ret = &quot;&quot;;
+            var strings = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;;
+            var length = strings.length;
+            for(var i = 0; i &lt; limit; i++){
+                ret += strings.charAt(Math.floor(this.getRand(0,length)));
+            }
+            return ret;
+        },
+<span id='Atlas-Util-method-rgbToHex'>        /**
+</span>         * @method rgbToHex
+         * @param r Number
+         * @param g Number
+         * @param b Number
+         * RGB形式から16進を取得する
+         **/
+        rgbToHex : function(r,g,b){
+            var rgb = b | (g &lt;&lt; 8) | (r &lt;&lt; 16);
+            return &#39;#&#39; + (0x1000000 + rgb).toString(16).slice(1);
+        },
+<span id='Atlas-Util-method-hexToRgb'>        /**
+</span>         * @method hexToRgb
+         * @param color String
+         * @param opacity Number
+         * 16進からRGBを取得する
+         **/
+        hexToRgb : function(color,opacity){
+            if(typeof color == Number){
+                opacity = color;
+                color = null;
+            }
+            var hex = color || this.color;
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            if(opacity){
+                return result ?
+                &quot;rgba(&quot;+parseInt(result[1], 16)+&quot;,&quot;+parseInt(result[2], 16)+&quot;,&quot;+parseInt(result[3], 16)+&quot;,&quot;+opacity+&quot;)&quot;
+                : null; 
+            }else{
+                 return result ? 
+                &quot;rgb(&quot;+parseInt(result[1], 16)+&quot;,&quot;+parseInt(result[2], 16)+&quot;,&quot;+parseInt(result[3], 16)+&quot;)&quot;
+                : null;               
+            }
+        },
+<span id='Atlas-Util-method-hsbToHex'>        /**
+</span>         * @method hsbToHex
+         * @param h Number
+         * @param s Number
+         * @param v Number
+         * hsvから16進に変換する
+         **/
+        hsbToHex : function (h,s,v){
+            var f,i, p, q, t;
+            var r,g,b;
+            i = Math.floor(h / 60.0) % 6;
+            f = (h / 60.0) - Math.floor(h / 60.0);
+            p = Math.round(v * (1.0 - (s / 255.0)));
+            q = Math.round(v * (1.0 - (s / 255.0) * f));
+            t = Math.round(v * (1.0 - (s / 255.0) * (1.0 - f)));        
+            switch(i){
+                case 0 : r = v; g = t; b = p; break;
+                case 1 : r = q; g = v; b = p; break;
+                case 2 : r = p; g = v; b = t; break;
+                case 3 : r = p; g = q; b = v; break;
+                case 4 : r = t; g = p; b = v; break;
+                case 5 : r = v; g = p; b = q; break;
+            }       
+            if(r&lt;=15){r=&quot;0&quot;+r.toString(16);}else{r=r.toString(16);}
+            if(g&lt;=15){g=&quot;0&quot;+g.toString(16);}else{g=g.toString(16);}
+            if(b&lt;=15){b=&quot;0&quot;+b.toString(16);}else{b=b.toString(16);}
+            return &quot;#&quot;+ r + g + b;          
+        },
+<span id='Atlas-Util-method-getSound'>        /**
+</span>         * @method getSound
+         * @param name String
+         * Appインスタンスにロードされた音楽を取得する
+         **/
+        getSound: function (name) {
+            for (var i = 0, n = sounds.length; i &lt; n; i++) {
+                if (name == sounds[i].name)
+                    this.sound = new Audio(sounds[i].src);
+            }
+        },
+<span id='Atlas-Util-method-soundClonePlay'>        /**
+</span>         * @method soundClonePlay
+         * セットされた音楽を複製して再生する
+         **/
+        soundClonePlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                (new Audio(sound.src)).play();
+            }
+        },
+<span id='Atlas-Util-method-soundLoopPlay'>        /**
+</span>         * @method soundLoopPlay
+         * セットされた音楽をループ再生する
+         **/
+        soundLoopPlay: function () {
+            var sound = this.sound;
+            if (sound) {
+                if (!sound.loop) {
+                    sound.addEventListener(&#39;ended&#39;, function () {
+                        this.currentTime = 0;
+                        this.play();
+                    }, false);
+                }
+                sound.loop = true;
+                sound.play();
+            }
+        },
+<span id='Atlas-Util-method-soundReplay'>        /**
+</span>         * @method soundReplay
+         * 再生中の音楽をはじめから再生する
+         **/
+        soundReplay: function () {
+            var sound = this.sound;
+            if (sound) {
+                sound.load();
+                sound.play();
+            }
+        },
+<span id='Atlas-Util-method-soundStop'>        /**
+</span>         * @method soundStop
+         * 再生中の音楽を停止する
+         **/
+        soundStop: function () {
+            var sound = this.sound;
+            if (!sound.paused) {
+                sound.pause();
+                sound.currentTime = 0;
+            } else {
+                sound.load();
+            }
+        },
+<span id='Atlas-Util-method-soundPlay'>        /**
+</span>         * @method soundPlay
+         * セットされた音楽を再生する
+         **/
+        soundPlay: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.play();
+        },
+<span id='Atlas-Util-method-soundPause'>        /**
+</span>         * @method soundPause
+         * 再生中の音楽を一時停止する
+         **/
+        soundPause: function () {
+            var sound = this.sound;
+            if (sound)
+                sound.pause();
+        },
+<span id='Atlas-Util-method-soundGetCount'>        /**
+</span>         * @method soundGetCount
+         * 再生中の音楽の再生位置を取得する
+         **/
+        soundGetCount: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.currentTime;
+        },
+<span id='Atlas-Util-method-soundSetCount'>        /**
+</span>         * @method soundSetCount
+         * @param time Number
+         * 指定された位置に再生位置を設定する
+         **/
+        soundSetCount: function (time) {
+            var sound = this.sound;
+            if (sound)
+                sound.currentTime = time;
+        },
+<span id='Atlas-Util-method-soundGetVolume'>        /**
+</span>         * @method soundGetVolume
+         * セットされた音楽のボリュームを取得する
+         **/
+        soundGetVolume: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.volume;
+        },
+<span id='Atlas-Util-method-soundSetVolume'>        /**
+</span>         * @method soundSetVolume
+         * @param volume Number
+         * セットされた音楽のボリュームを設定する
+         **/
+        soundSetVolume: function (volume) {
+            var sound = this.sound;
+            if (sound)
+                sound.volume = volume;
+        },
+<span id='Atlas-Util-method-soundGetAlltime'>        /**
+</span>         * @method soundGetAlltime
+         * 全再生時間を取得する
+         **/
+        soundGetAlltime: function () {
+            var sound = this.sound;
+            if (sound)
+                return sound.duration;
+        },
+<span id='Atlas-Util-method-soundIsPlaying'>        /**
+</span>         * @method 音楽が再生中かを調べる
+         * @return Boolean
+         **/
+        soundIsPlaying: function () {
+            var sound = this.sound;
+            if (sound)
+                return !sound.paused;
+        }
+    });
+<span id='Atlas-App'>    /**
+</span>     * @class Atlas.App
+     * @extends Atlas.Util
+     **/
+    Atlas.App = Atlas.createClass(Atlas.Util,{
+        initialize: function (place) {
+            this.inherit();
+            this._basicConstructor = &quot;App&quot;;
+            var css = document.createElement(&quot;style&quot;);
+            css.media = &#39;screen&#39;;
+            css.type = &quot;text/css&quot;;
+            document.getElementsByTagName(&quot;head&quot;)[0].appendChild(css);
+            var field;
+            if(place){
+                field = document.getElementById(place);
+            }else{
+                field = document.createElement(&quot;canvas&quot;);
+                var Body = document.getElementsByTagName(&quot;body&quot;).item(0);
+                Body.appendChild(field); 
+            }
+            field.width = 320;
+            field.height = 480;
+            field.style.top = 0+&quot;px&quot;;
+            field.style.left = 0+&quot;px&quot;;
+            field.tabIndex = &#39;1&#39;;
+            document.body.style.margin = &quot;0em&quot;;
+            var userAgent = navigator.userAgent;
+            if (isMobile) {
+                field.style.width = window.innerWidth+&quot;px&quot;;//mobile default
+                field.style.height = window.innerHeight+&quot;px&quot;;//mobile default
+                field.addEventListener(&quot;touchstart&quot;,function(){if(this.tabIndex != -1)this.focus();});
+            } else {
+                field.style.width = 480+&quot;px&quot;;
+                field.style.height = 620+&quot;px&quot;; 
+                field.addEventListener(&quot;mousedown&quot;,function(){if(this.tabIndex != -1)this.focus();});
+                field.addEventListener(&quot;keyup&quot;,function(){clearKeyState(keydown);},false);
+                field.addEventListener(&quot;keydown&quot;,function(e){setKeyState(keydown,e);});
+            }
+            this._css = css;
+            this.field = field;
+            this.ctx = field.getContext(&#39;2d&#39;);
+            this.fps = 30;// fps default
+            this.scene = new Scene();
+            this.scene.ctx = this.ctx;
+            this.scene.field = this.field; 
+            this.scene.parent = this;
+        },
+<span id='Atlas-App-method-clearLockMode'>        /**
+</span>         * @method clearLockMode
+         * ゲーム画面のタブインデントを解除する
+         **/
+        clearLockMode : function(){
+            this.field.tabIndex = &#39;-1&#39;;
+        },
+<span id='Atlas-App-method-setLockMode'>        /**
+</span>         * @method setLockMode
+         * ゲーム画面のタブインデントを有効にする
+         **/
+        setLockMode : function(){
+            this.field.tabIndex = &#39;1&#39;;
+        },
+<span id='Atlas-App-method-getCanvasURL'>        /**
+</span>         * @method getCanvasURL
+         * ゲーム画面のデータURLを取得
+         **/
+        getCanvasURL : function(){
+            return this.field.toDataURL();
+        },
+<span id='Atlas-App-method-getCanvasImage'>        /**
+</span>         * @method getCanvasImage
+         * キャンバス画面の画像を新しいタブで開く
+         **/
+        getCanvasImage : function(){
+            var url = this.field.toDataURL();
+            window.open(url,&#39;_blank&#39;);          
+        },
+<span id='Atlas-App-method-getChild'>        /**
+</span>         * @method getChild
+         * ゲームに登録されたプロパティの一致するオブジェクトを取得する
+         **/
+        getChild:function(obj){
+            return this.scene.getChild(obj);
+        },
+<span id='Atlas-App-method-getChildren'>        /**
+</span>         * @method getChildren
+         * ゲームに登録されたプロパティの一致するオブジェクトをすべて取得する
+         **/
+        getChildren:function(obj){
+            return this.scene.getChildren(obj);
+        },
+<span id='Atlas-App-method-colorToAlpha'>        /**
+</span>         * @method colorToAlpha
+         * ゲームに登録された画像の指定された色を透明にする
+         **/
+        colorToAlpha : function(imagename,hex){
+            var img;
+            for(var i = 0,n = images.length; i &lt; n; i++){
+                if(images[i].name == imagename){
+                    img = images[i];
+                    img.hex = hex;
+                    img.index = i;
+                }
+            }
+            img.addEventListener(&quot;load&quot;,function(){
+                var canvas = document.createElement(&quot;canvas&quot;);
+                var ctx = canvas.getContext(&#39;2d&#39;) ;
+                var width = this.width;
+                var height = this.height;
+                var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                var hex = this.hex.replace(shorthandRegex, function(m, r, g, b) {
+                    return r + r + g + g + b + b;
+                });
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                var color = result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+                ctx.drawImage(this, 0, 0);   
+                var ImageData = ctx.getImageData(0,0,width,height);
+                var data = ImageData.data;
+                for(var i=0;i&lt;height;i++){
+                    for(var j=0;j&lt;width;j++){
+                        var t = i*(width*4) + (j*4);
+                        if(data[t] == color.r &amp;&amp; data[t + 1] == color.g &amp;&amp; data[t + 2] == color.b) 
+                            data[t + 3] = 0;
+                    }
+                }
+                ctx.putImageData(ImageData,0,0);//put image data back
+                var newimg = new Image();
+                newimg.src = canvas.toDataURL();
+                images[this.index] = newimg;
+            });
+        },
+<span id='Atlas-App-method-addChild'>        /**
+</span>         * @method addChild
+         * @param child
+         * ゲームにオブジェクトを登録する
+         **/
+        addChild: function(child){
+            child.ctx = this.ctx;
+            child.field = this.field;
+            this.scene.addChild(child);
+        },
+<span id='Atlas-App-method-addChildren'>        /**
+</span>         * @method addChildren
+         * ゲームにオブジェクトを複数登録する
+         **/
+        addChildren: function(){
+            for(var i = 0,n = arguments.length; i &lt; n; i++)
+                this.addChild(arguments[i]);
+        },
+<span id='Atlas-App-method-centerize'>        /**
+</span>         * @method centerize
+         * ゲーム画面を画面の中央に配置する
+         **/
+        centerize: function () {
+            var style = this.field.style;
+            style.marginTop = - parseInt(style.height) / 2+&quot;px&quot;;
+            style.marginLeft = - parseInt(style.width) / 2+&quot;px&quot;;
+            style.top = &#39;50%&#39;;
+            style.left = &#39;50%&#39;;
+            style.position = &#39;absolute&#39;;
+        },
+<span id='Atlas-App-method-fitWindow'>        /**
+</span>         * @method fitWindow
+         * ゲーム画面をウィンドウにフィットさせる
+         **/
+        fitWindow: function () {
+            this.setSize(window.innerWidth, window.innerHeight);
+            var that = this;
+            window.onresize = function () {
+                that.setSize(window.innerWidth, window.innerHeight);
+            };
+        },
+<span id='Atlas-App-method-setQuality'>        /**
+</span>         * @method setQuality
+         * @param width Number
+         * @param height Number
+         * ゲーム画面の解像度を設定する
+         **/
+        setQuality: function (width, height) {
+            var field = this.field;
+            field.width = width;
+            field.height = height;
+        },
+<span id='Atlas-App-method-setSize'>        /**
+</span>         * @method setSize
+         * @param width Number
+         * @param height Number
+         * ゲーム画面の大きさを設定する
+         **/
+        setSize: function (width, height) {
+            var style = this.field.style;
+            style.width = width+&quot;px&quot;;
+            style.height = height+&quot;px&quot;;
+        },
+<span id='Atlas-App-method-getSize'>        /**
+</span>        * @method getSize
+        * ゲーム画面の大きさを取得する
+        **/ 
+        getSize : function(){
+            var size = {};
+            size.width = parseInt(this.field.style.width);
+            size.height = parseInt(this.field.style.height);
+            return size;
+        },
+<span id='Atlas-App-method-getQuality'>        /**
+</span>         * @method getQuality
+         * ゲーム画面の解像度を取得する
+         **/
+        getQuality: function(){
+            var size = {};
+            size.width = parseInt(this.field.width);
+            size.height = parseInt(this.field.height);
+            return size;
+        },
+<span id='Atlas-App-method-loadingScene'>        /**
+</span>         * @method loadingScene
+         * @param scene Sceneオブジェクト
+         * ローディング中のシーンを登録する
+         **/
+        loadingScene: function (scene) {
+            this.preScene = scene;
+            this.preScene.parent = this;
+        },
+        _preLoadEnterFrame: function(){
+            var field = this.field;
+            this.useEvent();
+            var ctx = this.ctx;
+            ctx.clearRect(0, 0, field.width, field.height);
+            if (allLoaded &gt; 0){
+                if(this.preScene)
+                    this.preScene._enterFrame();
+            }else{
+                if(this.onLoad)
+                    this.onLoad(); 
+                var children = this.scene.children;
+                for(var i = 0,n = children.length; i &lt; n; i++){
+                    var child = children[i];
+                    if(child._onLoad)
+                        child._onLoad();//システム用
+                    if(child.onLoad)
+                        child.onLoad();//フック用
+                } 
+                clearInterval(this.preLoadInterval);
+                var that = this;            
+                setInterval(function () {
+                    that._enterFrame();
+                }, 1000 / this.fps);
+            }    
+        },
+        _enterFrame : function(){
+            var field = this.field;
+            this.ctx.clearRect(0, 0, field.width, field.height);
+            this.useEvent();
+            if(this.enterFrame)
+                this.enterFrame();           
+            this.scene._enterFrame();
+        },
+<span id='Atlas-App-method-pushScene'>        /**
+</span>         * @method pushScene
+         * @param scene Sceneオブジェクト
+         * 現在のシーンを新しいシーンに置き換える
+         **/
+        pushScene: function(scene){
+            var ctx = this.ctx;
+            var field = this.field;
+            var children = this.scene.children;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                var target = children[i];
+                target.eventEnable = false;
+                if(target.onSceneremoved)
+                    target.onSceneRemoved();
+            }
+            children = scene.children;
+            for(i = 0,n = children.length; i &lt; n; i++){
+                var obj = children[i];
+                obj.ctx = ctx;
+                obj.field = field;
+                obj.eventEnable = true;
+                if(obj.onScenePushed)
+                    obj.onScenePushed();
+            }
+            scene.parent = this;
+            scene.ctx = ctx;
+            scene.field = field;
+            var style = this.field.style;
+            style.background = null;
+            style.backgroundColor = &quot;white&quot;;
+            if(scene.color)
+                this.setColor(scene.color);
+            if(scene.image)
+                this.setImage(scene.image);
+            this.scene = scene;
+        },
+<span id='Atlas-App-method-setColor'>        /**
+</span>         * @method setColor
+         * @param color String
+         * ゲームの背景色を設定する
+         **/
+        setColor: function(color){
+            var style = this.field.style;
+            style.background = null;
+            style.backgroundColor = color;
+        },
+<span id='Atlas-App-method-setImage'>        /**
+</span>         * @method setImage
+         * @param img String
+         * ゲームの背景画像を設定する
+         **/
+        setImage: function(img){
+            var style = this.field.style;
+            style.background = &quot;url(&quot;+img+&quot;) no-repeat center&quot;;
+            style.backgroundSize = &quot;cover&quot;;
+        },
+<span id='Atlas-App-method-start'>        /**
+</span>         * @method start
+         * ゲームをスタートする
+         **/
+        start: function () {
+            var field = this.field;
+            var that = this;
+            this.ctx.clearRect(0,0,field.width,field.height);
+            this.preLoadInterval = setInterval(function () {
+                that._preLoadEnterFrame();
+            }, 1000 / this.fps);
+        },
+<span id='Atlas-App-method-getExtention'>        /**
+</span>         * @method getExtention
+         * @param fileName String
+         * ファイル名から拡張子を取得する
+         **/
+        getExtention:function(fileName){
+            var ret;
+            if (!fileName) {
+                return ret;
+            }
+            var fileTypes = fileName.split(&quot;.&quot;);
+            var len = fileTypes.length;
+            if (len === 0) {
+                return ret;
+            }
+            ret = fileTypes[len - 1];
+            return ret;
+        },
+<span id='Atlas-App-method-load'>        /**
+</span>         * @method load
+         * 音楽や画像等の素材をロードする
+         **/
+        load: function () {
+            var musicLoaded = function(){
+                allLoaded--;
+                console.log(this.src + &quot; is loaded&quot;);
+            };
+            var svgLoaded = function () {
+                allLoaded--;
+                this.style.display = &quot;none&quot;;
+                this.loaded = true;
+                console.log(this.data + &#39; is loaded&#39;);
+            };
+            var imgLoaded = function () {
+                allLoaded--;
+                this.loaded = true;
+                console.log(this.src + &#39; is loaded&#39;);
+            };
+            for (var i = 0, n = arguments.length; i &lt; n; i++) {
+                var obj = arguments[i];
+                var data = obj;
+                var name = obj;
+                if(obj instanceof Array){
+                    var data = obj[0];
+                    var name = obj[1];
+                }
+                if(data.match(&quot;data:image/png&quot;)){
+                    var ext = &quot;png&quot;;
+                }else{
+                    var ext = this.getExtention(data);
+                }
+                if (ext == &#39;wav&#39; || ext == &#39;mp3&#39; || ext == &#39;ogg&#39;) {
+                    var obj = new Audio(data);
+                    obj.name = name;
+                    allLoaded++;
+                    obj.addEventListener(&quot;canplaythrough&quot;,musicLoaded);
+                    sounds.push(obj);
+                } else if(ext == &quot;TTF&quot; || ext == &quot;ttf&quot;){
+                    var css = this._css;
+                    var rule =  document.createTextNode(&quot;@font-face{&quot;+
+                    &quot;font-family:&#39;&quot;+name+&quot;&#39;;&quot;+
+                    &quot;src: url(&#39;&quot;+data+&quot;&#39;) format(&#39;truetype&#39;);&quot;+
+                    &quot;}&quot;);
+                    if(css.styleSheet)
+                        css.styleSheet.cssText = rule;
+                    else
+                        css.appendChild(rule);
+                } else if(ext == &quot;svg&quot;){
+                    var obj = document.createElement(&quot;object&quot;);
+                    obj.addEventListener(&quot;load&quot;,svgLoaded);
+                    obj.data = data;
+                    obj.name = name;
+                    document.body.appendChild(obj);
+                    allLoaded++;
+                    svgs.push(obj);
+                }else if(ext == &quot;png&quot; || ext == &quot;gif&quot; || ext == &quot;jpeg&quot; || ext == &quot;jpg&quot;){
+                    var obj = new Image();
+                    obj.addEventListener(&quot;load&quot;,imgLoaded);
+                    obj.src = data;
+                    obj.name = name;
+                    allLoaded++;
+                    images.push(obj);
+                }
+            }
+        },
+    });
+<span id='Atlas-Thing'>    /**
+</span>     * @class Atlas.Thing
+     * @extends Atlas.Util
+     **/
+    Atlas.Thing = Atlas.createClass(Atlas.Util,{
+        initialize: function(width,height){
+            this.inherit();
+            this.x = 0;
+            this.y = 0;
+            this._remove = false;
+            this.width = width;
+            this.height = height; 
+            this.collisionShape = &quot;box&quot;;
+            this.prepared = false;/*描画の準備が完了*/
+            this.alpha = 1;         
+        },
+        _scaleBy: function(obj){
+            if(obj.time === 0){
+                obj.toWidth = this.width * obj.scaleX;
+                obj.toHeight = this.height * obj.scaleY;
+                obj.diffWidth = obj.toWidth - this.width;
+                obj.diffHeight = obj.toHeight - this.height;
+            }
+            this.width = obj.toWidth - obj.diffWidth * (1 - obj.time / obj.frame);
+            this.height = obj.toHeight - obj.diffHeight * (1 - obj.time / obj.frame);           
+        },
+<span id='Atlas-Thing-method-intersect'>        /**
+</span>         * @method intersect
+         * @param ex Number
+         * @param ey Number
+         * 座標(ex,ey)にオブジェクトが衝突しているかを判定する
+         **/
+        intersect: function (ex, ey) {
+            var thisx = this._x || this.x;
+            var thisy = this._y || this.y;
+            var thisw = this._width || this.width;
+            var thish = this._height || this.height;
+            var r = this._rot || this.rot;
+            if (this.collisionShape == &quot;box&quot;) {
+                var x = ex - (thisx + thisw / 2);
+                var y = ey - (thisy + thish / 2);
+                var s = Math.sin(-r);
+                var c = Math.cos(-r);
+                var xx = Math.abs(x * c - y * s);
+                var yy = Math.abs(x * s + y * c);
+                if (xx &lt; thisw / 2.0 &amp;&amp; yy &lt; thish / 2.0)
+                    return true;
+                return false;
+            } else if (this.collisionShape == &quot;circle&quot;) {
+                var radius = thisw / 2;
+                var x = ex - (thisx + radius);
+                var y = ey - (thisy + radius);
+                if (Math.sqrt(x * x + y * y) &lt; radius)
+                    return true;
+                return false;
+            } else {
+                return false;
+            }
+        },
+<span id='Atlas-Thing-method-hitTest'>        /**
+</span>         * @method hitTest
+         * @param target Thingオブジェクト
+         * 自分がターゲットと接触しているかを判定する
+         **/
+        hitTest: function(target){/*衝突判定（自分の矩形は傾いてないものとする）*/
+            var thisx = this._x || this.x;
+            var thisy = this._y || this.y;
+            var thisW = this._width || this.width;
+            var thisH = this._height || this.height;
+            var thiscX = thisx + thisW / 2;
+            var thiscY = thisy + thisH / 2;
+            var targetx = target._x || target.x;  
+            var targety = target._y || target.y;
+            var targetW = target._width || target.width;
+            var targetH = target._height || target.height;
+            var targetr = target._rot || target.rot;
+            if (this.collisionShape == &quot;box&quot;) {
+                if(target.collisionShape == &quot;circle&quot;)
+                    return target.within(this,targetW/2);/*矩形と円の当たり判定ならwithinで実装済み*/
+            } else if (this.collisionShape == &quot;circle&quot;) {
+                return this.within(target,thisW/2);/*矩形と円の当たり判定ならwithinで実装済み*/
+            } else {
+                return false;
+            }      
+            if(targetr !== 0 &amp;&amp; targetr != Math.PI){
+                if (target.collisionShape == &quot;box&quot;) {
+                var centerX = targetx + targetW / 2;
+                var centerY = targety + targetH / 2;
+                var rot = - targetr;
+                thiscX = Math.cos(rot) * (thiscX - centerX) -
+                    Math.sin(rot) * (thiscY - centerY) + centerX;
+                thiscY = Math.sin(rot) * (thiscX - centerX) +
+                    Math.cos(rot) * (thiscY - centerY) + centerY;
+                thisx = thiscX - thisW / 2;
+                thisy = thiscY - thisH / 2;
+                }  
+            }
+            return (thisx &lt; targetx + targetW) &amp;&amp; (targetx &lt; thisx + thisW) &amp;&amp; (thisy &lt; targety + targetH) &amp;&amp; (targety &lt; thisy + thisH);
+        },
+<span id='Atlas-Thing-method-within'>        /**
+</span>         * @method within
+         * @param target Thingクラス
+         * @param range Number
+         * 自分がターゲットから半径range以内にいるかどうかを判定する
+         **/
+        within: function (target, range) {
+            var thisx = this._x || this.x;
+            var thisy = this._y || this.y;
+            var thisw = this._width || this.width;
+            var thish = this._height || this.height;
+            var thisr = this._rot || this.rot;
+            var targetx = target._x || target.x;
+            var targety = target._y || target.y;
+            var targetw = target._width || target.width;
+            var targeth = target._height || target.height;
+            var targetr = target._rot || target.rot;
+            if (this.collisionShape == &quot;box&quot;) {
+                var thiscX = thisx + thisw / 2;
+                var thiscY = thisy + thish / 2;
+            } else if (this.collisionShape == &quot;circle&quot;) {
+                var radius = thisw / 2;
+                var thiscX = thisx + radius;
+                var thiscY = thisy + radius;
+            } else {
+                return false;
+            }
+            if (target.collisionShape == &quot;box&quot;) {
+                var centerX = targetx + targetw / 2;
+                var centerY = targety + targeth / 2;
+                var rot = - targetr;
+                var cx = Math.cos(rot) * (thiscX - centerX) -
+                    Math.sin(rot) * (thiscY - centerY) + centerX;
+                var cy = Math.sin(rot) * (thiscX - centerX) +
+                    Math.cos(rot) * (thiscY - centerY) + centerY;
+                var x, y;
+                if (cx &lt; targetx)
+                    x = targetx;
+                else if (cx &gt; targetx + targetw)
+                    x = targetx + targetw;
+                else
+                    x = cx;
+                if (cy &lt; targety)
+                    y = targety;
+                else if (cy &gt; targety + targeth)
+                    y = targety + targeth;
+                else
+                    y = cy;
+                var a = Math.abs(cx - x);
+                var b = Math.abs(cy - y);
+            } else if (target.collisionShape == &quot;circle&quot;) {
+                var tradius = targetw / 2;
+                var x = targetx + tradius;
+                var y = targety + tradius;
+                var a = Math.abs(thiscX - x);
+                var b = Math.abs(thiscY - y);
+                range += tradius;
+            } else {
+                return false;
+            }
+            if (Math.sqrt((a * a) + (b * b)) &lt; range)
+                return true;
+            return false;
+        },
+<span id='Atlas-Thing-method-scale'>        /**
+</span>         * @method scale
+         * @param sx Number
+         * @param sy Number
+         * オブジェクトを(sx,sy)倍する
+         **/
+        scale: function (sx, sy) {
+            if(!this.width){
+                this._scaleX = sx;
+                this._scaleY = sy;
+            }else{
+                this.width *= sx;
+                this.height *= sy;
+            }
+            return this;
+        },
+<span id='Atlas-Thing-method-setSize'>        /**
+</span>         * @method setSize
+         * @param w Number
+         * @param h Number
+         * オブジェクトを幅w、高さhに設定する
+         **/
+        setSize : function(w,h){
+            this.width = w;
+            this.height = h;
+        }
+    });
+<span id='Atlas-Shape'>    /**
+</span>     * @class Atlas.Shape
+     * @extends Atlas.Thing
+     * SVGを描画するためのクラス
+     **/
+    Atlas.Shape = Atlas.createClass(Atlas.Thing,{
+        initialize : function(path,color,lineColor){
+            this.inherit(0,0);
+            this.obj = -1;
+            this._basicConstructor = &quot;Shape&quot;;
+            this.color = color || &quot;original&quot;; 
+            this.strokeColor = lineColor || &quot;original&quot;;
+            this.colorStops = [];
+            if(typeof path == &quot;object&quot;){
+                this.path = path;
+            }else if(typeof path == &quot;string&quot;){
+                this.setImage(path);
+            }
+            this.closeMode = true;
+            this.strokeMode = true;
+        },
+<span id='Atlas-Shape-method-setSpriteSize'>        /**
+</span>         * @method setSpriteSize
+         * @param width Number
+         * @param height Number
+         * スプライトの大きさを設定する
+         **/
+        setSpriteSize:function (width,height){
+            this.spriteWidth = width;
+            this.spriteHeight = height;
+        },
+<span id='Atlas-Shape-method-setImage'>        /**
+</span>         * @method setImage
+         * @param path String
+         * ゲームにロードされたSVG画像をロードする
+         **/
+        setImage: function (path){
+            for(var i = 0,n = svgs.length; i &lt; n; i++){
+                if(path == svgs[i].name){
+                    this.obj = i;
+                }
+            }
+        },
+<span id='Atlas-Shape-method-getImage'>        /**
+</span>         * @method getImage
+         * セットされているSVG画像を取得する
+         **/
+        getImage : function(){
+            return svgs[this.obj];
+        },
+<span id='Atlas-Shape-method-getImageName'>        /**
+</span>         * @method getImageName
+         * セットされている画像名を取得する
+         **/
+        getImageName : function(){
+            return svgs[this.obj].data;
+        },
+<span id='Atlas-Shape-method-parsePolygon'>        /**
+</span>         * @method parsePolygon
+         * @param polygon String
+         * SVGのポリゴン要素を解析
+         **/
+        parsePolygon : function(polygon){
+            var pols = polygon.split(&quot; &quot;);
+            var data = [];
+            for(var i = 0,n = pols.length - 1; i &lt; n; i++){
+                var pt = pols[i].split(&quot;,&quot;);
+                var x = Number(pt[0]);
+                var y = Number(pt[1]);
+                var obj = {method:&quot;lineTo&quot;,x:x,y:y};
+                data.push(obj);
+            }
+            return data;
+        },
+<span id='Atlas-Shape-method-parsePath'>        /**
+</span>         * @method parsePath
+         * @param path String
+         * SVGのpath要素を解析
+         **/
+        parsePath : function(path){/*SVGのpath要素を解析*/
+            var length = {a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0};
+            var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+            var data = [];
+            path.replace(segment, function(_, command, args){
+                var type = command.toLowerCase();
+                args = args.match(/-?[.0-9]+(?:e[-+]?\d+)?/ig);
+                args = args ? args.map(Number) : [];
+                if (type == &#39;m&#39; &amp;&amp; args.length &gt; 2) {
+                    data.push([command].concat(args.splice(0, 2)));
+                    type = &#39;l&#39;;
+                    command = command == &#39;m&#39; ? &#39;l&#39; : &#39;L&#39;;
+                }
+                while (true) {
+                    if (args.length == length[type]) {
+                        args.unshift(command);
+                        if(args[0] == &quot;q&quot;){
+                            var obj = {method:&quot;quadraticCurveBy&quot;,cpx:args[1],cpy:args[2],x:args[3],y:args[4]};
+                        }else if(args[0] == &quot;Q&quot;){
+                            var obj = {method:&quot;quadraticCurveTo&quot;,cpx:args[1],cpy:args[2],x:args[3],y:args[4]};
+                        }else if(args[0] == &quot;l&quot;){
+                            var obj = {method:&quot;lineBy&quot;,x:args[1],y:args[2]};
+                        }else if(args[0] == &quot;L&quot;){
+                            var obj = {method:&quot;lineTo&quot;,x:args[1],y:args[2]};
+                        }else if(args[0] == &quot;m&quot;){
+                            var obj = {method:&quot;moveBy&quot;,x:args[1],y:args[2]};
+                        }else if(args[0] == &quot;M&quot;){
+                            var obj = {method:&quot;moveTo&quot;,x:args[1],y:args[2]};
+                        }else if(args[0] == &quot;c&quot;){
+                            var obj = {method:&quot;bezierCurveBy&quot;,cpx1:args[1],cpy1:args[2],cpx2:args[3],cpy2:args[4],x:args[5],y:args[6]};
+                        }else if(args[0] == &quot;C&quot;){
+                            var obj = {method:&quot;bezierCurveTo&quot;,cpx1:args[1],cpy1:args[2],cpx2:args[3],cpy2:args[4],x:args[5],y:args[6]};
+                        }else if(args[0] == &quot;h&quot;){
+                            var obj = {method:&quot;horizontalBy&quot;,x:args[1]};
+                        }else if(args[0] == &quot;H&quot;){
+                            var obj = {method:&quot;horizontalTo&quot;,x:args[1]};
+                        }else if(args[0] == &quot;v&quot;){
+                            var obj = {method:&quot;verticalBy&quot;,y:args[1]};
+                        }else if(args[0] == &quot;V&quot;){
+                            var obj = {method:&quot;verticalTo&quot;,y:args[1]};
+                        }else if(args[0] == &quot;s&quot;){
+                            var obj = {method:&quot;bezierCurveShortBy&quot;,cpx2:args[1],cpy2:args[2],x:args[3],y:args[4]};
+                        }else if(args[0] == &quot;S&quot;){
+                            var obj = {method:&quot;bezierCurveShortTo&quot;,cpx2:args[1],cpy2:args[2],x:args[3],y:args[4]};
+                        }else if(args[0] == &quot;t&quot;){
+                            var obj = {method:&quot;quadraticCurveShortBy&quot;,x:args[1],y:args[2]};
+                        }else if(args[0] == &quot;T&quot;){
+                            var obj = {method:&quot;quadraticCurveShortTo&quot;,x:args[1],y:args[2]};
+                        }else{
+                            var obj = {};
+                        }
+                        return data.push(obj);
+                    }
+                    data.push([command].concat(args.splice(0, length[type])));
+                }
+            });
+            return data;
+        },
+<span id='Atlas-Shape-method-isLoaded'>        /**
+</span>         * @method isLoaded
+         * @return Boolean
+         * 画像がロードされているかを返す
+         **/
+        isLoaded : function(){
+            var image = this.getImage();
+            if(image.loaded &amp;&amp; this.ctx){
+                return true;
+            }else{
+                return false;
+            }
+        },
+<span id='Atlas-Shape-method-setLinearGradient'>        /**
+</span>         * @method setLinearGradient
+         * オブジェクトに対して線形グラデーションを設定する
+         **/
+        setLinearGradient : function(x1,y1,x2,y2){
+            var ctx = this.ctx;
+            this.gradientStyle = {x1:x1,y1:y1,x2:x2,y2:y2};
+            this.gradientType = 1; 
+        },
+<span id='Atlas-Shape-method-setRadialGradient'>        /**
+</span>         * @method setRadialGradient
+         * オブジェクトに対して円形グラデーションを設定する
+         **/
+        setRadialGradient : function(x1, y1, r1, x2, y2, r2){
+            var ctx = this.ctx;
+            if(!x2){
+                x2 = x1;
+                y2 = y1;
+                r2 = r2;
+            }
+            this.gradientStyle = {x1:x1,y1:y1,r1:r1,x2:x2,y2:y2,r2:r2};
+            this.gradientType = 2; 
+        },
+        _addColorStops : function(stops){
+            var grad = this.color;
+            for(var i = 0,n = stops.length; i &lt; n; i++){
+                var stop = stops[i];
+                var color = stop.color;
+                grad.addColorStop(stop.offset,color);
+            }
+            this.color = grad;
+        },
+        setColorStops : function(stops){
+            this.colorStops = stops;
+            var style = this.gradientStyle;
+            if(this.gradientType == 1){
+                this.color = this.ctx.createLinearGradient(style.x1,style.y1,style.x2,style.y2);
+            }else if(this.gradientType == 2){
+                this.color = this.ctx.createRadialGradient(style.x1,style.y1,style.r1,style.x2,style.y2,style.r2);
+            }
+            this._addColorStops(stops);
+        },
+        addColorStops : function(stops){
+            for(var i = 0,n = stops.length; i &lt; n; i++){
+                this.colorStops.push(stops[i]);
+            }
+            this._addColorStops(stops);
+        },
+        removeColorStopAt : function(num){
+            this.colorStops.splice(num,1);
+            this.setColorStops(this.colorStops);
+        },
+<span id='Atlas-Shape-method-getGradientType'>        /**
+</span>         * @method getGradientType
+         * 設定されているグラデーションの種類を取得する
+         **/
+        getGradientType : function(){
+            var type = this.gradientType;
+            if(type == 1){
+                return &quot;linear&quot;;
+            }else if(type == 2){
+                return &quot;radial&quot;;
+            }else{
+                return &quot;single&quot;;
+            }
+        },
+        _onLoad : function(){
+            var svgdoc  = svgs[this.obj].getSVGDocument();
+            var element = svgdoc.getElementsByTagName(&quot;path&quot;)[0] || svgdoc.getElementsByTagName(&quot;circle&quot;)[0] || svgdoc.getElementsByTagName(&quot;rect&quot;)[0] || svgdoc.getElementsByTagName(&quot;polygon&quot;)[0];
+            var svg = svgdoc.getElementsByTagName(&quot;svg&quot;)[0];
+            var color = svg.getElementsByTagName(&quot;linearGradient&quot;)[0] || svgdoc.getElementsByTagName(&quot;radialGradient&quot;)[0];
+            if(color){
+                var stopsEle = color.getElementsByTagName(&quot;stop&quot;);
+                var stops = [];
+                for(var i = 0,n = stopsEle.length; i &lt; n; i++){
+                    var ele = stopsEle[i];
+                    var obj = {};
+                    obj.offset = ele.getAttribute(&quot;offset&quot;);
+                    var styleCol = ele.style.stopColor.toString();
+                    var op = ele.style.stopOpacity;
+                    if(op){
+                        styleCol = styleCol.replace(&quot;rgb&quot;,&quot;rgba&quot;);
+                        styleCol = styleCol.replace(&quot;)&quot;,&quot;,&quot;+op+&quot;)&quot;);
+                    }
+                    obj.color = styleCol;
+                    stops.push(obj);
+                }
+                if(color.tagName == &quot;linearGradient&quot;){
+                    var x1 = Number(color.getAttribute(&quot;x1&quot;));
+                    var x2 = Number(color.getAttribute(&quot;x2&quot;));
+                    var y1 = Number(color.getAttribute(&quot;y1&quot;));
+                    var y2 = Number(color.getAttribute(&quot;y2&quot;));
+                    this.setLinearGradient(x1,y1,x2,y2);
+                }else if(color.tagName == &quot;radialGradient&quot;){
+                    var cx = Number(color.getAttribute(&quot;cx&quot;));
+                    var cy = Number(color.getAttribute(&quot;cy&quot;));
+                    var r = Number(color.getAttribute(&quot;r&quot;));
+                    this.setRadialGradient(cx,cy,0,cx,cy,r);
+                }
+                this.setColorStops(stops);
+            }
+            if(this.color == &quot;original&quot;){
+                this.color = element.getAttribute(&quot;fill&quot;);
+            }
+            if(this.strokeColor == &quot;original&quot;){
+                this.strokeColor == element.getAttribute(&quot;stroke&quot;);
+            }
+            if(element.tagName == &quot;path&quot;){
+                var path = element.getAttribute(&quot;d&quot;);
+                this.path = this.parsePath(path);
+            }else if(element.tagName == &quot;circle&quot;){
+                var radius = element.getAttribute(&quot;r&quot;);
+                var array = [];
+                array.push({method:&quot;circle&quot;,r:radius});
+                this.path = array;
+            }else if(element.tagName == &quot;polygon&quot;){
+                var points = element.getAttribute(&quot;points&quot;);
+                this.path = this.parsePolygon(points);
+            }else if(element.tagName == &quot;rect&quot;){
+                var width = element.getAttribute(&quot;width&quot;);
+                var height = element.getAttribute(&quot;height&quot;);
+                var array = [];
+                array.push({method:&quot;rect&quot;,width:width,height:height});
+                this.path = array;
+            }
+            if(this.spriteWidth == void 0){
+                this.spriteWidth = parseInt(svg.getAttribute(&quot;width&quot;));
+                this.spriteHeight = parseInt(svg.getAttribute(&quot;height&quot;));
+                if(!this.spriteWidth){
+                    var viewBox = svg.getAttribute(&quot;viewBox&quot;);
+                    if(viewBox){
+                        var data = viewBox.split(&quot; &quot;);
+                        this.spriteWidth = data[2];
+                        this.spriteHeight = data[3];
+                    }
+                }
+            }
+            if(!this.width){
+                this.width = this.spriteWidth;
+            }
+            if(!this.height){
+                this.height = this.spriteHeight;
+            }
+            this.prepared = true;
+        },
+<span id='Atlas-Shape-method-draw'>        /**
+</span>         * @method draw
+         * オブジェクトを描画する
+         **/
+        draw : function(){
+            if(!this.path){
+                this._onLoad();
+            }
+            var path = this.path;
+            var ctx = this.ctx;
+            var x = 0;
+            var y = 0;
+            var tmpx = 0;
+            var tmpy = 0;
+            var rcpx = 0;
+            var rcpy = 0;
+            var width = this.width;
+            var height = this.height;
+            var scaleX = width / this.spriteWidth;
+            var scaleY = height / this.spriteHeight;
+            var cX = width / 2;
+            var cY = height / 2;
+            var transX = this._x || this.x;
+            var transY = this._y || this.y;
+            var rot = this._rot || this.rot;
+            ctx.globalAlpha = this.alpha;
+            ctx.globalCompositeOperation = this.drawMode;
+            ctx.save();
+            ctx.translate(transX+cX,transY+cY);
+            ctx.rotate(rot);
+            ctx.translate(-cX, -cY);
+            ctx.scale(scaleX,scaleY);
+            ctx.beginPath();
+            for(var i = 0,n = path.length; i &lt; n; i++){
+                var p = this.path[i];
+                var method = p.method;
+                if(method == &quot;moveTo&quot; || method == &quot;horizontalTo&quot; || method == &quot;verticalTo&quot; || method == &quot;quadraticCurveTo&quot; || method == &quot;bezierCurveTo&quot; || method == &quot;lineTo&quot; || method == &quot;bezierCurveShortTo&quot; || method == &quot;quadraticCurveShortTo&quot;){/*絶対*/
+                    tmpx = 0;
+                    tmpy = 0;
+                    if(p.x || p.x == 0){
+                        x = p.x;
+                    }
+                    if(p.y || p.y == 0){
+                        y = p.y;
+                    }
+                }else{/*相対*/
+                    tmpx = x;
+                    tmpy = y;
+                    if(p.x){
+                        x += p.x;
+                    }
+                    if(p.y){
+                        y += p.y;
+                    }
+                }
+                if(method == &quot;circle&quot;){
+                    var r = p.r;
+                    ctx.arc(x + r, y + r, r, 0, Math.PI * 2, false);
+                }else if(method == &quot;rect&quot;){
+                    ctx.fillRect(x,y,p.width,p.height);
+                }else if(method == &quot;moveTo&quot; || method == &quot;moveBy&quot;){
+                    ctx.moveTo(x,y);
+                }else if(method == &quot;lineTo&quot; || method == &quot;lineBy&quot;){
+                    ctx.lineTo(x,y);
+                }else if(method == &quot;quadraticCurveBy&quot; || method == &quot;quadraticCurveTo&quot;){
+                    ctx.quadraticCurveTo(tmpx+p.cpx,tmpy+p.cpy,x,y);
+                    rcpx = 2*x - (tmpx+p.cpx);
+                    rcpy = 2*y - (tmpy+p.cpy);
+                }else if(method == &quot;bezierCurveTo&quot; || method == &quot;bezierCurveBy&quot;){
+                    ctx.bezierCurveTo(tmpx+p.cpx1,tmpy+p.cpy1,tmpx+p.cpx2,tmpy+p.cpy2,x,y);
+                    rcpx = 2*x - (tmpx+p.cpx2);
+                    rcpy = 2*y - (tmpy+p.cpy2);
+                }else if(method == &quot;horizontalTo&quot; || method == &quot;horizontalBy&quot;){
+                    ctx.lineTo(x,y);
+                }else if(method == &quot;verticalTo&quot; || method == &quot;verticalBy&quot;){
+                    ctx.lineTo(x,y);
+                }else if(method == &quot;bezierCurveShortBy&quot; || method == &quot;bezierCurveShortTo&quot;){
+                    ctx.bezierCurveTo(rcpx,rcpy,tmpx+p.cpx2,tmpy+p.cpy2,x,y);
+                    rcpx = 2*x - (tmpx+p.cpx2);
+                    rcpy = 2*y - (tmpy+p.cpy2);
+                }else if(method == &quot;quadraticCurveShortBy&quot; || method == &quot;quadraticCurveShortTo&quot;){
+                    ctx.quadraticCurveTo(rcpx,rcpy,x,y);
+                    rcpx = 2*x - rcpx;
+                    rcpy = 2*y - rcpy;
+                }
+            }
+            if(this.closeMode){
+                ctx.closePath();
+            }
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.strokeStyle = this.strokeColor;
+            if(this.strokeMode){
+                ctx.stroke();
+            }
+            ctx.restore();
+        },
+<span id='Atlas-Shape-method-getNodeByName'>        /**
+</span>         * @method getNodeByName
+         * SVGに設定されたNode（点）オブジェクトを返す
+         **/
+        getNodeByName : function(name){
+            var path = this.path;
+            for(var i = 0,n = path.length; i &lt; n; i++){
+                var p = path[i];
+                if(name == p.name){
+                    return p;
+                }
+            }
+            return -1;
+        },
+    });
+<span id='Atlas-Shape-Box'>    /**
+</span>     * @class Atlas.Shape.Box
+     * @extends Atlas.Thing
+     * 四角形を描画するためのクラス
+     **/
+    Atlas.Shape.Box = Atlas.createClass(Atlas.Thing, {
+        initialize: function (col, width, height) {
+            this.inherit(width,height);
+            this._basicConstructor = &quot;Shape.Box&quot;;            
+            this.color = col;
+        },
+        draw: function () {
+            var ctx = this.ctx;
+            ctx.globalAlpha = this.alpha;
+            ctx.globalCompositeOperation = this.drawMode;
+            ctx.beginPath();
+            ctx.fillStyle = this.color;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
+            var width = this._width || this.width;
+            var height = this._height || this.height;
+            var moveX = x + this.width / 2;
+            var moveY = y + this.height / 2;
+            ctx.save();
+            ctx.translate(moveX, moveY);
+            ctx.rotate(rot);
+            ctx.translate(-moveX, -moveY);
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            ctx.fillRect(x, y, width, height);
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+    });
+<span id='Atlas-Shape-Circle'>    /**
+</span>     * @class Atlas.Shape.Circle
+     * @extends Atlas.Thing
+     * 円を描画するためのクラス
+     **/
+    Atlas.Shape.Circle = Atlas.createClass(Atlas.Thing, {
+        initialize: function (col, radius) {
+            this.inherit(radius * 2,radius * 2);
+            this._basicConstructor = &quot;Shape.Circle&quot;;
+            this.color = col;
+            this.collisionShape = &quot;circle&quot;;
+        },
+        draw: function () {
+            var ctx = this.ctx;
+            ctx.globalAlpha = this.alpha;
+            ctx.globalCompositeOperation = this.drawMode;
+            ctx.beginPath();
+            ctx.fillStyle = this.color;
+            var width = this._width || this.width;
+            var plus = width / 2;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            ctx.arc(x+ plus, y + plus, plus, 0, Math.PI * 2, false);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    });
+<span id='Atlas-Sprite'>    /**
+</span>     * @class Atlas.Sprite
+     * @extends Atlas.Thing
+     * 画像等を描画するクラス
+     **/
+    Atlas.Sprite = Atlas.createClass(Atlas.Thing, {
+        initialize: function (name, width, height) {
+            if(typeof width === &quot;undefined&quot;){
+                width = null;
+                height = null;
+            }
+            this.inherit(width,height);
+            this.setImage(name,width,height);
+            this._basicConstructor = &quot;Sprite&quot;;
+            this.frame = 0;
+            this.alpha = 1;
+        },
+<span id='Atlas-Sprite-method-animate'>        /**
+</span>         * @method animate
+         * フレームを変えてスプライトをアニメーションさせる
+         **/
+        animate: function(array,frameRate,frame){
+            var obj = Tween(this,&quot;animate&quot;,frame);
+            obj.array = array;
+            obj.frameRate = frameRate;
+            obj.frameIdx = 0;
+            this.mover.push(obj);
+            return this;
+        },
+        _animate: function(obj){
+            if(obj.time == 0)
+                this.frame = obj.array[0];
+            if(obj.time % obj.frameRate == 0){
+                obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
+                this.frame = obj.array[obj.frameIdx];
+            }
+        },
+        setSpriteSize:function (width,height){
+            this.spriteWidth = width;
+            this.spriteHeight = height;
+        },
+        setImage: function (name,width,height) {
+            if(width &amp;&amp; height)
+                this.setSpriteSize(width,height);
+            var length = images.length;
+            for (var i = 0; i &lt; length; i++)
+                if (images[i].name == name)
+                    this.img = i;
+        },
+        getImage : function(){
+            return images[this.img];
+        },
+        isLoaded : function(){
+            var image = this.getImage();
+            if(image.loaded &amp;&amp; this.ctx){
+                return true;
+            }else{
+                return false;
+            }
+        },
+        _onLoad : function(){
+            var obj = this.getImageSize();
+            if(!this.width &amp;&amp; obj.width){
+                this.setSpriteSize(obj.width,obj.height);
+                if(!this.width){
+                    this.setSize(obj.width,obj.height);
+                    if(this._scaleX){
+                        this.scale(this._scaleX,this._scaleY);
+                    }
+                }
+            }
+            this.prepared = true;
+        },
+        getImageSize : function(){
+            var obj = {};
+            var img = images[this.img];
+            obj.width = img.width;
+            obj.height = img.height;
+            return obj;  
+        },
+        draw: function () {
+            var ctx = this.ctx;
+            ctx.globalAlpha = this.alpha;
+            ctx.globalCompositeOperation = this.drawMode;
+            var frame = this.frame;
+            var image = images[this.img];
+            var SizeX = this.spriteWidth;
+            var SizeY = this.spriteHeight;
+            var width = this._width || this.width;
+            var height = this._height || this.height;
+            var cX = width / 2;
+            var cY = height / 2;
+            var numX = image.width / SizeX;
+            var numY = image.height / SizeY;
+            var scaleX = width / SizeX;
+            var scaleY = height / SizeY;
+            var dx = (frame % numX) * SizeX;
+            var dy = (~~(frame / numX) % numY) * SizeY;
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
+            ctx.save();
+            ctx.translate(x + cX, y + cY);
+            ctx.rotate(rot);
+            ctx.translate(-cX, -cY);
+            ctx.scale(scaleX, scaleY);
+            if(dx != null)
+                ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+    });
+<span id='Atlas-Map'>    /**
+</span>     * @class Atlas.Map
+     * @extends Atlas.Sprite
+     **/
+    Atlas.Map = Atlas.createClass(Atlas.Sprite, {
+        initialize: function (name, width, height) {
+            this.inherit(name,width,height);
+            this.drawData;
+            this.hitData;
+        },
+        intersect: function (ex, ey) {
+            var array = this.hitData;
+            var x = array[0].length;
+            var y = array.length;
+            var width = this._width || this.width;
+            var height = this._height || this.height;
+            var posX = this._x || this.x;
+            var posY = this._y || this.y;
+            for (var i = 0; i &lt; y; i++) {
+                for (var t = 0; t &lt; x; t++) {
+                    if (array[i][t] == 1 &amp;&amp; posX + t * width &lt; ex &amp;&amp; ex &lt; posX + (t + 1) * width
+                       &amp;&amp; posY + i * height &lt; ey &amp;&amp; ey &lt; posY + (i + 1) * height)
+                        return true;
+                }
+            }
+            return false;
+        },
+        draw: function () {
+            var array = this.drawData;
+            if(array &amp;&amp; array[0]){
+                var x = array[0].length;
+                var y = array.length;
+                var width = this._width || this.width;
+                var height = this._height || this.height;
+                var px = this._x || this.x;
+                var py = this._y || this.y;
+                var i = 0;
+                var t = 0;
+                var field = this.field;
+                var ctx = this.ctx;
+                ctx.globalAlpha = this.alpha;
+                ctx.globalCompositeOperation = this.drawMode;
+                var fieldHeight = field.height;
+                var fieldWidth = field.width;
+                var frame;
+                var image = images[this.img];
+                var SizeX = this.spriteWidth;
+                var SizeY = this.spriteHeight;
+                var cX = width / 2;
+                var cY = height / 2;
+                var numX = image.width / SizeX;
+                var numY = image.height / SizeY;
+                var scaleX = this.width / SizeX;
+                var scaleY = this.height / SizeY;
+                var posX = px;
+                var posY = py;
+                while (i &lt; y) {
+                    while (t &lt; x) {
+                        frame = array[i][t];
+                        if (frame &gt;= 0 &amp;&amp; fieldHeight &gt; py + height * i &amp;&amp; py + height * (i + 1) &gt; 0 &amp;&amp; fieldWidth &gt; px + width * t &amp;&amp; px + width * (t + 1) &gt; 0) {
+                            var dx = (frame % numX) * SizeX;
+                            var dy = (~~(frame / numX) % numY) * SizeY;
+                            ctx.save();
+                            ctx.translate(posX, posY);
+                            ctx.scale(scaleX, scaleY);
+                            ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+                            ctx.restore();
+                        }
+                        posX += width;
+                        t++;
+                    }
+                    posY += height;
+                    posX = px;
+                    i++;
+                    t = 0;
+                }
+            }
+        }
+    });
+<span id='Atlas-Text'>    /**
+</span>     * @class Atlas.Text
+     * @extends Atlas.Util
+     **/
+    Atlas.Text = Atlas.createClass(Atlas.Util,{
+        initialize : function (string, col, size, font) {
+            this.inherit();
+            this._basicConstructor = &quot;Text&quot;;
+            this.x = 0;
+            this.y = 0;
+            this.scaleX = 1;
+            this.scaleY = 1;
+            this.alpha = 1;
+            this.spaceWidth = 7;/*append*/
+            if (font)
+                this.font = &quot;&#39;&quot; + font + &quot;&#39;&quot;;
+            else
+                this.font = &quot;&#39;Meiryo&#39;&quot;;
+            if (size)
+                this.size = size + &quot;px&quot;;
+            else
+                this.size = &quot;10px&quot;;
+            if (string)
+                this.string = string;
+            else
+                this.string = &quot;&quot;;
+            if (col)
+                this.color = col;
+            else
+                this.color = &quot;white&quot;;
+        },
+        setSize: function (size) {
+            this.size = size + &quot;px&quot;;
+        },
+        setFont: function (font) {
+            this.font = &quot;&#39;&quot; + font + &quot;&#39;&quot;;
+        },
+        intersect: function(ex,ey){
+            var thisx = this._x || this.x;
+            var thisy = this._y || this.y;
+            var width = parseInt(this.size) * this.scaleX * this.string.length;
+            var height = parseInt(this.size) * this.scaleY;
+            var x = ex - (thisx + width / 2);
+            var y = ey - (thisy + height / 2);
+            var r = this._rot || this.rot;
+            var s = Math.sin(-r);
+            var c = Math.cos(-r);
+            var xx = Math.abs(x * c - y * s);
+            var yy = Math.abs(x * s + y * c);
+            if (xx &lt; width / 2.0 &amp;&amp; yy &lt; height / 2.0)
+                return true;
+            return false;
+        },
+        scale: function(x,y){
+            this.scaleX *= x;
+            this.scaleY *= y;
+        },
+        _scaleBy: function(obj){
+            if(obj.time == 0){
+                obj.diffWidth = obj.scaleX - this.scaleX;
+                obj.diffHeight = obj.scaleY - this.scaleY;
+            }
+            this.scaleX = obj.scaleX - obj.diffWidth * (1 - obj.time / obj.frame);
+            this.scaleY = obj.scaleY - obj.diffHeight * (1 - obj.time / obj.frame)     
+        },
+        draw: function () {
+            var x = this._x || this.x;
+            var y = this._y || this.y;
+            var rot = this._rot || this.rot;
+            var scaleX = this.scaleX;
+            var scaleY = this.scaleY;
+            var ctx = this.ctx;
+            var strings = this.string.split(&#39;&lt;br&gt;&#39;);
+            var length = strings.length;
+            ctx.globalAlpha = this.alpha;
+            ctx.globalCompositeOperation = this.drawMode;
+            ctx.font = this.size + &quot; &quot; + this.font;
+            var height = ctx.measureText(&#39;a&#39;).width * 1.5 + this.spaceWidth;
+            ctx.fillStyle = this.color;
+            ctx.save();
+            var cX = parseInt(this.size) * this.scaleX * this.string.length / 2;
+            var cY = parseInt(this.size) * this.scaleY / 2;
+            ctx.translate(x + cX,y + cY);
+            ctx.rotate(rot);
+            ctx.translate(-cX,-cY);
+            ctx.scale(scaleX,scaleY);
+            for (var i = 0; i &lt; length; i++) {
+                ctx.fillText(strings[i], 0, height);
+                height *= 2;
+            }
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+    });
+<span id='Atlas-Group'>    /**
+</span>     * @class Atlas.Group
+     * @extends Atlas.Thing
+     **/
+    Atlas.Group = Atlas.createClass(Atlas.Thing,{
+        initialize:function(){
+            this.children = [];
+            this.inherit();
+            this.x = 0;
+            this.y = 0;
+            this._basicConstructor = &quot;Group&quot;;
+        },
+        addChild:function(sprite){
+            sprite.parent = this;
+            this.children.push(sprite);
+            if(this.parent){
+                sprite.ctx = this.parent.ctx;
+                sprite.field = this.parent.field;
+                this.parent.children.push(sprite);
+            }
+        },
+        addChildren:function(){
+            for(var i = 0,n = arguments.length; i &lt; n; i++){
+                this.addChild(arguments[i]);
+            }
+        },
+        getChild: function(obj){    
+            var array = this.getChildren(obj);
+            var ret = array[0];
+            if(!ret)
+                ret = null; 
+            return ret;
+        },
+        getChildren: function(obj){    
+            var ret = [];
+            var children = this.children;       
+            for(var i = 0, n = children.length; i &lt; n; i++){
+                var flag = true;
+                for(var key in obj){
+                    if(key == &quot;$not&quot;){
+                        for(var key2 in obj[&quot;$not&quot;]){
+                            if(obj[&quot;$not&quot;][key2] == children[i][key2]){
+                                flag = false;
+                            }
+                        }
+                    }else{
+                        if(obj[key] != children[i][key])
+                            flag = false;
+                    }
+                }
+                if(flag == true){
+                    ret.push(children[i]);
+                }
+            }
+            return ret;
+        },
+        removeChild:function(obj){
+            var child = this.getChild(obj);
+            child.remove();
+        },
+        removeChildren:function(obj){
+            var children = this.getChildren(obj);
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                children[i].remove();
+            }
+        },
+    });
+<span id='Atlas-Scene'>    /**
+</span>     * @class Atlas.Scene
+     * @extends Atlas.Group
+     **/
+    Atlas.Scene = Atlas.createClass(Atlas.Group, {
+        initialize: function () {
+            this.inherit();
+            this._basicConstructor = &quot;Scene&quot;;
+            this._remove = false;
+        },
+        addChild: function(sprite){
+            sprite.parent = this;
+            if(this.ctx &amp;&amp; this.field){
+                sprite.ctx = this.ctx;
+                sprite.field = this.field;
+            }
+            this.children.push(sprite);
+            if(sprite._basicConstructor == &quot;Group&quot; || sprite._basicConstructor == &quot;Layer&quot;){
+                var children = sprite.children;
+                for(var i = 0,n = children.length; i &lt; n; i++){
+                    var child = children[i];
+                    if(!child.ctx){
+                        child.ctx = this.ctx;
+                        child.field = this.field;
+                        this.children.push(child);
+                    }
+                }
+            }
+        },
+        setImage : function(image){
+            this.image = image;
+        },
+        setColor : function(color){
+            this.color = color;
+        },
+        _enterFrame: function (e) {
+            if(this.enterFrame)
+                this.enterFrame();
+            var children = this.children;
+            for (var i = 0, n = children.length; i &lt; n; i++) {
+                var target = children[i];
+                if (target._remove) {
+                    children.splice(i, 1);
+                    target = null;
+                    i--;
+                    n--;
+                    continue;
+                }
+                if(target._basicConstructor == &quot;Sprite&quot; 
+                || target._basicConstructor == &quot;Map&quot;
+                || target._basicConstructor == &quot;Shape&quot;){
+                    if(target.isLoaded() &amp;&amp; !target.prepared){
+                        target._onLoad();
+                        if(target.onLoad){
+                            /*フックを登録していたら*/
+                            target.onLoad();
+                        }
+                    }
+                }/*ロードが終わったオブジェクトの描画準備を完了させる*/
+                if(target.useEvent)
+                    target.useEvent();
+                if(target._enterFrame)
+                    target._enterFrame();
+                if(target.enterFrame)
+                    target.enterFrame();
+                if(target.tween)
+                    target.tween();
+                if(target.visible){
+                    target.draw();
+                }
+            }
+        }
+    });
+<span id='Atlas-Layer'>    /**
+</span>     * @class Atlas.Layer
+     * @extends Atlas.Group
+     **/
+    Atlas.Layer = Atlas.createClass(Atlas.Group,{
+        initialize:function(){
+            this.inherit();
+            this.rot = 0;
+            this._basicConstructor = &quot;Layer&quot;;
+            this.firstWidth = 100;
+            this.firstHeight = 100;
+            this.height = 100;
+            this.width = 100;
+            this.scaleX = 1;
+            this.scaleY = 1;
+        },
+<span id='Atlas-Layer-method-fitToChildren'>        /**
+</span>         * @method fitToChildren
+         * 登録されたオブジェクトが占める矩形幅にレイヤーのサイズを合わせる
+         **/
+        fitToChildren:function(){
+            var children = this.children;
+            var postx = this.x;
+            var posty = this.y;
+            this.x = null;
+            this.y = null;
+            this.width = 0;
+            this.height = 0;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                var child = children[i];
+                var x = child._x || child.x;
+                var y = child._y || child.y;
+                var width = child._width || child.width;
+                var height = child._height || child.height;
+                var centerX = x + (width/2);
+                var centerY = y + (height/2);
+                var rot = child._rot || child.rot;
+                rot = rot % (2 * Math.PI);
+                if(rot &lt; 0){
+                    rot += (2 * Math.PI);
+                }
+                if(0 &lt;= rot &amp;&amp; rot &lt;= Math.PI / 2){
+                    var x1 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
+                    var x2 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y - centerY) + centerX;
+                    var y1 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y - centerY) + centerY;
+                    var y2 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
+                }else if(Math.PI/2 &lt; rot &amp;&amp; rot &lt;= Math.PI){
+                    var x1 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
+                    var x2 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y - centerY) + centerX;
+                    var y1 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
+                    var y2 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y - centerY) + centerY;
+                }else if(Math.PI &lt; rot &amp;&amp; rot &lt;= 3 / 2 * Math.PI){
+                    var x1 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y - centerY) + centerX;
+                    var x2 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
+                    var y1 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
+                    var y2 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y - centerY) + centerY;
+                }else if(3 / 2 * Math.PI &lt; rot &amp;&amp; rot &lt;= 2 * Math.PI){
+                    var x1 = Math.cos(rot)*(x - centerX) - Math.sin(rot)*(y - centerY) + centerX;
+                    var x2 = Math.cos(rot)*(x + width - centerX) - Math.sin(rot)*(y + height - centerY) + centerX;
+                    var y1 = Math.sin(rot)*(x + width - centerX) + Math.cos(rot)*(y - centerY) + centerY;
+                    var y2 = Math.sin(rot)*(x - centerX) + Math.cos(rot)*(y + height - centerY) + centerY;
+                }
+                if(!this.x || this.x &gt; x1){
+                    this.x = x1;
+                }
+                if(!this.y || this.y &gt; y1){
+                    this.y = y1;
+                }
+                if(this.width &lt; x2){
+                    this.width = x2;
+                }
+                if(this.height &lt; y2){
+                    this.height = y2;
+                }
+            }
+            this.width -= this.x;
+            this.height -= this.y;
+            this.firstWidth = this.width;
+            this.firstHeight = this.height;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                var child = children[i];
+                if(!child._x){
+                    child._x = child.x;
+                    child._y = child.y;
+                    child.x -= this.x;
+                    child.y -= this.y;
+                }else{
+                    child.x += postx - this.x;
+                    child.y += posty - this.y;
+                }
+            }
+            return this;
+        },
+<span id='Atlas-Layer-method-releaseChild'>        /**
+</span>         * @method releaseChild
+         * @param child Atlas.Thingクラス
+         * 登録されているオブジェクトを解放する
+         **/
+        releaseChild:function(child){
+            var parent = this.parent;
+            child.x = child._x;
+            child.y = child._y;
+            child.width = child._width;
+            child.height = child._height;
+            child.rot = child._rot;
+            child._x = null;
+            child._y = null;
+            child._width = null;
+            child._height = null;
+            child._rot = null;
+            child.grouped = false;
+            child._leave = false;
+            child.parent = parent;
+        },
+<span id='Atlas-Layer-method-releaseAllChildren'>        /**
+</span>         * @method releaseAllChildren
+         * 登録されているすべてのオブジェクトを解放する
+         **/
+        releaseAllChildren:function(){
+            var children = this.children;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                var child = children[i];
+                this.releaseChild(child);
+            }
+            this.children = [];
+            this._remove = true;
+            return this;
+        },
+<span id='Atlas-Layer-method-removeChildrenByProperty'>        /**
+</span>         * @method removeChildrenByProperty
+         * @param obj Object
+         * プロパティの値が一致するオブジェクトを削除する
+         **/
+        removeChildrenByProperty:function(obj){
+            var children = this.getChildren(obj);
+            for(var i = 0, n = children.length; i &lt; n; i++){
+                children[i].remove();
+            }
+            return this;
+        },
+<span id='Atlas-Layer-method-removeAllChildren'>        /**
+</span>         * @method removeAllChildren
+         * 登録されたすべてのオブジェクトを削除する
+         **/
+        removeAllChildren:function(){
+            var children = this.children;
+            var parent = this.parent;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                children[i].remove();
+            }
+            return this;
+        },
+        _setAbsPos:function(child){
+            var centerX = (this.width / 2);
+            var centerY = (this.height / 2);
+            var rot = this.rot;
+            child.Cx = (this.scaleX*child.x + child._width / 2);
+            child.Cy = (this.scaleY*child.y + child._height / 2);
+            child.startRot = true;          
+            var cx = Math.cos(rot)*(child.Cx - centerX) - Math.sin(rot)*(child.Cy - centerY) + centerX;//this.width/2
+            var cy = Math.sin(rot)*(child.Cx - centerX) + Math.cos(rot)*(child.Cy - centerY) + centerY;//this.height/2
+            child._x = cx - (child._width/2);
+            child._y = cy - (child._height/2);
+            child._x += this.x;
+            child._y += this.y;
+        },
+        draw: function () {
+            var children = this.children;
+            this.scaleX = this.width/this.firstWidth;
+            this.scaleY = this.height/this.firstHeight;
+            for(var i = 0,n = children.length; i &lt; n; i++){
+                var target = children[i];
+                if(target._leave || target._remove){
+                    children.splice(i, 1);
+                    this.releaseChild(target);
+                    i--;
+                    n--;
+                    continue;                   
+                }  
+                target._rot = target.rot + this.rot;
+                target._width = this.scaleX * target.width;
+                target._height = this.scaleY * target.height;
+                this._setAbsPos(target);        
+            }
+        }
+    });
+    window.Atlas = Atlas;
+})();</pre>
+</body>
+</html>
