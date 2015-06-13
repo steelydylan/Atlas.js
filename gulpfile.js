@@ -8,6 +8,7 @@ gulp.task('js', function () {
     gulp.src('./Atlas.js')
     .pipe(uglify())
     .pipe(header(fs.readFileSync('header.txt', 'utf8'), { pkg : pkg }))
+    .pipe(gulp.dest('../atlas-editor/public/js/'))
     .pipe(rename('Atlas.min.js'))
     .pipe(gulp.dest('./'));
 });

@@ -3,3 +3,4 @@ plugin/
 svg/
 .DS_Store
 .gitignore
+gulpfile.js

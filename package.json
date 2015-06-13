@@ -3,7 +3,7 @@
 	"description":"ブラウザで動作する教育用JSゲームエンジン",
 	"homepage":"http://horicdesign.com",
 	"license":"MIT License",
-	"version":"0.7.9",
+	"version":"0.7.10",
 	"dependencies":{
 		"gulp":"*",
 		"gulp-rename":"*",

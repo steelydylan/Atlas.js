@@ -1,5 +1,5 @@
 /**
-* Atlas.js v0.7.9 - ブラウザで動作する教育用JSゲームエンジン
+* Atlas.js v0.7.10 - ブラウザで動作する教育用JSゲームエンジン
 * https://github.com/steelydylan/Atlas.js
 * MIT Licensed
 * Copyright (C) 2013 steelydylan http://horicdesign.com
@@ -660,7 +660,7 @@
          * @param v Number
          * hsvから16進に変換する
          **/
-        hsbToHex : function (h,s,v){
+        hsvToHex : function (h,s,v){
             var f,i, p, q, t;
             var r,g,b;
             i = Math.floor(h / 60.0) % 6;
@@ -680,6 +680,55 @@
             if(g<=15){g="0"+g.toString(16);}else{g=g.toString(16);}
             if(b<=15){b="0"+b.toString(16);}else{b=b.toString(16);}
             return "#"+ r + g + b;          
+        },
+        rgbToHsv:function(r,g,b){
+        	var rr,gg,bb;
+            var r = r / 255;
+            var g = g / 255;
+            var b = b / 255;
+            var h,s,v;
+            v = Math.max(r, g, b);
+            var diff = v - Math.min(r, g, b);
+            if (diff == 0) {
+                h = s = 0;
+            } else {
+                s = diff / v;
+                rr = (v - r) / 6 / diff + 1 / 2;
+                gg = (v - g) / 6 / diff + 1 / 2;
+                bb = (v - b) / 6 / diff + 1 / 2;
+                if (r === v) {
+                    h = bb - gg;
+                }else if (g === v) {
+                    h = (1 / 3) + rr - bb;
+                }else if (b === v) {
+                    h = (2 / 3) + gg - rr;
+                }
+                if (h < 0) {
+                    h += 1;
+                }else if (h > 1) {
+                    h -= 1;
+                }
+            }
+            return "hsv("+Math.round(h * 360)+","+Math.round(s * 100)+","+Math.round(v * 100)+")";
+        },
+        hexToHsv:function(color){
+            var rgb = this.hexToRgb(color);
+        },
+        getObjFromRgb:function(color){
+            var arr = /rgb\((.*?),(.*?),(.*?)\)/.exec(color);
+            return {
+                r:parseInt(arr[1]),
+                g:parseInt(arr[2]),
+                b:parseInt(arr[3])
+            }
+        },
+        getObjFromHsv:function(color){
+            var arr = /hsv\((.*?),(.*?),(.*?)\)/.exec(color);
+            return {
+                h:parseInt(arr[1]),
+                s:parseInt(arr[2]),
+                v:parseInt(arr[3])
+            }
         },
         /**
          * @method getSound
@@ -2502,5 +2551,10 @@
             }
         }
     });
-    window.Atlas = Atlas;
+    //for browserify
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = Atlas;
+    }else{
+        window.Atlas = Atlas;
+    }
 })();
