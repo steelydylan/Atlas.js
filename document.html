@@ -168,14 +168,14 @@ game.enterFrame = function(){/*処理*/};
 					<p>Atlas.jsでは次のようにゲームをスタートさせます</p>
 					<pre class="prettyprint linenums">
 Atlas();
-window.onload = function(){
+Atlas.main(function(){
     var game = new App('Atlas');
     game.load("chara.png");
     var sprite = new Sprite("chara.png",32,32);
     game.addChild(sprite);
     game.enterFrame = function(){sprite.x++;};
     game.start();//これを書かないとゲームが動かない
-};
+});
 					</pre>
 					<h4>シーン登録</h4>
 					<p>Atlas.jsでは次のようにローディングシーンを設定したり、シーンを切り替えたりすることができます</p>
@@ -388,7 +388,7 @@ var box = new Shape.Box("white",20,10);
 					<p>keyUpはキーが離されたときに呼び出される関数です</p>
 					<h5>例)Heroオブジェクトをタッチした位置に移動させる</h5>
 					<pre class="prettyprint linenums">
-Hero = Atlas.createClass(Atlas.Sprite,{
+var Hero = Atlas.createClass(Atlas.Sprite,{
      initialize:function(){
         this.inherit("hero",64,64);
         this.x = 250;
@@ -401,7 +401,7 @@ Hero = Atlas.createClass(Atlas.Sprite,{
 </pre>
 					<h5>例)Heroオブジェクトを十時キーを押した方向に動かす</h5>
 					<pre class="prettyprint linenums">
-Hero = Atlas.createClass(Atlas.Sprite,{
+var Hero = Atlas.createClass(Atlas.Sprite,{
      initialize:function(){
         this.inherit("hero",64,64);
         this.x = 250;
@@ -428,7 +428,7 @@ Hero = Atlas.createClass(Atlas.Sprite,{
 					<small><a href="http://www.tekepon.net/fsm/">First Seed Materialさん 改造マップチップセットの素材です</a></small><br />
 					上のように一つのスプライトが16(横）*16(縦）pxの30*16等分のマップを例にとります。
 					<pre class="prettyprint linenums">
-window.onload = function(){
+Atlas.main(function(){
     Atlas();
     var game = new App("game");
     var map = new Map("./images/map.png", 16, 16);
@@ -454,13 +454,13 @@ window.onload = function(){
         ];
     game.addChild(map);
     game.start();
-}
+});
 					</pre>
 					<p>また、次のようにマップにコリジョンデータを設定し、</p>
 					<p>intersect関数で、ある指定された座標がマップの1の位置にあるか0の位置にあるかで</p>
 					<p>それぞれ、true,falseを返す仕組みも提供されています</p>
 					<pre class="prettyprint linenums">
-window.onload = function(){
+Atlas.main(function(){
     Atlas();
     var game = new App("game");
     var map = new Map("./images/map.png", 16, 16);
@@ -508,7 +508,7 @@ window.onload = function(){
             alert("当たっています");
     };
     game.start();
-}
+});
 					</pre>					
 				</div>
 				<div class="tab-pane" id="eighth">
@@ -520,7 +520,7 @@ window.onload = function(){
 					<h4>例<small>(Enemyクラスの生成)</small></h4>
 					<pre class="prettyprint linenums">
 (function(){
-Enemy = Atlas.createClass(Atlas.Sprite,{
+Atlas.Enemy = Atlas.createClass(Atlas.Sprite,{
     initialize : function(image,numX,numY){
 		this.inherit(image,numX,numY);
 		this.sx = this.getRand(5,10);
@@ -671,39 +671,43 @@ set the fps of the game
 					</pre>
 				</div>
 				<div class="tab-pane" id="three">
-					<h3>Initialize,Loop</h3>
-					Next,I'd like to introduce you the Initialization, Loading and Mainloop.
+					<h3>Loop and Scene Settings</h3>
+					<p>Next I'll show you how to set loop and loading Scene to your game。</p>
+					<p>Loop Setting of the game</p>
 					<pre class="prettyprint linenums">
-game.initScene(fn);
-/*
-it runs before the loadings.
-*/
-game.loadingScene(fn);
-/*
-it runs during the loadings.
-*/
-game.mainScene(fn);
-/*
-it runs after the loadings
-this method acts as gameloop.
-*/
+game.enterFrame = function(){/*some code here*/};
 					</pre>
-					<img src ="./image/chara2.png" align="right"/>
-					in the game.initScene, you can instance the sprite like this<br />
-					Suppose that you load the image width 32*32px devided by 3(vertical)*4(horizontal)<br />
-					<small>I download the material at <a href="http://usui.moo.jp/rpg_tukuru.html">http://usui.moo.jp/rpg_tukuru.html</a></small>
-					<br clear="right"/>
-					<br />
+					<p>You can start your game like below</p>
 					<pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-var chara = new Sprite("./images/chara2.png",32,32);
+Atlas();
+Atlas.main(function(){
+    var game = new App('Atlas');
+    game.load("chara.png");
+    var sprite = new Sprite("chara.png",32,32);
+    game.addChild(sprite);
+    game.enterFrame = function(){sprite.x++;};
+    game.start();
+});
 					</pre>
-					<p>you can also instance the sprite by naming the assets like this</p>
+					<h4>Scene settings</h4>
+					<p>You can set loading Scene and switch scenes like below</p>
 					<pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-game.naming(["./images/chara2.png","chara2"]);
-var chara = new Sprite("chara2",32,32);
-					</pre>				
+/*ローディングシーンの設定*/
+var scene = new Scene();
+scene.setImage("image");
+var text = new Text("ローディングシーンだよ","white",30);
+text.setPosition(50,50);
+scene.addChild(text);
+game.loadingScene(scene);	
+
+/*シーンの切り替え*/
+var scene = new Scene();
+scene.setColor("blue");
+var sprite = new Sprite("image.png",32,32);
+sprite.enterFrame = function(){this.x++};
+scene.addChild(sprite);
+game.pushScene(scene);				
+					</pre>
 				</div>
 				<div class="tab-pane" id="four">
 					<h3>Sprite</h3>
@@ -774,8 +778,7 @@ enemies[i].remove = true;
 					game.touchEnd is the function, which is called when you finished touching the screen.
 					<pre class="prettyprint linenums">
 game.touchStart(function(e){
-var obj = game.getPosition(e);
-console.log("your touching point is("+obj.x+","+obj.y+")");
+console.log("your touching point is("+e.x+","+e.y+")");
 });
 					</pre>
 					Like above you can get the touched point<br />
@@ -790,7 +793,7 @@ console.log("your touching point is("+obj.x+","+obj.y+")");
 					<small><a href="http://www.tekepon.net/fsm/">I'm using the image at "First Seed Material"</a></small><br />
 					Suppose that you load the image width 16*16px devided by 30(vertical)*16(horizontal) like this<br />
 					<pre class="prettyprint linenums">
-window.onload = function(){
+Atlas.main(function(){
     Atlas("game");
     var game = new App();
     game.load("./images/map.png");
@@ -817,7 +820,7 @@ window.onload = function(){
      ];
     game.addChild(map);
     game.start();
-}
+});
 					</pre>				
 				</div>
 				<div class="tab-pane" id="seven">
@@ -826,7 +829,7 @@ window.onload = function(){
 					<h4>Example<small>(Creating Enemy Class)</small></h4>
 					<pre class="prettyprint linenums">
 (function(){
-    Enemy = Atlas.createClass(Atlas.Sprite,{
+    Atlas.Enemy = Atlas.createClass(Atlas.Sprite,{
 	    initialize : function(image,numX,numY){
 		    this.inherit(image,numX,numY);
 		    this.sx = this.getRand(5,10);
@@ -842,15 +845,15 @@ window.onload = function(){
 		}
 	});
 });
-window.onload = function(){
+Atlas.main(function(){
     Atlas("game");
     var game = new App();
     var enemy = new Enemy("teki2.png",100,95);
-    game.mainScene(function(){
+    game.enterFrame = function(){
         enemy.move();
-    });
+    };
     game.start();
-};
+});
 					</pre>
 				</div>
         	</div>
