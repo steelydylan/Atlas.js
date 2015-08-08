@@ -619,12 +619,11 @@ Next,you have to include the canvas element with its id to the body element as f
 					And、Suppose that the id of the canvas element is "Atlas"<br />
 					Then
 					<pre class="prettyprint linenums">
-Atlas('Atlas');
-var game = new App();
+Atlas();
+var game = new App("Atlas");
 					</pre>
-you have to substitute "Atlas" to the game constractor.
+you have to substitute "Atlas" to the 'App' constractor.
 By doing this,you can use the variety of methods provided by Atlas.js
-thorough the variable "game".
 					<br />				
 				</div>
 				<div class="tab-pane" id="two">
@@ -712,8 +711,7 @@ game.pushScene(scene);
 				<div class="tab-pane" id="four">
 					<h3>Sprite</h3>
 					<pre class="prettyprint linenums">
-					var sprite = new Sprite("./images/chara2.png",32,32);
-					</pre>
+var sprite = new Sprite("./images/chara2.png",32,32);</pre>
 					A sprite initialized like this has following properties as initial value.
 					<pre class="prettyprint linenums">
 sprite.x = 0;//x point
@@ -721,8 +719,7 @@ sprite.y = 0;//y point
 sprite.rot = 0;//theta
 sprite.sx = 1;//enlargement ratio of x
 sprite.sy = 1;//enlargement ratio of y
-sprite.frame = 0;//a number of frame.
-					</pre>
+sprite.frame = 0;//a number of frame.</pre>
 					<img src="./image/sprite.png" align="right"/><br />
 					see the image on the right<br />
 					Relation between the images and frames<br />
@@ -731,21 +728,101 @@ sprite.frame = 0;//a number of frame.
 					<br />
 					And you can use following method via sprites.
 					<pre class="prettyprint linenums">
-sprite.drawGraph();//draw the sprite without maginification
-sprite.drawScaleGraph();//draw the sprite with magnification
-/*
-In any way,the sprite will be drawn at the point of (sprite.x,sprite.y)
-Please call this drawing methods in the loadingScene or mainScene;
-*/
 sprite.within(anotherSprite,range);
 /*
-Parameters are another sprite and the range
-if another sprite is within the radius of the sprite's range,
-return true,else return false.
+他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
+true,範囲外であればfalseを返す。
+(Shapeオブジェクト共通)
 */
 sprite.intersect(x,y);
 /*
-if the point of (x,y) is in the sprite,return true,else return false.
+スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
+(Shapeオブジェクト共通)
+*/
+sprite.scale(5,2);
+/*
+この場合は、スプライトを横に５倍、縦に２倍拡大する
+(Mapオブジェクト、Shapeオブジェクト共通)
+*/
+sprite.setPosition(100,45);
+/*
+この場合は、スプライトを(100,45)の地点に移動させる
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+*/
+sprite.getRand(10,100);
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+この場合は、10から100までのランダムな数を返す
+ */
+sprite.setImage("./path/to/image",32,32);
+/*
+スプライトを新たな32*32のスプライト画像に置き換えます
+（Mapオブジェクト共通）
+*/
+sprite.setImage("./path/to/image",32,32);
+/*
+スプライトが保有している、imageオブジェクトを返します
+*/
+sprite.getImage("./path/to/image");
+/*
+スプライトをもとのスプライトの切り取りサイズを保ったまま、新たな
+スプライト画像に置き換えます
+（Mapオブジェクト共通）
+*/
+sprite.setSpriteSize(32,32);
+/*
+スプライトの切り取りサイズを32*32に変更します
+*/
+sprite.visible = false;
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトを非表示にします
+*/
+sprite.alpha = 0.5;
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトの透明度を50%にします
+*/
+sprite.remove();
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+/*
+スプライトを削除します
+*/
+sprite.animate([0,1,2],5,100);
+/*
+スプライトを100フレーム間、5フレームで0番目、1番目、2番目、0番目
+という順に画像を切り替えていきます。
+*/
+sprite.moveTo(100,150,30);
+/*
+スプライトを30フレームで(100,150)の地点に移動させます。
+*/
+sprite.moveBy(30,40,50);
+/*
+スプライトを50フレームで現在の自分の位置から(30,40)離れた位置に移動させます
+*/
+sprite.rotateBy(Math.PI,30);
+/*
+スプライトを30フレームで現在の角度からプラス180度回転させます。
+*/
+sprite.scaleBy(2,3,40);
+/*
+スプライトを40フレームで現在の大きさから幅を2倍、高さを3倍に変更します
+*/
+sprite.and();
+/*
+このようにつかいます。
+sprite.moveTo(100,150,30).and().animate([0,1,2],5);
+(100,150)の地点に移動しつつ、スプライトをアニメーションさせる
+という意味になります。
+*/
+sprite.loop();
+/*
+このようにつかいます。
+sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
+まず、(50,50)離れた位置にスプライトを移動させて、そのあと
+(-50,-50)離れた位置にスプライトを移動させることを
+繰り返すといういみになります。
 */
 					</pre>
 					<h4>Group Function</h4>
@@ -793,8 +870,8 @@ console.log("your touching point is("+e.x+","+e.y+")");
 					<small><a href="http://www.tekepon.net/fsm/">I'm using the image at "First Seed Material"</a></small><br />
 					Suppose that you load the image width 16*16px devided by 30(vertical)*16(horizontal) like this<br />
 					<pre class="prettyprint linenums">
+Atlas();
 Atlas.main(function(){
-    Atlas("game");
     var game = new App();
     game.load("./images/map.png");
     var map = new Map("./images/map.png", 16, 16);
