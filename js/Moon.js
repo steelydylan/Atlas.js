@@ -105,12 +105,14 @@
         saveData:function(key){
             var data = JSON.stringify(this.data);
             localStorage.setItem(key,data);
+            return this;
         },
         loadData:function(key){
             var data = JSON.parse(localStorage.getItem(key));
             if(data){
                 this.data = data;
             }
+            return this;
         },
         getRand: function (a, b) {
             return ~~(Math.random() * (b - a + 1)) + a;
@@ -395,6 +397,7 @@
                 $("[data-id='"+this.id+"']").html(html);
             }
             this.updateBindingData();
+            return this;
         },
         updateBindingData:function(){
             var that = this;

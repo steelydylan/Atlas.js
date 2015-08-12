@@ -9,7 +9,19 @@ $(function(){
     var main = new Moon.View({
         templates:["main"],
         data:{
-            lang:lang
+            lang:lang,
+            mode:"setup"
+        },
+        method:{
+            changeMode:function(mode){
+                this.data.mode = mode;
+                this.saveData("Atlas");
+                this.update();
+            },
+            update:function(){
+                this.saveData("Atlas");
+                this.update();
+            }
         }
-    }).update();
+    }).loadData("Atlas").update();
 });

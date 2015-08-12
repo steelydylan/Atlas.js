@@ -1,124 +1,176 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-	<head>
-	<meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="Sat, 31 Aug 2002 17:35:42 GMT">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap-responsive.min.css">
-	<link rel="stylesheet" href="./fontawesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./prettify.css" />
-	<link rel="stylesheet" href="./index.css">
-	<title>Atlas.js</title>
-	<script type="text/javascript">
-	</script>
-	</head>
-    <body>    
-<div id="wrap">
-<div id="fb-root"></div>
-<script src="./facebook.js" type="text/javascript"></script>
-<!--top-->
-<div class="navbar navbar-static-top">
-    	<div class="navbar-inner">
-		<div class="header container-narrow">
-    	    <a type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-    	    <span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-    	    </a>    	    
-    	    <a class="brand" onclick="location.reload()">Atlas.js</a>
-    	    <div class="nav-collapse collapse">
-				<ul class="nav pull-right">
-                <li><a href="./">About</a></li>
-                <li class="active"><a href="#">Document</a></li>
-                <li><a href="http://natsupro.digi2.jp/anotuki/" target="_blank">Demo</a></li>
-                <li><a href="http://atlasjs.com" target="_blank">blog</a></li>
-	    		</ul>			
-    	    </div>
-			</div>	    			
-		</div>
-</div>
-<!--content-->
-<div class="container-narrow" id="Japanese">
-      <br />
-      <div class="row-fluid marketing">
-        <div class="span4">
-          <div class="well sidebar-nav-fixed">
-            <ul class="nav nav-tabs nav-stacked">
-                <li class="active"><a href="#first" data-toggle="tab">はじめに<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#second" data-toggle="tab">各種設定<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#third" data-toggle="tab">ループ処理、シーン登録<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#forth" data-toggle="tab">スプライト<i class="icon-chevron-right"></i></a></li>
-                <li><a href="#fifth" data-toggle="tab">テキスト、図形<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#sixth" data-toggle="tab">イベントリスナー<i class="icon-chevron-right"></i></a></li>
-                <li><a href="#seventh" data-toggle="tab">マップ<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#eighth" data-toggle="tab">クラス<i class="icon-chevron-right"></i></a></li>
-			</ul>
-			<div class="btn-group">
-                <button class="btn dropdown-toggle" data-toggle="dropdown">日本語<span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                  	<li><a href="#" onclick="Display('Japanese')">日本語</a></li>
-				  	<li><a href="#" onclick="Display('English')">English</a></li>
-                </ul>
-              </div><!-- /btn-group -->
-          </div>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Atlas.js</title>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script id="main" type="text/template">
+    <div class="container">
+      <!-- The justified navigation menu is meant for single line per list item.
+           Multiple lines will require custom code not provided by Bootstrap. -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Atlas.js</a>
         </div>
-        <div class="span8" id="content">
-        	<div class="tab-content">
-				<div class="active tab-pane" id="first">
-					<h3>はじめに</h3>
-					まずは下のボタンをクリックして、Atlas.jsをダウンロードしてください。
-					<br>
-					<a href = "javascript:void(window.open('https://raw.github.com/steelydylan/Atlas.js/master/Atlas.js', 'loginwindow', 'width=500, height=300, menubar=no, toolbar=no, scrollbars=yes'));" class="btn btn-primary">
-					    <i class="icon-download-alt"></i> DownLoad</a>
-					<br>
-					ダウンロードしたAtlas.jsをそのライブラリーを利用する、htmlファイルと<br>
-					同じ階層にし、下記のようにAtlas.jsをインクルードします。
-					<pre class="prettyprint linenums">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li class="active"><a href="/document.html">Document</a></li>
+            <li><a href="http://horicdesign.com"><!-- BEGIN lang:touch#en -->Author's blog<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->著者のブログ<!-- END lang:touch#ja --></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="rows">
+      <div class="col-lg-3 col-md-3">
+        <div class="list-group">
+          <a href="#setup" data-action="changeMode(setup)" class="list-group-item<!-- BEGIN mode:touch#setup --> active<!-- END mode:touch#setup -->"><!-- BEGIN lang:touch#en -->Setup<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->初期設定<!-- END lang:touch#ja --></a>
+          <a href="#setting" data-action="changeMode(setting)" class="list-group-item<!-- BEGIN mode:touch#setting --> active<!-- END mode:touch#setting -->"><!-- BEGIN lang:touch#en -->Settings<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->各種設定<!-- END lang:touch#ja --></a>
+          <a href="#scene" data-action="changeMode(scene)" class="list-group-item<!-- BEGIN mode:touch#scene --> active<!-- END mode:touch#scene -->"><!-- BEGIN lang:touch#en -->Scene Registration and Loop<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->シーン登録とループ<!-- END lang:touch#ja --></a>
+          <a href="#sprite" data-action="changeMode(sprite)" class="list-group-item<!-- BEGIN mode:touch#sprite --> active<!-- END mode:touch#sprite -->"><!-- BEGIN lang:touch#en -->Sprite and Map<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->スプライトとマップ<!-- END lang:touch#ja --></a>
+          <a href="#shape" data-action="changeMode(shape)" class="list-group-item<!-- BEGIN mode:touch#shape --> active<!-- END mode:touch#shape -->"><!-- BEGIN lang:touch#en -->Shape and Text<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->図形とテキスト<!-- END lang:touch#ja --></a>
+          <a href="#sound" data-action="changeMode(sound)" class="list-group-item<!-- BEGIN mode:touch#sound --> active<!-- END mode:touch#sound -->"><!-- BEGIN lang:touch#en -->Sound<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->音<!-- END lang:touch#ja --></a>
+          <a href="#event" data-action="changeMode(event)" class="list-group-item<!-- BEGIN mode:touch#event --> active<!-- END mode:touch#event -->"><!-- BEGIN lang:touch#en -->Eventlistener<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->イベントリスナー<!-- END lang:touch#ja --></a>
+          <a href="#class" data-action="changeMode(class)" class="list-group-item<!-- BEGIN mode:touch#class --> active<!-- END mode:touch#class -->"><!-- BEGIN lang:touch#en -->Class<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->クラス<!-- END lang:touch#ja --></a>
+        </div>
+        <!-- BEGIN lang:touch#en -->
+        <p><a href="/docs/" class="btn btn-primary">Go to API docs</a></p>
+        <!-- END lang:touch#en -->
+        <!-- BEGIN lang:touch#ja -->
+        <p><a href="/docs/" class="btn btn-primary">API ドキュメントへ</a></p>
+        <!-- END lang:touch#ja -->
+        <p>
+        <select data-bind="lang" data-action="update()">
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+        </select>
+        </p>
+      </div>
+      <div class="col-lg-9 col-md-9">
+        <!-- BEGIN mode:touch#setup -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Setup</h2>
+          <p>First,download Atlas.js by clicking the below button</p>
+          <p><a class="btn btn-lg btn-primary" href="https://github.com/steelydylan/Atlas.js/archive/master.zip">Download</a></p>
+          <p>After Setting Atlas.js to the same hierarchy with your HTML files<br>
+          you can use Atlas.js features as below.</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>初期設定</h2>
+          <p>まずは下のボタンをクリックして、Atlas.jsをダウンロードしてください。</p>
+          <p><a class="btn btn-lg btn-primary" href="https://github.com/steelydylan/Atlas.js/archive/master.zip">ダウンロード</a></p>
+          <p>ダウンロードしたAtlas.jsをそのライブラリーを利用する、htmlファイルと<br>
+          同じ階層にし、下記のようにAtlas.jsをインクルードします。</p>
+          <!-- END lang:touch#ja -->
+          <pre class="prettyprint linenums">
 &lt;html&gt;
-&lt;head&gt;
-&lt;script type="text/javascript" src="Atlas.js"&gt;&lt;/script&gt;
-&lt;/head&gt;
+  &lt;head&gt;
+    &lt;script type="text/javascript" src="Atlas.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+          <!-- BEGIN lang:touch#en -->
+
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <p>つぎに、body要素の中にゲーム画面にしたいcanvasをid付きで下記のように記述します。</p>
+          <!-- END lang:touch#ja -->
+          <!-- BEGIN lang:touch#en -->
+          <p>Next, You have to include the canvas element with its id to the body element as following.</p>
+          <!-- END lang:touch#en -->
+          <pre class="prettyprint linenums">
 &lt;body&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-					</pre>
-					つぎに、body要素の中にゲーム画面にしたいcanvasをid付きで下記のように記述します。
-					<pre class="prettyprint linenums">
-&lt;body&gt;
-&lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
-&lt;/body&gt;
-					</pre>
-					なお、canvasとは、何か知りたい人は下記のサイトを訪問してみてください。
-					<a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a>
-					<br>
-					最後に,body要素の中にJavaScriptの記述を書いて、<br>
-					自分のオリジナルゲームを作りましょう<br>
-					<pre class="prettyprint linenums">
+  &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
+&lt;/body&gt;</pre>
+          <!-- BEGIN lang:touch#en -->
+          <p>Well,if you want to know about Canvas element,You may want to visit the following URL.<br/><a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a><br/>Finaly,Writing down the JavaScript codes in the body element, You can make your own games</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          なお、canvasとは、何か知りたい人は下記のサイトを訪問してみてください。
+          <a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a><br>
+          最後に,body要素の中にJavaScriptの記述を書いて、自分のオリジナルゲームを作りましょう
+          <!-- END lang:touch#ja -->
+          <pre class="prettyprint linenums">
 &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
 &lt;script&gt;
-&lt;!--ここに処理をかく--&gt;
+&lt;!--You can write the code here--&gt;
 &lt;/script&gt;
-&lt;/body&gt;
-					</pre>
-					そして、canvas要素のidが上のように、Atlasだったとします。<br />
-					そのとき、
-					<pre class="prettyprint linenums">
+&lt;/body&gt;</pre>
+          <!-- BEGIN lang:touch#ja -->
+          そして、canvas要素のidが上のように、Atlasだったとします。<br />
+          そのとき、ある変数にAppをインスタンスする場合、下のように引数として
+          canvasのid名である、Atlasを指定します。
+          こうすることで、このライブラリが提供する様々な機能を変数gameを
+          通して使うことができるようになります。
+          <!-- END lang:touch#ja -->
+          <!-- BEGIN lang:touch#en -->
+          And, Suppose that the id of the canvas element is "Atlas"<br />
+          Then, You have to substitute "Atlas" to the 'App' constractor.
+          By doing this,you can use the variety of methods provided by Atlas.js
+          <!-- END lang:touch#en -->
+          <pre class="prettyprint linenums">
 Atlas();
-var game = new App('Atlas');
-					</pre>
-					ある変数にAppをインスタンスする場合、うえのように、引数として、
-					canvasのid名である、Atlasを指定します。
-					こうすることで、このライブラリが提供する様々な機能を変数gameを
-					通して使うことができるようになります。
-					<br />
-				</div><!--end first-->
-				<div class="tab-pane" id="second">
-					<h3>各種設定</h3>
-					ゲームをループさせる前の初期設定のgameのメソッドを紹介したいと思います
-					<pre class="prettyprint linenums">
+var game = new App('Atlas');</pre>
+        <!-- END mode:touch#setup -->
+        <!-- BEGIN mode:touch#setting -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Settings</h2>
+          <p>I'd like to introduce you the initial settings before the game loop.</p>
+          <pre class="prettyprint linenums">
+game.load("hero.png","bgm.mp3");
+/*
+load the assets you want to use in your games
+*/
+game.load(["hero.png","hero"],["bgm.mp3","bgm"]);
+/*
+you can also name each assets
+*/
+game.centerize();
+/*
+centerize the game screen on the browser
+*/
+game.setQuality(width,height);
+/*
+set the horizontal and vertical resolution of the game
+*/
+game.setSize(width,height);
+/*
+set the size of the game screen.
+*/
+game.fps = 30;
+/*
+set the fps of the game
+*/
+game.setColor(color);
+/*
+set the background color of the game
+*/
+game.setImage(./path/to/image);
+/*
+set the background image of the game
+*/
+game.addChild(child);
+/*
+Add the instances of the Sprite class, Shape class, Group class and Text class to the game
+By doing this, you can draw the each instances to the game screen.
+*/</pre>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>各種設定</h2>
+          <p>ゲームをループさせる前の初期設定のgameのメソッドを紹介します</p>
+          <pre class="prettyprint linenums">
 game.load("hero.png","bgm.mp3");
 /*
 ゲームで使用する素材をロードします
@@ -155,38 +207,26 @@ game.addChild(child);
 /*
 SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタンスをゲームに追加します。
 これをしなければそれぞれのインスタンスは描画されません。
-*/
-					</pre>
-				</div>
-				<div class="tab-pane" id="third">
-					<h3>ループ処理、シーン登録</h3>
-					<p>次にゲームの初期処理、ロード中処理、ループ処理について説明したいと思います。</p>
-					<p>ゲームのループ処理</p>
-					<pre class="prettyprint linenums">
-game.enterFrame = function(){/*処理*/};
-					</pre>
-					<p>Atlas.jsでは次のようにゲームをスタートさせます</p>
-					<pre class="prettyprint linenums">
-Atlas();
-Atlas.main(function(){
-    var game = new App('Atlas');
-    game.load("chara.png");
-    var sprite = new Sprite("chara.png",32,32);
-    game.addChild(sprite);
-    game.enterFrame = function(){sprite.x++;};
-    game.start();//これを書かないとゲームが動かない
-});
-					</pre>
-					<h4>シーン登録</h4>
-					<p>Atlas.jsでは次のようにローディングシーンを設定したり、シーンを切り替えたりすることができます</p>
-					<pre class="prettyprint linenums">
+*/</pre>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#setting -->
+        <!-- BEGIN mode:touch#scene -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Scene Registration and Loop</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>シーン登録とループ</h2>
+          <h3>シーン登録</h3>
+          <p>Atlas.jsでは次のようにローディングシーンを設定したり、シーンを切り替えたりすることができます</p>
+          <pre class="prettyprint linenums">
 /*ローディングシーンの設定*/
 var scene = new Scene();
 scene.setImage("image");
 var text = new Text("ローディングシーンだよ","white",30);
 text.setPosition(50,50);
 scene.addChild(text);
-game.loadingScene(scene);	
+game.loadingScene(scene); 
 
 /*シーンの切り替え*/
 var scene = new Scene();
@@ -194,775 +234,65 @@ scene.setColor("blue");
 var sprite = new Sprite("image.png",32,32);
 sprite.enterFrame = function(){this.x++};
 scene.addChild(sprite);
-game.pushScene(scene);				
-					</pre>
-				</div>
-				<div class="tab-pane" id="forth">
-					<h3>スプライト</h3>
-					<p>スプライトとは画面内で画像を操作できるオブジェクトのことです</p>
-					<img src ="./image/chara2.png" align="right"/>
-					右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合<br />
-					素材　<a href="http://usui.moo.jp/rpg_tukuru.html">シアンのゆりかご</a><br clear="right"/>
-					<br />
-					<pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-var chara = new Sprite("./images/chara2.png",32,32);
-					</pre>
-					<p>また、次のように画像にあらかじめ名前を付けてスプライトを生成することもできます</p>
-					<pre class="prettyprint linenums">
-game.load("./images/chara2.png");
-game.naming(["./images/chara2.png","chara2"]);
-var chara = new Sprite("chara2",32,32);
-					</pre>
-					<p>スプライトは初期値として以下のようなプロパティが設定されています</p>
-					<pre class="prettyprint linenums">
-sprite.x = 0;//x座標
-sprite.y = 0;//y座標
-sprite.rot = 0;//回転量
-sprite.frame = 0;//frame番号
-					</pre>
-					<img src="./image/sprite.png" align="right"/><br />
-					右図<br />
-					スプライト番号と、画像の関係<br />
-					たとえば、sprite.frame = 3とすれば描画の際に"3"と表示されます。
-					<br clear="right"/>
-					<br />
-					そして、以下のようなメソッドが設定されています
-					<pre class="prettyprint linenums">
-sprite.within(anotherSprite,range);
-/*
-他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
-true,範囲外であればfalseを返す。
-(Shapeオブジェクト共通)
-*/
-sprite.intersect(x,y);
-/*
-スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
-(Shapeオブジェクト共通)
-*/
-sprite.scale(5,2);
-/*
-この場合は、スプライトを横に５倍、縦に２倍拡大する
-(Mapオブジェクト、Shapeオブジェクト共通)
-*/
-sprite.setPosition(100,45);
-/*
-この場合は、スプライトを(100,45)の地点に移動させる
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-*/
-sprite.getRand(10,100);
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-この場合は、10から100までのランダムな数を返す
- */
-sprite.setImage("./path/to/image",32,32);
-/*
-スプライトを新たな32*32のスプライト画像に置き換えます
-（Mapオブジェクト共通）
-*/
-sprite.setImage("./path/to/image",32,32);
-/*
-スプライトが保有している、imageオブジェクトを返します
-*/
-sprite.getImage("./path/to/image");
-/*
-スプライトをもとのスプライトの切り取りサイズを保ったまま、新たな
-スプライト画像に置き換えます
-（Mapオブジェクト共通）
-*/
-sprite.setSpriteSize(32,32);
-/*
-スプライトの切り取りサイズを32*32に変更します
-*/
-sprite.visible = false;
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトを非表示にします
-*/
-sprite.alpha = 0.5;
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトの透明度を50%にします
-*/
-sprite.remove();
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトを削除します
-*/
-sprite.animate([0,1,2],5,100);
-/*
-スプライトを100フレーム間、5フレームで0番目、1番目、2番目、0番目
-という順に画像を切り替えていきます。
-*/
-sprite.moveTo(100,150,30);
-/*
-スプライトを30フレームで(100,150)の地点に移動させます。
-*/
-sprite.moveBy(30,40,50);
-/*
-スプライトを50フレームで現在の自分の位置から(30,40)離れた位置に移動させます
-*/
-sprite.rotateBy(Math.PI,30);
-/*
-スプライトを30フレームで現在の角度からプラス180度回転させます。
-*/
-sprite.scaleBy(2,3,40);
-/*
-スプライトを40フレームで現在の大きさから幅を2倍、高さを3倍に変更します
-*/
-sprite.and();
-/*
-このようにつかいます。
-sprite.moveTo(100,150,30).animate([0,1,2],5);
-(100,150)の地点に移動しつつ、スプライトをアニメーションさせる
-という意味になります。
-*/
-sprite.loop();
-/*
-このようにつかいます。
-sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
-まず、(50,50)離れた位置にスプライトを移動させて、そのあと
-(-50,-50)離れた位置にスプライトを移動させることを
-繰り返すといういみになります。
-*/
-					</pre>
-				<h4>サウンド機能　<small>各クラス共通</small></h4>
-				<pre class="prettyprint linenums">
-sprite.getSound("./path/to/sound");
-sprite.soundClonePlay();/*多重再生の場合に使用*/
-sprite.soundLoopPlay();/*ループ再生の場合に使用*/
-sprite.soundReplay();/*最初から再生する場合に使用*/
-sprite.soundStop();/*サウンドを停止したい時使用*/
-sprite.soundPlay();/*再生に使用*/
-sprite.soundPause();/*サウンドの一時停止に使用*/
-sprite.soundGetCount();/*サウンドの現在の再生時間の取得*/
-sprite.soundSetCount();/*サウンドの再生時間の指定*/
-sprite.soundGetVolume();/*ボリュームの取得*/
-sprite.soundSetVolume();/*ボリュームの設定*/
-sprite.soundGetAlltime();/*サウンドの全再生時間の取得*/
-sprite.soundIsPlaying();/*サウンドが現在流れているかを取得*/
-				</pre>
-				</div>
-				<div class="tab-pane" id="fifth">
-					<h3>テキスト、図形</h3>
-					<h4>テキスト</h4>
-					<p>画面内にテキストを表示するためのTextクラスが用意されています</p>
-					<p>引数は左から、表示する文字、色、サイズ、文字種です</p>
-					<p>色、サイズ、文字種を指定しない場合デフォルトで</p>
-					<p><strong>白,10pt,Meiryoとなります</strong></p>
-					<p>使用例</p>
-					<pre class="prettyprint linenums">
-var text = new Text("われわれは宇宙人だ","red",20,"Meiryo");
-					</pre>
-					<p>また、次のように&lt;br&gt;を文字列に挟めば途中で改行させることもできます</p>
-					<pre class="prettyprint linenums">
-var text = new Text("われわれは宇宙人だ&lt;br&gt;よろしくね","red",20,"Meiryo");
-					</pre>
-					Textクラスのメソッド及び、プロパティ
-					<pre class="prettyprint linenums">
-text.setSize(15);
-//テキストのサイズを変更します
-text.setFont("Meiryo");
-//テキストの文字種を変更します
-					</pre>
-					<h4>図形</h4>
-					<p>Atlasでは円と四角形、二つの図形を描画したり動かしたりできます</p>
-					<p>使用例</p>
-					<pre class="prettyprint linenums">
-var circle = new Shape.Circle("red",15);
-/*円の場合の引数、色、半径*/
-var box = new Shape.Box("white",20,10);
-/*四角形の場合の引数、色、横幅、縦幅*/
-					</pre>				
-				</div>
-				<div class="tab-pane" id="sixth">
-					<h3>イベントリスナー</h3>
-					<p>Atlas.jsではGroupオブジェクト以外のすべてのオブジェクトで</p>
-					<p>イベントリスナーが扱えます</p>
-					それぞれ、<strong><br />touchStart<br />touchMove<br />touchEnd<br/>keyDown<br />keyUp<br/></strong>
-					です。<br />
-					<p>touchStartはゲーム画面ないがクリック、及び、タッチされた時に呼び出される関数です。</p>
-					<p>touchMoveはゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときに呼び出される関数です</p>
-					<p>touchEndはゲーム画面内でクリックが終了したとき、及び指が離れたとき呼び出される関数です。</p>
-					<p>keyDownはキーが押されたときに呼び出される関数です。</p>
-					<p>keyUpはキーが離されたときに呼び出される関数です</p>
-					<h5>例)Heroオブジェクトをタッチした位置に移動させる</h5>
-					<pre class="prettyprint linenums">
-var Hero = Atlas.createClass(Atlas.Sprite,{
-     initialize:function(){
-        this.inherit("hero",64,64);
-        this.x = 250;
-        this.y = 250;
-     },
-     touchStart:function(pos){
-         this.setPosition(pos.x,pos.y);
-     }
-});
-</pre>
-					<h5>例)Heroオブジェクトを十時キーを押した方向に動かす</h5>
-					<pre class="prettyprint linenums">
-var Hero = Atlas.createClass(Atlas.Sprite,{
-     initialize:function(){
-        this.inherit("hero",64,64);
-        this.x = 250;
-        this.y = 250;
-     },
-     keyDown:function(key){
-         if(key.down)
-             this.y+=5;
-         if(key.right)
-             this.x+=5;
-         if(key.up)
-             this.y-=5;
-         if(key.left)
-             this.x-=5;
-     }
-});
-					</pre>					
-				</div>
-				<div class="tab-pane" id="seventh">
-					<h3>マップ</h3>
-					Atlas.jsのマップ機能を使ってみましょう<br />
-					<h4>例</h4>
-					<img src="./image/map.png" /><br clear="right"/>					
-					<small><a href="http://www.tekepon.net/fsm/">First Seed Materialさん 改造マップチップセットの素材です</a></small><br />
-					上のように一つのスプライトが16(横）*16(縦）pxの30*16等分のマップを例にとります。
-					<pre class="prettyprint linenums">
-Atlas.main(function(){
-    Atlas();
-    var game = new App("game");
-    var map = new Map("./images/map.png", 16, 16);
-    game.setSize(256, 256);
-    game.setQuality(256, 256);
-    map.drawData = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ];
-    game.addChild(map);
-    game.start();
-});
-					</pre>
-					<p>また、次のようにマップにコリジョンデータを設定し、</p>
-					<p>intersect関数で、ある指定された座標がマップの1の位置にあるか0の位置にあるかで</p>
-					<p>それぞれ、true,falseを返す仕組みも提供されています</p>
-					<pre class="prettyprint linenums">
-Atlas.main(function(){
-    Atlas();
-    var game = new App("game");
-    var map = new Map("./images/map.png", 16, 16);
-    game.setSize(256, 256);
-    game.setQuality(256, 256);
-    map.drawData = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ];
-    map.hitData =  [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        ];
-    game.addChild(map);
-    map.touchStart = function(pos){
-        if(map.intersect(pos.x,pos.y))
-            alert("当たっています");
-    };
-    game.start();
-});
-					</pre>					
-				</div>
-				<div class="tab-pane" id="eighth">
-					<h3>クラス</h3>
-					<p>さらに、Atlas.jsにはクラスを継承し、サブクラスを作るメソッドが用意されています</p>
-					<p>Atlas.createClassの引数、（継承したいクラス、追加したいメソッドの連想配列）</p>
-					<p>この際に、連想配列の中にサブクラスのコンストラクタとなる、
-					    initializeをメソッドとして加える必要があります</p>
-					<h4>例<small>(Enemyクラスの生成)</small></h4>
-					<pre class="prettyprint linenums">
-(function(){
-Atlas.Enemy = Atlas.createClass(Atlas.Sprite,{
-    initialize : function(image,numX,numY){
-		this.inherit(image,numX,numY);
-		this.sx = this.getRand(5,10);
-		this.sy = this.getRand(5,10);
-		this.setPosition(0,this.getRand(100,300));
-	},
-	enterFrame : function(){
-		this.x += this.sx;
-		this.y += this.sy;			
-		if(this.x > 500)
-		    this.remove();
-	}
-});
-/*
-this.inheritで自分のスーパークラス（この場合はAtlas.Sprite）の
-コンストラクタを呼び出すことが出来ます。
-*/
-});
-window.onload = function(){
-    Atlas();
-    var game = new App("game");
-    game.load("teki2.png");
-    var enemy = new Enemy("teki2.png",100,95);
-    game.addChild(enemy);
-    game.start();
-};
-					</pre>					
-				</div>
-			</div>
-        </div>
-      </div>
-      <br />
- </div> 
-<!-- /content -->
-<div class="container-narrow" id="English">
-      <br />
-      <div class="row-fluid marketing">
-        <div class="span4">
-          <div class="well sidebar-nav-fixed">
-            <ul class="nav nav-tabs nav-stacked" id="en_tab">
-                <li class="active"><a href="#one" data-toggle="tab">First<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#two" data-toggle="tab">Settings<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#three" data-toggle="tab">Initialize,Loop<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#four" data-toggle="tab">Sprite<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#five" data-toggle="tab">EventListener<i class="icon-chevron-right"></i></a></li>
-                <li><a href="#six" data-toggle="tab">Map<i class="icon-chevron-right"></i></a></li>
-			    <li><a href="#seven" data-toggle="tab">Other<i class="icon-chevron-right"></i></a></li>
-			</ul>
-             <div class="btn-group" id="langageChange">
-                <button class="btn dropdown-toggle" data-toggle="dropdown">English<span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                  	<li><a href="#" onclick="Display('Japanese')">日本語</a></li>
-				  	<li><a href="#" onclick="Display('English')">English</a></li>
-                </ul>
-              </div><!-- /btn-group -->
-          </div>
-        </div>
-        <div class="span8">
-        	<div class="tab-content" id="en_tab">
-				<div class="active tab-pane" id="one">
-					<h3>First</h3>
-					Please download Atlas.js by clicking the beneath button.
-					<br>
-					<a href = "javascript:void(window.open('https://raw.github.com/steelydylan/Atlas.js/master/Atlas.js', 'loginwindow', 'width=500, height=300, menubar=no, toolbar=no, scrollbars=yes'));" class="btn btn-primary">
-					    <i class="icon-download-alt"></i> DownLoad</a>
-					<br>
-					After Setting Atlas.js to the same hierarchy with your HTML files<br>
-					you can import Atlas.js as below.
-					<pre class="prettyprint linenums">
-&lt;html&gt;
-&lt;head&gt;
-&lt;script type="text/javascript" src="Atlas.js"&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-					</pre>
-Next,you have to include the canvas element with its id to the body element as following.
-					<pre class="prettyprint linenums">
-&lt;body&gt;
-&lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
-&lt;/body&gt;
-					</pre>
-					Well,if you want to know about Canvas element,please visit the following URL.
-					<a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a>
-					<br>
-					Finaly,Writing down the JavaScript codes in the body element,<br>
-					You can make your own games<br>
-					<pre class="prettyprint linenums">
-&lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
-&lt;script&gt;
-&lt;!--You can write the code here--&gt;
-&lt;/script&gt;
-&lt;/body&gt;
-					</pre>
-					And、Suppose that the id of the canvas element is "Atlas"<br />
-					Then
-					<pre class="prettyprint linenums">
-Atlas();
-var game = new App("Atlas");
-					</pre>
-you have to substitute "Atlas" to the 'App' constractor.
-By doing this,you can use the variety of methods provided by Atlas.js
-					<br />				
-				</div>
-				<div class="tab-pane" id="two">
-					<h3>Settings</h3>
-					I'd like to introduce you the initial settings before the game loop.
-					<pre class="prettyprint linenums">
-var game = new App();
-
-game.load("hero.png","bgm.mp3");
-/*
-load the assets you use in your apps
-    */
-game.naming(["hero.png","hero"],["bgm.mp3","bgm"]);
-/*
-name the assets you loaded
-    */
-game.centerize();
-/*
-put the game screen at the center of the browser screen.
-*/
-game.changeQuality(width,height);
-/*
-set the horizontal and vertical resolution of the game.
-*/
-game.changeSize(width,height);
-/*
-set the size of the screen.
-*/
-game.keySet(buttonA,buttonB);
-/*
-bind the keys
-buttonA to game.key.a
-buttonB to game.key.b
-
-if the buttonA is pushed
-game.key.a == true
-if the buttonA is released
-game.key.a == false
-*/
-game.fps = 30;
-/*
-set the fps of the game
-*/
-					</pre>
-				</div>
-				<div class="tab-pane" id="three">
-					<h3>Loop and Scene Settings</h3>
-					<p>Next I'll show you how to set loop and loading Scene to your game。</p>
-					<p>Loop Setting of the game</p>
-					<pre class="prettyprint linenums">
-game.enterFrame = function(){/*some code here*/};
-					</pre>
-					<p>You can start your game like below</p>
-					<pre class="prettyprint linenums">
-Atlas();
-Atlas.main(function(){
-    var game = new App('Atlas');
-    game.load("chara.png");
-    var sprite = new Sprite("chara.png",32,32);
-    game.addChild(sprite);
-    game.enterFrame = function(){sprite.x++;};
-    game.start();
-});
-					</pre>
-					<h4>Scene settings</h4>
-					<p>You can set loading Scene and switch scenes like below</p>
-					<pre class="prettyprint linenums">
-/*ローディングシーンの設定*/
-var scene = new Scene();
-scene.setImage("image");
-var text = new Text("ローディングシーンだよ","white",30);
-text.setPosition(50,50);
-scene.addChild(text);
-game.loadingScene(scene);	
-
-/*シーンの切り替え*/
-var scene = new Scene();
-scene.setColor("blue");
-var sprite = new Sprite("image.png",32,32);
-sprite.enterFrame = function(){this.x++};
-scene.addChild(sprite);
-game.pushScene(scene);				
-					</pre>
-				</div>
-				<div class="tab-pane" id="four">
-					<h3>Sprite</h3>
-					<pre class="prettyprint linenums">
-var sprite = new Sprite("./images/chara2.png",32,32);</pre>
-					A sprite initialized like this has following properties as initial value.
-					<pre class="prettyprint linenums">
-sprite.x = 0;//x point
-sprite.y = 0;//y point
-sprite.rot = 0;//theta
-sprite.sx = 1;//enlargement ratio of x
-sprite.sy = 1;//enlargement ratio of y
-sprite.frame = 0;//a number of frame.</pre>
-					<img src="./image/sprite.png" align="right"/><br />
-					see the image on the right<br />
-					Relation between the images and frames<br />
-					If you set the sprite frame as 3,"3" will be drawn.
-					<br clear="right"/>
-					<br />
-					And you can use following method via sprites.
-					<pre class="prettyprint linenums">
-sprite.within(anotherSprite,range);
-/*
-他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
-true,範囲外であればfalseを返す。
-(Shapeオブジェクト共通)
-*/
-sprite.intersect(x,y);
-/*
-スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
-(Shapeオブジェクト共通)
-*/
-sprite.scale(5,2);
-/*
-この場合は、スプライトを横に５倍、縦に２倍拡大する
-(Mapオブジェクト、Shapeオブジェクト共通)
-*/
-sprite.setPosition(100,45);
-/*
-この場合は、スプライトを(100,45)の地点に移動させる
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-*/
-sprite.getRand(10,100);
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-この場合は、10から100までのランダムな数を返す
- */
-sprite.setImage("./path/to/image",32,32);
-/*
-スプライトを新たな32*32のスプライト画像に置き換えます
-（Mapオブジェクト共通）
-*/
-sprite.setImage("./path/to/image",32,32);
-/*
-スプライトが保有している、imageオブジェクトを返します
-*/
-sprite.getImage("./path/to/image");
-/*
-スプライトをもとのスプライトの切り取りサイズを保ったまま、新たな
-スプライト画像に置き換えます
-（Mapオブジェクト共通）
-*/
-sprite.setSpriteSize(32,32);
-/*
-スプライトの切り取りサイズを32*32に変更します
-*/
-sprite.visible = false;
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトを非表示にします
-*/
-sprite.alpha = 0.5;
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトの透明度を50%にします
-*/
-sprite.remove();
-(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
-/*
-スプライトを削除します
-*/
-sprite.animate([0,1,2],5,100);
-/*
-スプライトを100フレーム間、5フレームで0番目、1番目、2番目、0番目
-という順に画像を切り替えていきます。
-*/
-sprite.moveTo(100,150,30);
-/*
-スプライトを30フレームで(100,150)の地点に移動させます。
-*/
-sprite.moveBy(30,40,50);
-/*
-スプライトを50フレームで現在の自分の位置から(30,40)離れた位置に移動させます
-*/
-sprite.rotateBy(Math.PI,30);
-/*
-スプライトを30フレームで現在の角度からプラス180度回転させます。
-*/
-sprite.scaleBy(2,3,40);
-/*
-スプライトを40フレームで現在の大きさから幅を2倍、高さを3倍に変更します
-*/
-sprite.and();
-/*
-このようにつかいます。
-sprite.moveTo(100,150,30).and().animate([0,1,2],5);
-(100,150)の地点に移動しつつ、スプライトをアニメーションさせる
-という意味になります。
-*/
-sprite.loop();
-/*
-このようにつかいます。
-sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
-まず、(50,50)離れた位置にスプライトを移動させて、そのあと
-(-50,-50)離れた位置にスプライトを移動させることを
-繰り返すといういみになります。
-*/
-					</pre>
-					<h4>Group Function</h4>
-					<p>you can manipulate all of shape objects and tile objects via Group()</p>
-					<p>For your reference,Group is a child Class of Array</p>
-					<pre class="prettyprint linenums">
-//generate group object
-var enemies = new Group();
-//add object to group
-var enemy = new Sprite("enemy",32,32);
-enemies.add(enemy);
-//manipulate all added object
-enemies.move(x,y);
-/*
-in this moment,enemies_group execute each method "enemies[i].move(x,y)"
-of each added object in order. 
-in this case ,I substitute x and y to the enemies.move
-but you can substitutes parameters as many as you want
-*/
-//remove the number i object
-enemies[i].remove = true;
-					</pre>				
-				</div>
-				<div class="tab-pane" id="five">
-					<h3>EventListener</h3>
-					Atlas.js has the 3 methods which allows you to register following Eventlisters.<br />
-					Like,<br />game.touchStart<br />game.touchMove<br />game.touchEnd<br />
-					game.touchStart is the function, which is called when you start touching the screen<br />
-					game.touchMove is the function, which is called when you are moving the carsor or fingers on the screen<br />
-					game.touchEnd is the function, which is called when you finished touching the screen.
-					<pre class="prettyprint linenums">
-game.touchStart(function(e){
-console.log("your touching point is("+e.x+","+e.y+")");
-});
-					</pre>
-					Like above you can get the touched point<br />
-					via game.getPosition(e)				
-				</div>
-				<div class="tab-pane" id="six">
-					<h3>Map</h3>
-					Let's use the Mapping function of Atlas.js<br />
-					<h4>例</h4>
-					<img src="./image/map.png" /><br clear="right"/>
-					
-					<small><a href="http://www.tekepon.net/fsm/">I'm using the image at "First Seed Material"</a></small><br />
-					Suppose that you load the image width 16*16px devided by 30(vertical)*16(horizontal) like this<br />
-					<pre class="prettyprint linenums">
-Atlas();
-Atlas.main(function(){
-    var game = new App();
-    game.load("./images/map.png");
-    var map = new Map("./images/map.png", 16, 16);
-    game.setSize(256, 256);
-    game.setQuality(256, 256);
-    map.drawData = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
-      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-     ];
-    game.addChild(map);
-    game.start();
-});
-					</pre>				
-				</div>
-				<div class="tab-pane" id="seven">
-					<h3>Others</h3>
-					<p>in Addition,you can override the Atlas's Classes and create your new Classes</p>
-					<h4>Example<small>(Creating Enemy Class)</small></h4>
-					<pre class="prettyprint linenums">
-(function(){
-    Atlas.Enemy = Atlas.createClass(Atlas.Sprite,{
-	    initialize : function(image,numX,numY){
-		    this.inherit(image,numX,numY);
-		    this.sx = this.getRand(5,10);
-			this.sy = this.getRand(5,10);
-			this.setPosition(0,this.getRand(100,300));
-		},
-		move : function(){
-		    this.drawGraph();
-		    this.x += this.sx;
-			this.y += this.sy;			
-			if(this.x > 500)
-			    this.remove = true;
-		}
-	});
-});
-Atlas.main(function(){
-    Atlas("game");
-    var game = new App();
-    var enemy = new Enemy("teki2.png",100,95);
-    game.enterFrame = function(){
-        enemy.move();
-    };
-    game.start();
-});
-					</pre>
-				</div>
-        	</div>
-        </div>
-      </div>
-      <br />
- </div> 
-<!-- /content -->
-<div id="push"></div>
-</div><!--wrap-->
-    <div class="navbar navbar-static-bottom" id="footer">
-      <div class="container-narrow">
-        <div class="row-fluid">
-        <div class="span8">
-        <p>Designed and built with all the love in the world by <a href="http://twitter.com/steelydylan" target="_blank">@steelydylan</a></p>
-        <p>Code licensed under MIT Licence</p>
-        </div>
-        <div class="span4">
-            <a href="http://twitter.com/steelydylan"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
-            <a href="http://www.facebook.com/Atlasjs"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
-            <a href="https://github.com/steelydylan"><i class="icon-github icon-2x"></i></a>
-        </div>
+game.pushScene(scene);</pre>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#scene -->
+        <!-- BEGIN mode:touch#sprite -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Sprite and Map</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>スプライトとマップ</h2>
+          <p>まだ記事を書いている途中です</p>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#sprite -->
+        <!-- BEGIN mode:touch#shape -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Shape and Text</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>図形とテキスト</h2>
+          <p>まだ記事を書いている途中です</p>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#shape -->
+        <!-- BEGIN mode:touch#sound -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Sound</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>音</h2>
+          <p>まだ記事を書いている途中です</p>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#sound -->
+        <!-- BEGIN mode:touch#event -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Event Listener</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>イベントリスナー</h2>
+          <p>まだ記事を書いている途中です</p>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#event -->
+        <!-- BEGIN mode:touch#class -->
+          <!-- BEGIN lang:touch#en -->
+          <h2>Class</h2>
+          <p>Still Writing ...</p>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h2>クラス</h2>
+          <p>まだ記事を書いている途中です</p>
+          <!-- END lang:touch#ja -->
+        <!-- END mode:touch#class -->
       </div>
     </div>
-    <script src="./jQuery.js"></script>
-    <script src="./prettify.js"></script>
-    <script src="./bootstrap/js/bootstrap.min.js"></script>
-    <script src="./multilingal.js"></script>
-    <script>
-     $(function(){
-     prettyPrint();     
-     });
-    </script>
-    </body>
+  </script>
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="js/jquery.i18n.properties.js"></script>
+  <script src="js/Moon.js"></script>
+  <script src="js/main.js"></script>
+</body>
 </html>
