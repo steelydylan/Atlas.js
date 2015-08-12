@@ -214,7 +214,39 @@ SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタ
         <!-- BEGIN mode:touch#scene -->
           <!-- BEGIN lang:touch#en -->
           <h2>Scene Registration and Loop</h2>
-          <p>Still Writing ...</p>
+          <h3>Scene Registration</h3>
+          <p>You can set loading Scene and switch scenes like below</p>
+          <pre><code class="language-javascript">
+/*Setting of the loading scene*/
+var scene = new Scene();
+scene.setImage("image");
+var text = new Text("This is loading scene","white",30);
+text.setPosition(50,50);
+scene.addChild(text);
+game.loadingScene(scene); 
+
+/*Switch scenes*/
+var scene = new Scene();
+scene.setColor("blue");
+var sprite = new Sprite("image.png",32,32);
+sprite.enterFrame = function(){this.x++};
+scene.addChild(sprite);
+game.pushScene(scene);</code></pre>
+          <h3>Loop</h3>
+          <p>To loop the game you may want to use enterFrame method</p>
+          <pre><code class="language-javascript">
+game.enterFrame = function(){/*処理*/};</code></pre>
+          <p>The below is the sample to start the game</p>
+          <pre><code class="language-javascript">
+Atlas();
+Atlas.main(function(){
+    var game = new App('Atlas');
+    game.load("chara.png");
+    var sprite = new Sprite("chara.png",32,32);
+    game.addChild(sprite);
+    game.enterFrame = function(){sprite.x++;};
+    game.start();//the game is not started without this method.
+});</code></pre>         
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>シーン登録とループ</h2>
@@ -236,6 +268,21 @@ var sprite = new Sprite("image.png",32,32);
 sprite.enterFrame = function(){this.x++};
 scene.addChild(sprite);
 game.pushScene(scene);</code></pre>
+          <h3>ループ</h3>
+          <p>ゲームのループは以下のようにenterFrameというメソッドを使用します</p>
+          <pre><code class="language-javascript">
+game.enterFrame = function(){/*処理*/};</code></pre>
+          <p>次のコードはゲームをスタートさせるひな形です</p>
+          <pre><code class="language-javascript">
+Atlas();
+Atlas.main(function(){
+    var game = new App('Atlas');
+    game.load("chara.png");
+    var sprite = new Sprite("chara.png",32,32);
+    game.addChild(sprite);
+    game.enterFrame = function(){sprite.x++;};
+    game.start();//これを書かないとゲームがスタートしない
+});</code></pre>
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#scene -->
         <!-- BEGIN mode:touch#sprite -->
