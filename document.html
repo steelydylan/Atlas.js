@@ -292,7 +292,25 @@ Atlas.main(function(){
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>スプライトとマップ</h2>
-          <p>まだ記事を書いている途中です</p>
+          <p>スプライトとは画面内で画像を操作できるオブジェクトのことです</p>
+          <img src ="./image/chara2.png" class="pull-right"/>
+          <p>右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合、以下のコードのように画像をロードします</p>
+          <pre><code class="language-javascript">
+game.load("./images/chara2.png");
+var chara = new Sprite("./images/chara2.png",32,32);</code></pre>
+          <br clear="right"/>
+          <p>また、次のように画像にあらかじめ名前を付けてスプライトを生成することもできます</p>
+          <pre><code class="language-javascript">
+game.load("./images/chara2.png");
+game.naming(["./images/chara2.png","chara2"]);
+var chara = new Sprite("chara2",32,32);</code></pre>
+          <p>スプライトは初期値として以下のようなプロパティが設定されています</p>
+          <pre><code class="language-javascript">
+sprite.x = 0;/*x座標*/
+sprite.y = 0;/*y座標*/
+sprite.rot = 0;/*回転量*/
+sprite.frame = 0;/*frame番号*/</code></pre>  
+          
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#sprite -->
         <!-- BEGIN mode:touch#shape -->
