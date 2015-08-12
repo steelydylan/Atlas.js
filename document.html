@@ -5,7 +5,8 @@
   <title>Atlas.js</title>
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="css/prism-tommorrow.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
   <script id="main" type="text/template">
@@ -73,14 +74,14 @@
           <p>ダウンロードしたAtlas.jsをそのライブラリーを利用する、htmlファイルと<br>
           同じ階層にし、下記のようにAtlas.jsをインクルードします。</p>
           <!-- END lang:touch#ja -->
-          <pre class="prettyprint linenums">
+          <pre><code class="language-markup">
 &lt;html&gt;
   &lt;head&gt;
     &lt;script type="text/javascript" src="Atlas.js"&gt;&lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
   &lt;/body&gt;
-&lt;/html&gt;</pre>
+&lt;/html&gt;</code></pre>
           <!-- BEGIN lang:touch#en -->
 
           <!-- END lang:touch#en -->
@@ -90,10 +91,10 @@
           <!-- BEGIN lang:touch#en -->
           <p>Next, You have to include the canvas element with its id to the body element as following.</p>
           <!-- END lang:touch#en -->
-          <pre class="prettyprint linenums">
+          <pre><code class="language-markup">
 &lt;body&gt;
   &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
-&lt;/body&gt;</pre>
+&lt;/body&gt;</code></pre>
           <!-- BEGIN lang:touch#en -->
           <p>Well,if you want to know about Canvas element,You may want to visit the following URL.<br/><a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a><br/>Finaly,Writing down the JavaScript codes in the body element, You can make your own games</p>
           <!-- END lang:touch#en -->
@@ -102,12 +103,12 @@
           <a href="http://www.html5.jp/canvas/index.html">http://www.html5.jp/canvas/index.html</a><br>
           最後に,body要素の中にJavaScriptの記述を書いて、自分のオリジナルゲームを作りましょう
           <!-- END lang:touch#ja -->
-          <pre class="prettyprint linenums">
+          <pre><code class="language-markup">
 &lt;canvas id="Atlas"&gt;&lt;/canvas&gt;
 &lt;script&gt;
 &lt;!--You can write the code here--&gt;
 &lt;/script&gt;
-&lt;/body&gt;</pre>
+&lt;/body&gt;</code></pre>
           <!-- BEGIN lang:touch#ja -->
           そして、canvas要素のidが上のように、Atlasだったとします。<br />
           そのとき、ある変数にAppをインスタンスする場合、下のように引数として
@@ -120,15 +121,15 @@
           Then, You have to substitute "Atlas" to the 'App' constractor.
           By doing this,you can use the variety of methods provided by Atlas.js
           <!-- END lang:touch#en -->
-          <pre class="prettyprint linenums">
+          <pre><code class="language-javascript">
 Atlas();
-var game = new App('Atlas');</pre>
+var game = new App('Atlas');</code></pre>
         <!-- END mode:touch#setup -->
         <!-- BEGIN mode:touch#setting -->
           <!-- BEGIN lang:touch#en -->
           <h2>Settings</h2>
           <p>I'd like to introduce you the initial settings before the game loop.</p>
-          <pre class="prettyprint linenums">
+          <pre><code class="language-javascript">
 game.load("hero.png","bgm.mp3");
 /*
 load the assets you want to use in your games
@@ -165,12 +166,12 @@ game.addChild(child);
 /*
 Add the instances of the Sprite class, Shape class, Group class and Text class to the game
 By doing this, you can draw the each instances to the game screen.
-*/</pre>
+*/</code></pre>
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>各種設定</h2>
           <p>ゲームをループさせる前の初期設定のgameのメソッドを紹介します</p>
-          <pre class="prettyprint linenums">
+          <pre><code class="language-javascript">
 game.load("hero.png","bgm.mp3");
 /*
 ゲームで使用する素材をロードします
@@ -207,7 +208,7 @@ game.addChild(child);
 /*
 SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタンスをゲームに追加します。
 これをしなければそれぞれのインスタンスは描画されません。
-*/</pre>
+*/</code></pre>
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#setting -->
         <!-- BEGIN mode:touch#scene -->
@@ -219,7 +220,7 @@ SpriteクラスやShapeクラス、Groupクラス、Textクラスのインスタ
           <h2>シーン登録とループ</h2>
           <h3>シーン登録</h3>
           <p>Atlas.jsでは次のようにローディングシーンを設定したり、シーンを切り替えたりすることができます</p>
-          <pre class="prettyprint linenums">
+          <pre><code class="language-javascript">
 /*ローディングシーンの設定*/
 var scene = new Scene();
 scene.setImage("image");
@@ -234,7 +235,7 @@ scene.setColor("blue");
 var sprite = new Sprite("image.png",32,32);
 sprite.enterFrame = function(){this.x++};
 scene.addChild(sprite);
-game.pushScene(scene);</pre>
+game.pushScene(scene);</code></pre>
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#scene -->
         <!-- BEGIN mode:touch#sprite -->
@@ -292,6 +293,7 @@ game.pushScene(scene);</pre>
   </script>
   <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
   <script src="js/jquery.i18n.properties.js"></script>
+  <script src="js/prism.js"></script>
   <script src="js/Moon.js"></script>
   <script src="js/main.js"></script>
 </body>

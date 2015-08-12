@@ -17,11 +17,14 @@ $(function(){
                 this.data.mode = mode;
                 this.saveData("Atlas");
                 this.update();
+                Prism.highlightAll();
             },
             update:function(){
                 this.saveData("Atlas");
                 this.update();
+                Prism.highlightAll();
             }
         }
     }).loadData("Atlas").update();
+    Prism.highlightAll();
 });
