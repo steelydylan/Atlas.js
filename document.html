@@ -39,7 +39,8 @@
           <a href="#setup" data-action="changeMode(setup)" class="list-group-item<!-- BEGIN mode:touch#setup --> active<!-- END mode:touch#setup -->"><!-- BEGIN lang:touch#en -->Setup<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->初期設定<!-- END lang:touch#ja --></a>
           <a href="#setting" data-action="changeMode(setting)" class="list-group-item<!-- BEGIN mode:touch#setting --> active<!-- END mode:touch#setting -->"><!-- BEGIN lang:touch#en -->Settings<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->各種設定<!-- END lang:touch#ja --></a>
           <a href="#scene" data-action="changeMode(scene)" class="list-group-item<!-- BEGIN mode:touch#scene --> active<!-- END mode:touch#scene -->"><!-- BEGIN lang:touch#en -->Scene Registration and Loop<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->シーン登録とループ<!-- END lang:touch#ja --></a>
-          <a href="#sprite" data-action="changeMode(sprite)" class="list-group-item<!-- BEGIN mode:touch#sprite --> active<!-- END mode:touch#sprite -->"><!-- BEGIN lang:touch#en -->Sprite and Map<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->スプライトとマップ<!-- END lang:touch#ja --></a>
+          <a href="#sprite" data-action="changeMode(sprite)" class="list-group-item<!-- BEGIN mode:touch#sprite --> active<!-- END mode:touch#sprite -->"><!-- BEGIN lang:touch#en -->Sprite<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->スプライト<!-- END lang:touch#ja --></a>
+          <a href="#map" data-action="changeMode(map)" class="list-group-item<!-- BEGIN mode:touch#map --> active<!-- END mode:touch#map -->"><!-- BEGIN lang:touch#en -->Map<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->マップ<!-- END lang:touch#ja --></a>
           <a href="#shape" data-action="changeMode(shape)" class="list-group-item<!-- BEGIN mode:touch#shape --> active<!-- END mode:touch#shape -->"><!-- BEGIN lang:touch#en -->Shape and Text<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->図形とテキスト<!-- END lang:touch#ja --></a>
           <a href="#sound" data-action="changeMode(sound)" class="list-group-item<!-- BEGIN mode:touch#sound --> active<!-- END mode:touch#sound -->"><!-- BEGIN lang:touch#en -->Sound<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->音<!-- END lang:touch#ja --></a>
           <a href="#event" data-action="changeMode(event)" class="list-group-item<!-- BEGIN mode:touch#event --> active<!-- END mode:touch#event -->"><!-- BEGIN lang:touch#en -->Eventlistener<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->イベントリスナー<!-- END lang:touch#ja --></a>
@@ -287,7 +288,7 @@ Atlas.main(function(){
         <!-- END mode:touch#scene -->
         <!-- BEGIN mode:touch#sprite -->
           <!-- BEGIN lang:touch#en -->
-          <h2>Sprite and Map</h2>
+          <h2>Sprite</h2>
           <h3>スプライト</h3>
           <p>You can manage images by using sprite objects</p>
           <h4>How to set images to sprite objects</h4>
@@ -315,7 +316,7 @@ sprite.frame = 0;/*frame number*/</code></pre>
 
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
-          <h2>スプライトとマップ</h2>
+          <h2>スプライト</h2>
           <h3>スプライト</h3>
           <p>スプライトとは画面内で画像を操作できるオブジェクトのことです</p>
           <h4>スプライトオブジェクトへの画像の設定方法</h4>
@@ -487,6 +488,11 @@ Remove the sprite.
 */
 <!-- END lang:touch#ja -->
 sprite.animate([0,1,2],5,100);
+<!-- BEGIN lang:touch#en -->
+/*
+Switch the sprite's frame number to 0,1,2 with 5 frame interval in 100 frames.
+*/
+<!-- END lang:touch#en -->
 <!-- BEGIN lang:touch#ja -->
 /*
 スプライトを100フレーム間、5フレームで0番目、1番目、2番目、0番目
@@ -494,38 +500,83 @@ sprite.animate([0,1,2],5,100);
 */
 <!-- END lang:touch#ja -->
 sprite.moveTo(100,150,30);
+<!-- BEGIN lang:touch#en -->
+/*
+Move sprite to the point (100,150) in 30 frames.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
 /*
 スプライトを30フレームで(100,150)の地点に移動させます。
 */
+<!-- END lang:touch#ja -->
 sprite.moveBy(30,40,50);
+<!-- BEGIN lang:touch#en -->
+/*
+Move the sprite to the place where is (30,40) far from the current sprite's location in 50 frames.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
 /*
 スプライトを50フレームで現在の自分の位置から(30,40)離れた位置に移動させます
 */
+<!-- END lang:touch#ja -->
 sprite.rotateBy(Math.PI,30);
+<!-- BEGIN lang:touch#en -->
+/*
+Rotate the sprite 180 degrees to the right in 30 frames
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
 /*
 スプライトを30フレームで現在の角度からプラス180度回転させます。
 */
+<!-- END lang:touch#ja -->
 sprite.scaleBy(2,3,40);
+<!-- BEGIN lang:touch#en -->
+/*
+Double the width of the sprite and tribble the height of the sprite in 40 frames.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
 /*
 スプライトを40フレームで現在の大きさから幅を2倍、高さを3倍に変更します
 */
+<!-- END lang:touch#ja -->
 sprite.and();
+<!-- BEGIN lang:touch#en -->
 /*
-このようにつかいます。
-sprite.moveTo(100,150,30).animate([0,1,2],5);
-(100,150)の地点に移動しつつ、スプライトをアニメーションさせる
-という意味になります。
+sprite.moveTo(100,150,30).and().animate([0,1,2],5);
+You can move and animate the sprite in the same time.
 */
-sprite.loop();
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
 /*
-このようにつかいます。
+sprite.moveTo(100,150,30).and().animate([0,1,2],5);
+スプライトを動かしてアニメーションをさせることを同時に行えます
+*/
+<!-- END lang:touch#ja -->
+sprite.loop();
+<!-- BEGIN lang:touch#en -->
+/*
+sprite.moveTo(100,150,30).and().animate([0,1,2],5);
+You can repeat the actions registered before loop method.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
 sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
-まず、(50,50)離れた位置にスプライトを移動させて、そのあと
-(-50,-50)離れた位置にスプライトを移動させることを
-繰り返すといういみになります。
-*/</code></pre>
-          
+ループ直前に登録した処理をスプライトに対して繰り返すことができます。
+*/<!-- END lang:touch#ja -->
+</code></pre>
         <!-- END mode:touch#sprite -->
+        <!--
+            マップ
+        -->
+        <!-- BEGIN mode:touch#map -->
+        <h2>マップ</h2>
+        
+        <!-- END mode:touch#map -->
         <!-- BEGIN mode:touch#shape -->
           <!-- BEGIN lang:touch#en -->
           <h2>Shape and Text</h2>
