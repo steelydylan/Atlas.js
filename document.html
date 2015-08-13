@@ -42,7 +42,7 @@
           <a href="#sprite" data-action="changeMode(sprite)" class="list-group-item<!-- BEGIN mode:touch#sprite --> active<!-- END mode:touch#sprite -->"><!-- BEGIN lang:touch#en -->Sprite<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->スプライト<!-- END lang:touch#ja --></a>
           <a href="#map" data-action="changeMode(map)" class="list-group-item<!-- BEGIN mode:touch#map --> active<!-- END mode:touch#map -->"><!-- BEGIN lang:touch#en -->Map<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->マップ<!-- END lang:touch#ja --></a>
           <a href="#shape" data-action="changeMode(shape)" class="list-group-item<!-- BEGIN mode:touch#shape --> active<!-- END mode:touch#shape -->"><!-- BEGIN lang:touch#en -->Shape and Text<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->図形とテキスト<!-- END lang:touch#ja --></a>
-          <a href="#sound" data-action="changeMode(sound)" class="list-group-item<!-- BEGIN mode:touch#sound --> active<!-- END mode:touch#sound -->"><!-- BEGIN lang:touch#en -->Sound<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->音<!-- END lang:touch#ja --></a>
+          <a href="#sound" data-action="changeMode(sound)" class="list-group-item<!-- BEGIN mode:touch#sound --> active<!-- END mode:touch#sound -->"><!-- BEGIN lang:touch#en -->Sound<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->サウンド<!-- END lang:touch#ja --></a>
           <a href="#event" data-action="changeMode(event)" class="list-group-item<!-- BEGIN mode:touch#event --> active<!-- END mode:touch#event -->"><!-- BEGIN lang:touch#en -->Eventlistener<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->イベントリスナー<!-- END lang:touch#ja --></a>
           <a href="#class" data-action="changeMode(class)" class="list-group-item<!-- BEGIN mode:touch#class --> active<!-- END mode:touch#class -->"><!-- BEGIN lang:touch#en -->Class<!-- END lang:touch#en --><!-- BEGIN lang:touch#ja -->クラス<!-- END lang:touch#ja --></a>
         </div>
@@ -579,7 +579,8 @@ sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
         <!-- END lang:touch#en -->
         <!-- BEGIN lang:touch#ja -->
         <h2>マップ</h2>
-        <img src="./image/map.png" />
+        <p><img src="./image/map.png" /></p>
+        <p>まず上の画像をキャンバスにマップとして描画してみましょう</p>
         <!-- END lang:touch#ja -->
         <pre><code class="language-javascript">
 Atlas.main(function(){
@@ -609,25 +610,164 @@ Atlas.main(function(){
     game.addChild(map);
     game.start();
 });</code></pre>
+        <!-- BEGIN lang:touch#en -->
+          <p>You can also make the collision map.</p>
+          <p>It returns false if the designated area is set as 1 otherwise returns false.<br/>
+          following code is the sample of the collision map</p>
+        <!-- END lang:touch#en -->
+        <!-- BEGIN lang:touch#ja -->
+          <p>また、次のようにマップにコリジョンデータを設定し、</p>
+          <p>intersect関数で、ある指定された座標がマップの1の位置にあるか0の位置にあるかで、それぞれ、true,falseを返す仕組みも提供されています</p>
+          <pre><code class="language-javascript">
+Atlas.main(function(){
+    Atlas();
+    var game = new App("game");
+    var map = new Map("./images/map.png", 16, 16);
+    game.setSize(256, 256);
+    game.setQuality(256, 256);
+    map.drawData = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+    map.hitData =  [
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ];
+    game.addChild(map);
+    map.touchStart = function(pos){
+        if(map.intersect(pos.x,pos.y))
+            alert("当たっています");
+    };
+    game.start();
+});</code></pre>
+        <!-- END lang:touch#ja -->
         <!-- END mode:touch#map -->
         <!-- BEGIN mode:touch#shape -->
           <!-- BEGIN lang:touch#en -->
           <h2>Shape and Text</h2>
-          <p>Still Writing ...</p>
+          <h3>Shape</h3>
+          <p>You can draw and move circles and boxes as well</p>
+          <p>The following code shows how to create the instances</p>
+          <pre><code class="language-javascript">
+var circle = new Shape.Circle("red",15);
+/*Circle instance's parameter (color, radius)*/
+var box = new Shape.Box("white",20,10);
+/*Box instance's parameter (color, width, height)*/</code></pre>
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>図形とテキスト</h2>
-          <p>まだ記事を書いている途中です</p>
+          <h3>図形</h3>
+          <p>Atlasでは円と四角形、二つの図形を描画したり動かしたりできます</p>
+          <p>下のソースはインスタンスの生成例です</p>
+          <pre><code class="language-javascript">
+var circle = new Shape.Circle("red",15);
+/*円の場合の引数、色、半径*/
+var box = new Shape.Box("white",20,10);
+/*四角形の場合の引数、色、横幅、縦幅*/</code></pre>
+          <!-- END lang:touch#ja -->
+          <!-- BEGIN lang:touch#en -->
+          <h3>Text</h3>
+          <p>You can also use Text class to draw text in the screen<br/>
+          The instance's parameter is (string,color,size,font-name) from left to right</br>
+          The default value of the instance is (null, white, 10pt, Meiryo)
+          </p>
+          <pre><code class="language-javascript">
+var text = new Text("We are alian","red",20,"Meiryo");</code></pre>
+          <p>You can also break the lines by using &lt;br&gt;</p>
+          <pre><code class="language-javascript">
+var text = new Text("We are alian&lt;br&gt;Nice to meet you","red",20,"Meiryo");</code></pre>
+          <h4>Introduction of the methods of the Text class</h4>
+          <p>You can use following methods with Text class</p>
+          <pre><code class="language-javascript">
+text.setSize(15);
+/* Change the size of the text */
+text.setFont("Meiryo");
+/* Change the font of the text */</code></pre>
+          <!-- END lang:touch#en -->
+          <!-- BEGIN lang:touch#ja -->
+          <h3>テキスト</h3>
+          <p>画面内にテキストを表示するためのTextクラスが用意されています<br/>
+          インスタンスの引数は左から、表示する文字、色、サイズ、文字種です<br/>
+            色、サイズ、文字種を指定しない場合デフォルトで（白,10pt,Meiryo）となります。
+          </p>
+          <pre><code class="language-javascript">
+var text = new Text("われわれは宇宙人だ","red",20,"Meiryo");</code></pre>
+          <p>また、次のように&lt;br&gt;を文字列に挟めば途中で改行させることもできます</p>
+          <pre><code class="language-javascript">
+var text = new Text("われわれは宇宙人だ&lt;br&gt;よろしくね","red",20,"Meiryo");</code></pre>
+          <h4>Textクラスのメソッド紹介</h4>
+          <p>Textクラスでは以下のようなメソッドが用意されています</p>
+          <pre><code class="language-javascript">
+text.setSize(15);
+/*テキストのサイズを変更します*/
+text.setFont("Meiryo");
+/*テキストの文字種を変更します*/</code></pre>
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#shape -->
         <!-- BEGIN mode:touch#sound -->
           <!-- BEGIN lang:touch#en -->
           <h2>Sound</h2>
-          <p>Still Writing ...</p>
+          <p>You can use Sound features via any Class provided by Atlas.js</p>
+          <pre><code class="language-javascript">
+sprite.getSound("./path/to/sound");
+sprite.soundClonePlay();/* used for multiple playing */
+sprite.soundLoopPlay();/* used for looped playing */
+sprite.soundReplay();/* used for restarting the sound */
+sprite.soundStop();/* used for stopping the sound */
+sprite.soundPlay();/* used for playing */
+sprite.soundPause();/* used for pausing the sound */
+sprite.soundGetCount();/* get the current play time of the sound */
+sprite.soundSetCount();/* set the current play time of the sound */
+sprite.soundGetVolume();/* get the volume of the sound */
+sprite.soundSetVolume();/* set the volume of the sound */
+sprite.soundGetAlltime();/* get the all play time of the sound */
+sprite.soundIsPlaying();/* if sound is playing return true else return false. */</pre></code>
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
-          <h2>音</h2>
-          <p>まだ記事を書いている途中です</p>
+          <h2>サウンド</h2>
+          <p>サウンドに関する機能は各クラス共通のメソッドとして利用できます。</p>
+          <pre><code class="language-javascript">
+sprite.getSound("./path/to/sound");
+sprite.soundClonePlay();/*多重再生の場合に使用*/
+sprite.soundLoopPlay();/*ループ再生の場合に使用*/
+sprite.soundReplay();/*最初から再生する場合に使用*/
+sprite.soundStop();/*サウンドを停止したい時使用*/
+sprite.soundPlay();/*再生に使用*/
+sprite.soundPause();/*サウンドの一時停止に使用*/
+sprite.soundGetCount();/*サウンドの現在の再生時間の取得*/
+sprite.soundSetCount();/*サウンドの再生時間の指定*/
+sprite.soundGetVolume();/*ボリュームの取得*/
+sprite.soundSetVolume();/*ボリュームの設定*/
+sprite.soundGetAlltime();/*サウンドの全再生時間の取得*/
+sprite.soundIsPlaying();/*サウンドが現在流れているかを取得*/</code></pre>
           <!-- END lang:touch#ja -->
         <!-- END mode:touch#sound -->
         <!-- BEGIN mode:touch#event -->
@@ -653,7 +793,7 @@ Atlas.main(function(){
       </div>
     </div>
   </script>
-  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="js/jquery.js"></script>
   <script src="js/jquery.i18n.properties.js"></script>
   <script src="js/prism.js"></script>
   <script src="js/Moon.js"></script>
