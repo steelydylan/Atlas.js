@@ -570,12 +570,45 @@ sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
 */<!-- END lang:touch#ja -->
 </code></pre>
         <!-- END mode:touch#sprite -->
-        <!--
-            マップ
-        -->
         <!-- BEGIN mode:touch#map -->
+
+        <!-- BEGIN lang:touch#en -->
+        <h2>Map</h2>
+        <img src="./image/map.png" />
+        <p>Let's draw the map into canvas by using above image</p>
+        <!-- END lang:touch#en -->
+        <!-- BEGIN lang:touch#ja -->
         <h2>マップ</h2>
-        
+        <img src="./image/map.png" />
+        <!-- END lang:touch#ja -->
+        <pre><code class="language-javascript">
+Atlas.main(function(){
+    Atlas();
+    var game = new App("game");
+    var map = new Map("./images/map.png", 16, 16);
+    game.setSize(256, 256);
+    game.setQuality(256, 256);
+    map.drawData = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0],
+      [0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 8, 8, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+    game.addChild(map);
+    game.start();
+});</code></pre>
         <!-- END mode:touch#map -->
         <!-- BEGIN mode:touch#shape -->
           <!-- BEGIN lang:touch#en -->
