@@ -288,11 +288,37 @@ Atlas.main(function(){
         <!-- BEGIN mode:touch#sprite -->
           <!-- BEGIN lang:touch#en -->
           <h2>Sprite and Map</h2>
-          <p>Still Writing ...</p>
+          <h3>スプライト</h3>
+          <p>You can manage images by using sprite objects</p>
+          <h4>How to set images to sprite objects</h4>
+          <img src="./image/chara2.png" class="pull-right"/>
+          <p>If you want to use the right image, you can load the image like the below code</p>
+          <pre><code class="language-javascript">
+game.load("./images/chara2.png");
+var chara = new Sprite("./images/chara2.png",32,32);</code></pre>
+          <p>You can also give names to each image assets like below</p>
+          <pre><code class="language-javascript">game.load("./images/chara2.png");
+game.naming(["./images/chara2.png","chara2"]);
+var chara = new Sprite("chara2",32,32);</code></pre>
+          <p>Each sprites has below initial values</p>
+          <pre><code class="language-javascript">
+sprite.x = 0;/*x-coordinate*/
+sprite.y = 0;/*y-coordinate*/
+sprite.rot = 0;/*angle*/
+sprite.frame = 0;/*frame number*/</code></pre>
+          <h4>Reationship between sprite and frame number</h4>
+          <img src="./image/sprite.png" class="pull-right">
+          <p>For example, if sprite.frame = 3, 3 will be drawn on the canvas with the right image</p>
+          <br clear="right"/>
+          <h4>methods of the sprite object</h4>
+          <p>Sprite object has the methods as following</p>
+
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>スプライトとマップ</h2>
+          <h3>スプライト</h3>
           <p>スプライトとは画面内で画像を操作できるオブジェクトのことです</p>
+          <h4>スプライトオブジェクトへの画像の設定方法</h4>
           <img src ="./image/chara2.png" class="pull-right"/>
           <p>右のように32(横）*32(縦）pxの3*4等分の画像をスプライトとして使用する場合、以下のコードのように画像をロードします</p>
           <pre><code class="language-javascript">
@@ -310,8 +336,195 @@ sprite.x = 0;/*x座標*/
 sprite.y = 0;/*y座標*/
 sprite.rot = 0;/*回転量*/
 sprite.frame = 0;/*frame番号*/</code></pre>  
-          
+          <h4>スプライトとframe番号の関係</h4>
+          <img src="./image/sprite.png" class="pull-right">
+          <p>たとえば右の図において、sprite.frame = 3とすれば描画の際に"3"と表示されます。</p>
+          <br clear="right"/>
+          <h4>スプライトオブジェクトに用意されているメソッド</h4>
+          <p>またスプライトオブジェクトには以下のようなメソッドが設定されています</p>
           <!-- END lang:touch#ja -->
+          <pre><code class="language-javascript">
+sprite.within(anotherSprite,range);
+<!-- BEGIN lang:touch#en -->
+/*
+Parameters are another sprite and number.
+if the distance between the sprite and another sprite is with in a "range" return true, else return false.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+他のスプライトと、数値を引数として、他のスプライトから半径range以内であれば
+true,範囲外であればfalseを返す。
+(Shapeオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.intersect(x,y);
+<!-- BEGIN lang:touch#en -->
+/*
+if the sprite touchs point (x,y),
+return true, else return false
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトが座標(x,y)に接していればtrue、接していなければfalseを返す
+(Shapeオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.scale(5,2);
+<!-- BEGIN lang:touch#en -->
+/*
+In this case, the sprite's width will be expanded 5 times and height will be expanded double.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+この場合は、スプライトを横に５倍、縦に２倍拡大する
+(Mapオブジェクト、Shapeオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.setPosition(100,45);
+<!-- BEGIN lang:touch#en -->
+/*
+In this case, the sprite will be on the spot (100,45)
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+この場合は、スプライトを(100,45)の地点に移動させる
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.getRand(10,100);
+<!-- BEGIN lang:touch#en -->
+/*
+in this case, you can get any number from 10 to 100.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+この場合は、10から100までのランダムな数を返す
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+ */
+<!-- END lang:touch#ja -->
+sprite.setImage("./path/to/image",32,32);
+<!-- BEGIN lang:touch#en -->
+/*
+Replace the sprite's image with new (32*32) sized image.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトを新たな32*32のスプライト画像に置き換えます
+（Mapオブジェクト共通）
+*/
+<!-- END lang:touch#ja -->
+sprite.setImage("./path/to/image",32,32);
+<!-- BEGIN lang:touch#en -->
+/*
+Get the image object set to the sprite object 
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトが保有している、imageオブジェクトを返します
+*/
+<!-- END lang:touch#ja -->
+sprite.getImage("./path/to/image");
+<!-- BEGIN lang:touch#en -->
+/*
+Replace sprite's image with new one without changing the sprite's size.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトをもとのスプライトの切り取りサイズを保ったまま、新たな
+スプライト画像に置き換えます
+（Mapオブジェクト共通）
+*/
+<!-- END lang:touch#ja -->
+sprite.setSpriteSize(32,32);
+<!-- BEGIN lang:touch#en -->
+/*
+In this case, change sprite's cropped size to (32*32)
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトの切り取りサイズを32*32に変更します
+*/
+<!-- END lang:touch#ja -->
+sprite.visible = false;
+<!-- BEGIN lang:touch#en -->
+/*
+Hide the sprite.
+*/
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトを非表示にします
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.alpha = 0.5;
+<!-- BEGIN lang:touch#en -->
+Set the sprites opacity to 50%
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトの透明度を50%にします
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.remove();
+<!-- BEGIN lang:touch#en -->
+Remove the sprite.
+<!-- END lang:touch#en -->
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトを削除します
+(Shapeオブジェクト、Mapオブジェクト、Textオブジェクト共通)
+*/
+<!-- END lang:touch#ja -->
+sprite.animate([0,1,2],5,100);
+<!-- BEGIN lang:touch#ja -->
+/*
+スプライトを100フレーム間、5フレームで0番目、1番目、2番目、0番目
+という順に画像を切り替えていきます。
+*/
+<!-- END lang:touch#ja -->
+sprite.moveTo(100,150,30);
+/*
+スプライトを30フレームで(100,150)の地点に移動させます。
+*/
+sprite.moveBy(30,40,50);
+/*
+スプライトを50フレームで現在の自分の位置から(30,40)離れた位置に移動させます
+*/
+sprite.rotateBy(Math.PI,30);
+/*
+スプライトを30フレームで現在の角度からプラス180度回転させます。
+*/
+sprite.scaleBy(2,3,40);
+/*
+スプライトを40フレームで現在の大きさから幅を2倍、高さを3倍に変更します
+*/
+sprite.and();
+/*
+このようにつかいます。
+sprite.moveTo(100,150,30).animate([0,1,2],5);
+(100,150)の地点に移動しつつ、スプライトをアニメーションさせる
+という意味になります。
+*/
+sprite.loop();
+/*
+このようにつかいます。
+sprite.moveBy(50,50,30).moveBy(-50,-50,30).loop();
+まず、(50,50)離れた位置にスプライトを移動させて、そのあと
+(-50,-50)離れた位置にスプライトを移動させることを
+繰り返すといういみになります。
+*/</code></pre>
+          
         <!-- END mode:touch#sprite -->
         <!-- BEGIN mode:touch#shape -->
           <!-- BEGIN lang:touch#en -->
