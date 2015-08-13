@@ -773,22 +773,76 @@ sprite.soundIsPlaying();/*サウンドが現在流れているかを取得*/</co
         <!-- BEGIN mode:touch#event -->
           <!-- BEGIN lang:touch#en -->
           <h2>Event Listener</h2>
-          <p>Still Writing ...</p>
+          <p>
+          Atlas.js has event listeners called when the following events occured
+          <br />
+          <code>touchStart</code>, <code>touchMove</code>, <code>touchEnd</code>,<code>keyDown</code>,<code>keyUp</code><br/>
+          <code>touchStart</code> is the function, which is called when you start touching the screen<br />
+          <code>touchMove</code> is the function, which is called when you are moving the carsor or fingers on the screen<br />
+          <code>touchEnd</code> is the function, which is called when you finished touching the screen.<br/>
+          <code>keyDown</code> is the function, when the user first presses a key on the keyboard<br/>
+          <code>keyUp</code> is the function, which is called when the user releases a key on the keyboard
+          </p>
+          <p>Below code is the sample where you can drag and drop the character with <code>touchStart</code>,<code>touchMove</code>,<code>touchEnd</code>
+          <pre><code class="language-javascript">
+game.touchStart(function(e){
+  console.log("your touching point is("+e.x+","+e.y+")");
+});</code></pre>
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>イベントリスナー</h2>
-          <p>まだ記事を書いている途中です</p>
+          <p>Atlas.jsではすべてのオブジェクトでイベントリスナーが使えます。<br/>
+          それぞれ、<code>touchStart</code>, <code>touchMove</code>, <code>touchEnd</code>です。<br/>
+            <code>touchStart</code>はゲーム画面ないがクリック、及び、タッチされた時に呼び出される関数です。<br/>
+            <code>touchMove</code>はゲーム画面内で、マウスが動いたとき、及び触れている指が動いているときに呼び出される関数です<br/>
+            <code>touchEnd</code>はゲーム画面内でクリックが終了したとき、及び指が離れたとき呼び出される関数です。<br/>
+            <code>keyDown</code>はキーが押されたときに呼び出される関数です。<br/>
+            <code>keyUp</code>はキーが離されたときに呼び出される関数です。<br/>
+            下のソースコードは、<code>touchStart</code>、<code>touchMove</code>、<code>touchEnd</code>を使って、ドラッグアンドドロップでキャラクターを動かすサンプルです</p>
+          </p>
           <!-- END lang:touch#ja -->
+          <div class="docsFrameWrap">
+            <iframe src="http://atlas-editor.ap01.aws.af.cm/user/steelydylan/55cc78291dc85b75019cdaae" class="docsFrame"></iframe>
+          </div>
         <!-- END mode:touch#event -->
         <!-- BEGIN mode:touch#class -->
           <!-- BEGIN lang:touch#en -->
           <h2>Class</h2>
-          <p>Still Writing ...</p>
+          <p>You can override the Atlas's Classes and create your new Classes</p>
+          <h3>Example <small>(Creating Enemy Class)</small></h3>
           <!-- END lang:touch#en -->
           <!-- BEGIN lang:touch#ja -->
           <h2>クラス</h2>
-          <p>まだ記事を書いている途中です</p>
+          <p>Atlas.jsで提供されているクラスを拡張して新たなクラスを生成することもできます。</p>
+          <h3>サンプル <small>(新しいクラス生成)</small></h3>
           <!-- END lang:touch#ja -->
+          <pre><code class="language-javascript">
+(function(){
+    Atlas.Enemy = Atlas.createClass(Atlas.Sprite,{
+      initialize : function(image,numX,numY){
+        this.inherit(image,numX,numY);
+        this.sx = this.getRand(5,10);
+      this.sy = this.getRand(5,10);
+      this.setPosition(0,this.getRand(100,300));
+    },
+    move : function(){
+        this.drawGraph();
+        this.x += this.sx;
+      this.y += this.sy;      
+      if(this.x > 500)
+          this.remove = true;
+    }
+  });
+});
+Atlas.main(function(){
+    Atlas("game");
+    var game = new App();
+    var enemy = new Enemy("teki2.png",100,95);
+    game.enterFrame = function(){
+        enemy.move();
+    };
+    game.start();
+});</code></pre>
         <!-- END mode:touch#class -->
       </div>
     </div>
