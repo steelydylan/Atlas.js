@@ -1,0 +1,29 @@
+body{
+  padding-top: 60px;
+  font-size: 16px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3', Meiryo,'メイリオ','ＭＳ Ｐゴシック','MS PGothic',Verdana,sans-serif;
+}
+.jumbotron{
+  background-color: #262626;
+  color: #FFFFFF;
+}
+.text-center{
+  text-align: center;
+}
+.navbar-right{
+	margin-top:15px;
+}
+
+.docsFrame{
+	height: 600px;
+    transform: scale(0.75);
+    transform-origin: 0 0;
+    width: 1140px;
+}
+
+.docsFrameWrap{
+	width: 100%;
+	height: 450px;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
