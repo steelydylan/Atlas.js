@@ -1,5 +1,5 @@
 /**
-* Atlas.js v0.7.10 - ブラウザで動作する教育用JSゲームエンジン
+* Atlas.js v0.7.11 - ブラウザで動作する教育用JSゲームエンジン
 * https://github.com/steelydylan/Atlas.js
 * MIT Licensed
 * Copyright (C) 2013 steelydylan http://horicdesign.com
@@ -682,7 +682,7 @@
             return "#"+ r + g + b;          
         },
         rgbToHsv:function(r,g,b){
-        	var rr,gg,bb;
+          var rr,gg,bb;
             var r = r / 255;
             var g = g / 255;
             var b = b / 255;
@@ -865,7 +865,25 @@
             var sound = this.sound;
             if (sound)
                 return !sound.paused;
-        }
+        },
+        /**
+         * @method getExtention
+         * @param fileName String
+         * ファイル名から拡張子を取得する
+         **/
+        getExtention:function(fileName){
+            var ret;
+            if (!fileName) {
+                return ret;
+            }
+            var fileTypes = fileName.split(".");
+            var len = fileTypes.length;
+            if (len === 0) {
+                return ret;
+            }
+            ret = fileTypes[len - 1];
+            return ret;
+        },
     });
     /**
      * @class Atlas.App
@@ -1196,24 +1214,6 @@
             }, 1000 / this.fps);
         },
         /**
-         * @method getExtention
-         * @param fileName String
-         * ファイル名から拡張子を取得する
-         **/
-        getExtention:function(fileName){
-            var ret;
-            if (!fileName) {
-                return ret;
-            }
-            var fileTypes = fileName.split(".");
-            var len = fileTypes.length;
-            if (len === 0) {
-                return ret;
-            }
-            ret = fileTypes[len - 1];
-            return ret;
-        },
-        /**
          * @method load
          * 音楽や画像等の素材をロードする
          **/
@@ -1480,13 +1480,14 @@
         initialize : function(path,color,lineColor){
             this.inherit(0,0);
             this.obj = -1;
+            this.svgid = -1;
             this._basicConstructor = "Shape";
             this.color = color || "original"; 
             this.strokeColor = lineColor || "original";
             this.colorStops = [];
-            if(typeof path == "object"){
-                this.path = path;
-            }else if(typeof path == "string"){
+            if(this.getExtention(path) != "svg"){
+                this.svgid = path;
+            }else {
                 this.setImage(path);
             }
             this.closeMode = true;
@@ -1615,6 +1616,9 @@
          **/
         isLoaded : function(){
             var image = this.getImage();
+            if(!image){
+                return true;
+            }
             if(image.loaded && this.ctx){
                 return true;
             }else{
@@ -1688,9 +1692,15 @@
             }
         },
         _onLoad : function(){
-            var svgdoc  = svgs[this.obj].getSVGDocument();
-            var element = svgdoc.getElementsByTagName("path")[0] || svgdoc.getElementsByTagName("circle")[0] || svgdoc.getElementsByTagName("rect")[0] || svgdoc.getElementsByTagName("polygon")[0];
-            var svg = svgdoc.getElementsByTagName("svg")[0];
+            if(this.obj != -1){
+                var svgdoc  = svgs[this.obj].getSVGDocument();
+                var element = svgdoc.getElementsByTagName("path")[0] || svgdoc.getElementsByTagName("circle")[0] || svgdoc.getElementsByTagName("rect")[0] || svgdoc.getElementsByTagName("polygon")[0];
+                var svg = svgdoc.getElementsByTagName("svg")[0];
+            }else{
+                var svg = document.getElementById(this.svgid);
+                var svgdoc = svg;
+                var element = svgdoc.getElementsByTagName("path")[0] || svgdoc.getElementsByTagName("circle")[0] || svgdoc.getElementsByTagName("rect")[0] || svgdoc.getElementsByTagName("polygon")[0];
+            }
             var color = svg.getElementsByTagName("linearGradient")[0] || svgdoc.getElementsByTagName("radialGradient")[0];
             if(color){
                 var stopsEle = color.getElementsByTagName("stop");
