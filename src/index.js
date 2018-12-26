@@ -723,6 +723,7 @@ export class Util {
 export class App extends Util {
   constructor(place) {
     super();
+    this.assetPath = '';
     this._basicConstructor = 'App';
     const css = document.createElement('style');
     css.media = 'screen';
@@ -1064,6 +1065,9 @@ export class App extends Util {
       if (data.match('data:image/png')) {
         var ext = 'png';
       } else {
+        if (this.assetPath) {
+          data = `${this.assetPath}${data}`;
+        }
         var ext = this.getExtention(data);
       }
       if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
