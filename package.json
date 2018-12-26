@@ -5,7 +5,6 @@
   "license": "MIT License",
   "version": "0.7.12",
   "scripts": {
-    "test": "mocha ./test/test.js --timeout 1000000",
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
     "build:lib": "npm run babel",
@@ -14,7 +13,7 @@
     "babel": "babel src --out-dir lib",
     "watch:js": "onchange \"src/\" -- npm run build:js",
     "start": "npm-run-all -p watch:js",
-    "deploy": "np --no-cleanup"
+    "deploy": "np --yolo"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
