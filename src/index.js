@@ -74,22 +74,6 @@ const keydown = (() => {
   return ret;
 })();
 
-const Atlas = () => {
-  for (const key in Atlas) {
-    window[key] = Atlas[key];
-  }
-};
-
-Atlas.main = (fn) => {
-  Atlas._main = fn;
-};
-
-window.addEventListener('load', () => {
-  if (Atlas._main) {
-    Atlas._main();
-  }
-});
-
 const Tween = (that, kind, frame) => {
   const mover = that.mover;
   const target = mover[mover.length - 1];
@@ -2357,5 +2341,3 @@ export class Layer extends Group {
     }
   }
 }
-
-export default Atlas;
