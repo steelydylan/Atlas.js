@@ -4,6 +4,7 @@
   "homepage": "http://horicdesign.com",
   "license": "MIT License",
   "version": "1.0.0",
+  "main": "./lib/index.js",
   "scripts": {
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
