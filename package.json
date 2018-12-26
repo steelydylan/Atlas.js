@@ -3,7 +3,7 @@
   "description": "Class Based Simple Game Engine using canvas element",
   "homepage": "http://horicdesign.com",
   "license": "MIT License",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "scripts": {
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
