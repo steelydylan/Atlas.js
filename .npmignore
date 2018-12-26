@@ -1,1 +1,3 @@
 .babelrc
+docs/*
+images/*
