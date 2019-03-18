@@ -4,6 +4,7 @@ Atlas.js
 <img src="https://raw.github.com/steelydylan/Atlas.js/master/logo.png"></img>
 
 ==========
+[![@steelydylan/atlasjs Dev Token](https://badge.devtoken.rocks/@steelydylan/atlasjs)](https://devtoken.rocks/package/@steelydylan/atlasjs)
 
 JavaScript Game Engine
 
