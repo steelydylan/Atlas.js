@@ -1,135 +1,6 @@
-type EventListenerState = {
-  touchStart: boolean;
-  touchMove: boolean;
-  touchEnd: boolean;
-  keyUp: boolean;
-  keyDown: boolean;
-  multiTouchStart: boolean;
-  multiTouchEnd: boolean;
-  multiTouchMove: boolean;
-  orientationChange: boolean;
-}
-
-type GradientStyle = { 
-  x1: number, 
-  y1: number, 
-  r1?: number, 
-  x2: number, 
-  y2: number, 
-  r2?: number 
-}
-
-type Position = {
-  x: number;
-  y: number;
-  touchCount: number;
-  event: TouchEventWithPos;
-}
-
-type Size = {
-  width: number;
-  height: number;
-}
-
-type SVGDrawLineMethod = 'quadraticCurveBy' | 'quadraticCurveTo' | 'lineTo' | 'lineBy' | 
-  'moveBy' | 'moveTo' | 'bezierCurveBy' | 'circle' | 'rect' |
-  'bezierCurveTo' | 'horizontalBy' | 'horizontalTo' | 
-  'verticalBy' | 'verticalTo' |  'bezierCurveShortBy' | 
-  'bezierCurveShortTo' | 'quadraticCurveShortBy' | 'quadraticCurveShortTo';
-
-type SVGDrawLineState = {
-  method?: SVGDrawLineMethod;
-  x?: number;
-  y?: number;
-  cpx1?: number;
-  cpy1?: number;
-  cpx2?: number;
-  cpy2?: number;
-  cpx?: number;
-  cpy?: number;
-  name?: string;
-  r?: number;
-  width?: number;
-  height?: number;
-}
-
-type ColorStop = {
-  offset: string;
-  color: string;
-}
-
-type Animation = 'moveTo' | 'moveBy' | 'delay' | 'rotateBy' | 'animate' | 'scaleBy' | 'then';
-
-type TouchEventWithPos = TouchEvent & { pageX: number, pageY: number };
-
-type Search = { [index: string]: any };
-
-type TweenState = {
-  time: number;
-  loop: boolean;
-  and: boolean;
-  frame: number;
-  toX: number;
-  toY: number;
-  toAngle: number;
-  toWidth: number;
-  toHeight: number;
-  diffX: number;
-  diffY: number;
-  diffWidth: number;
-  diffHeight: number;
-  diffAngle: number;
-  scaleX: number;
-  scaleY: number;
-  exec: Function;
-  frameRate: number;
-  frameIdx: number;
-  array: number[]
-} & {
-  [index in Animation]: boolean
-};
-
-type Key = {
-  enter: boolean;
-  shift: boolean;
-  space: boolean;
-  right: boolean;
-  left: boolean;
-  up: boolean;
-  down: boolean;
-  backspace: boolean;
-  command: boolean;
-  a: boolean;
-  b: boolean;
-  c: boolean;
-  d: boolean;
-  e: boolean;
-  f: boolean;
-  g: boolean;
-  h: boolean;
-  i: boolean;
-  j: boolean;
-  k: boolean;
-  l: boolean;
-  m: boolean;
-  n: boolean;
-  o: boolean;
-  p: boolean;
-  q: boolean;
-  r: boolean;
-  s: boolean;
-  t: boolean;
-  u: boolean;
-  v: boolean;
-  w: boolean;
-  x: boolean;
-  y: boolean;
-  z: boolean;
-}
-
-const images: HTMLImageElement[] = [];
-const sounds: HTMLAudioElement[] = [];
-const svgs: HTMLOrSVGElement[] = [];
+const images = [];
+const sounds = [];
+const svgs = [];
 let allLoaded = 0;
 const isMobile = (() => {
   const userAgent = navigator.userAgent;
@@ -142,7 +13,7 @@ const orientation = ((e) => {
   if (mq.matches) { return 'portrait'; }
   return 'landscape';
 })();
-const setKeyState = (ret: Key, e: KeyboardEvent) => {
+const setKeyState = (ret, e) => {
   const which = e.which;
   switch (which) {
     case 13:
@@ -176,14 +47,13 @@ const setKeyState = (ret: Key, e: KeyboardEvent) => {
   for (let i = 0; i < 26; i++) {
     if (i + 65 == which) {
       const chr = String.fromCharCode(i + 97);
-      //@ts-ignore
       ret[chr] = true;
       break;
     }
   }
 };
 
-const clearKeyState = (ret: Key) => {
+const clearKeyState = (ret) => {
   ret.enter = false;
   ret.command = false;
   ret.shift = false;
@@ -194,16 +64,60 @@ const clearKeyState = (ret: Key) => {
   ret.down = false;
   ret.backspace = false;
   for (let i = 0; i < 26; i++) {
-    //@ts-ignore
     ret[String.fromCharCode(i + 97)] = false;
   }
 };
 
 const keydown = (() => {
-  const ret = {} as Key;
+  const ret = {};
   clearKeyState(ret);
   return ret;
 })();
+
+type EventListenerState = {
+  touchStart: boolean;
+  touchMove: boolean;
+  touchEnd: boolean;
+  keyUp: boolean;
+  keyDown: boolean;
+  multiTouchStart: boolean;
+  multiTouchEnd: boolean;
+  multiTouchMove: boolean;
+  orientationChange: boolean;
+}
+
+type Position = {
+  x: number;
+  y: number;
+  touchCount: number;
+  event: TouchEventWithPos;
+}
+
+type Size = {
+  width: number;
+  height: number;
+}
+
+type Animation = 'moveTo' | 'moveBy' | 'delay' | 'rotateBy' | 'animate' | 'scaleBy' | 'then';
+
+type TouchEventWithPos = TouchEvent & { pageX: number, pageY: number };
+
+type TweenState = {
+  time: number;
+  loop: boolean;
+  and: boolean;
+  frame: number;
+  toX: number;
+  toY: number;
+  diffX: number;
+  diffY: number;
+  diffAngle: number;
+  scaleX: number;
+  scaleY: number;
+  exec: Function;
+} & {
+  [index in Animation]: boolean
+};
 
 const Tween = (that: any, kind: Animation, frame: number) => {
   const mover = that.mover;
@@ -220,64 +134,52 @@ const Tween = (that: any, kind: Animation, frame: number) => {
   return obj;
 };
 
+
 /**
  * @class Atlas.Util
  * */
 export class Util {
-  // todo _はprotectedにしたい
   public isMobile: boolean;
   public orientation: 'portrait' | 'landscape';
   public rot: number;
   public visible: boolean;
   public eventEnable: boolean;
   public drawMode: 'source-over';
-  public assetPath!: string;
-  public moverIndex: number;
-  public eventListener: EventListenerState;
-  public mover: TweenState[];
-  public _remove!: boolean;
-  public _leave!: boolean;
-  public _css!: HTMLStyleElement;
-  public _basicConstructor!: string;
-  public _x!: number;
-  public _y!: number;
-  public Cx!: number;
-  public Cy!: number;
-  public _rot!: number;
-  public scaleX!: number;
-  public scaleY!: number;
-  public alpha!: number;
-  public ctx!: CanvasRenderingContext2D;
-  public width!: number;
-  public height!: number;
-  public _width!: number;
-  public _height!: number;
-  public fps!: number;
-  public scene!: Scene;
-  public parent!: Util;
-  public children!: Util[];
-  public x!: number;
-  public y!: number;
-  public field!: HTMLCanvasElement;
-  public sound!: HTMLAudioElement;
-  public color!:  string | CanvasGradient;
-  public frame!: number;
-  public prepared!: boolean;
-  public grouped!: boolean;
-  public startRot!: boolean;
+  public assetPath: string;
+  protected moverIndex: number;
+  protected eventListener: EventListenerState;
+  protected mover: TweenState[];
+  protected _remove: boolean;
+  protected _leave: boolean;
+  protected _css: HTMLStyleElement;
+  protected _basicConstructor: string;
+  protected _x: number;
+  protected _y: number;
+  protected _width: number;
+  protected _height: number;
+  public ctx: CanvasRenderingContext2D;
+  public width: number;
+  public height: number;
+  public fps: number;
+  public scene: Scene;
+  public parent: Util;
+  public x: number;
+  public y: number;
+  public field: HTMLCanvasElement;
+  public sound: HTMLAudioElement;
+  public color: string;
   // TODO
-  public multiTouchStart(pos?: Position[]) {};
-  public multiTouchMove(pos?: Position[]) {};
-  public multiTouchEnd(pos?: Position[]) {};
-  public touchStart(pos?: Position) {};
-  public touchMove(pos?: Position) {};
-  public touchEnd(pos?: Position) {};
-  public keyUp(key?: Key) {};
-  public keyDown(key?: Key) {};
-  public enterFrame() {};
-  public onSceneRemoved() {};
-  public onScenePushed() {};
-  public onLoad() {};
+  public multiTouchStart: Function;
+  public multiTouchMove: Function;
+  public multiTouchEnd: Function;
+  public touchStart: Function;
+  public touchMove: Function;
+  public touchEnd: Function;
+  public keyUp: Function;
+  public keyDown: Function;
+  public enterFrame: Function;
+  protected _enterFrame: Function;
+  protected _onLoad: Function;
 
   constructor() {
     this.isMobile = isMobile;
@@ -299,21 +201,6 @@ export class Util {
       multiTouchEnd: false,
       orientationChange: false
     };
-  }
-
-  public isLoaded() {
-    return true;
-  }
-
-  public _enterFrame() {
-
-  }
-  public _onLoad() {
-
-  }
-
-  public draw() {
-    
   }
 
   public tween() {
@@ -387,14 +274,14 @@ export class Util {
    * @param y {Number}
    * @param frame {Number}
    * */
-  public moveTo(x: number, y: number, frame: number) {
+  public moveTo(x, y, frame) {
     const obj = Tween(this, 'moveTo', frame);
     obj.toX = x;
     obj.toY = y;
     this.mover.push(obj);
     return this;
   }
-  protected _moveTo(obj: TweenState) {
+  protected _moveTo(obj) {
     if (obj.time === 0) {
       obj.diffX = obj.toX - this.x;
       obj.diffY = obj.toY - this.y;
@@ -409,14 +296,14 @@ export class Util {
    * @param y {Number}
    * @param frame {Number}
    * */
-  public moveBy(x: number, y: number, frame: number) {
+  public moveBy(x, y, frame) {
     const obj = Tween(this, 'moveBy', frame);
     obj.diffX = x;
     obj.diffY = y;
     this.mover.push(obj);
     return this;
   }
-  protected _moveBy(obj: TweenState) {
+  protected _moveBy(obj) {
     if (obj.time === 0) {
       obj.toX = this.x + obj.diffX;
       obj.toY = this.y + obj.diffY;
@@ -429,7 +316,7 @@ export class Util {
    * アニメーションをframeフレーム待つ
    * @param frame {Number}
    * */
-  public delay(frame: number) {
+  public delay(frame) {
     const obj = Tween(this, 'delay', frame);
     this.mover.push(obj);
     return this;
@@ -472,13 +359,13 @@ export class Util {
   * @param frame {Number}
   * frameフレームでangle（ラジアン）回転させる
   * */
-  public rotateBy(angle: number, frame: number) {
+  public rotateBy(angle, frame) {
     const obj = Tween(this, 'rotateBy', frame);
     this.mover.push(obj);
     obj.diffAngle = angle;
     return this;
   }
-  protected _rotateBy(obj: TweenState) {
+  protected _rotateBy(obj) {
     if (obj.time === 0) { obj.toAngle = this.rot + obj.diffAngle; }
     this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
   }
@@ -516,7 +403,7 @@ export class Util {
    * @param y Number
    * オフジェクトを座標(x,y)に移動
    * */
-  setPosition(x: number, y: number) {
+  setPosition(x, y) {
     this.x = x;
     this.y = y;
     return this;
@@ -530,10 +417,9 @@ export class Util {
     }
     localStorage.setItem(key, JSON.stringify(obj));
   }
-  getData(key: string) {
-    const obj = JSON.parse(localStorage.getItem(key) as string);
+  getData(key) {
+    const obj = JSON.parse(localStorage.getItem(key));
     for (const i in obj) {
-      //@ts-ignore TODO
       this[i] = obj[i];
     }
   }
@@ -669,7 +555,7 @@ export class Util {
    * @param b Number
    * a ~ bの間のランダムな数字を取得
    * */
-  getRand(a: number, b: number) {
+  getRand(a, b) {
     return ~~(Math.random() * (b - a + 1)) + a;
   }
   /**
@@ -677,7 +563,7 @@ export class Util {
    * @param limit Number
    * limitまでの文字数で文字列を取得
    * */
-  getRandText(limit: number) {
+  getRandText(limit) {
     let ret = '';
     const strings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const length = strings.length;
@@ -693,7 +579,7 @@ export class Util {
    * @param b Number
    * RGB形式から16進を取得する
    * */
-  rgbToHex(r: number, g: number, b: number) {
+  rgbToHex(r, g, b) {
     const rgb = b | (g << 8) | (r << 16);
     return `#${(0x1000000 + rgb).toString(16).slice(1)}`;
   }
@@ -704,9 +590,6 @@ export class Util {
    * 16進からRGBを取得する
    * */
   hexToRgb(color: string, opacity?: number) {
-    if (typeof this.color !== 'string') {
-      return null;
-    }
     const hex = color || this.color;
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (opacity) {
@@ -725,15 +608,15 @@ export class Util {
    * @param v Number
    * hsvから16進に変換する
    * */
-  hsvToHex(h: number, s: number, v: number) {
-    let f: number;
-    let i: number;
-    let p: number;
-    let q: number;
-    let t: number;
-    let r: number | string = 0;
-    let g: number | string = 0;
-    let b: number | string = 0;
+  hsvToHex(h, s, v) {
+    let f,
+      i,
+      p,
+      q,
+      t;
+    let r,
+      g,
+      b;
     i = Math.floor(h / 60.0) % 6;
     f = (h / 60.0) - Math.floor(h / 60.0);
     p = Math.round(v * (1.0 - (s / 255.0)));
@@ -759,9 +642,9 @@ export class Util {
     var r = r / 255;
     var g = g / 255;
     var b = b / 255;
-    let h = 0;
-    let s = 0;
-    let v = 0;
+    let h,
+      s,
+      v;
     v = Math.max(r, g, b);
     const diff = v - Math.min(r, g, b);
     if (diff == 0) {
@@ -791,7 +674,7 @@ export class Util {
     return rgb;
   }
   getObjFromRgb(color: string) {
-    const arr = /rgb\((.*?),(.*?),(.*?)\)/.exec(color) as RegExpExecArray;
+    const arr = /rgb\((.*?),(.*?),(.*?)\)/.exec(color);
     return {
       r: parseInt(arr[1]),
       g: parseInt(arr[2]),
@@ -799,7 +682,7 @@ export class Util {
     };
   }
   getObjFromHsv(color: string) {
-    const arr = /hsv\((.*?),(.*?),(.*?)\)/.exec(color) as RegExpExecArray;
+    const arr = /hsv\((.*?),(.*?),(.*?)\)/.exec(color);
     return {
       h: parseInt(arr[1]),
       s: parseInt(arr[2]),
@@ -898,7 +781,7 @@ export class Util {
    * @param time Number
    * 指定された位置に再生位置を設定する
    * */
-  soundSetCount(time: number) {
+  soundSetCount(time) {
     const sound = this.sound;
     if (sound) { sound.currentTime = time; }
   }
@@ -915,7 +798,7 @@ export class Util {
    * @param volume Number
    * セットされた音楽のボリュームを設定する
    * */
-  soundSetVolume(volume: number) {
+  soundSetVolume(volume) {
     const sound = this.sound;
     if (sound) { sound.volume = volume; }
   }
@@ -940,8 +823,8 @@ export class Util {
    * @param fileName String
    * ファイル名から拡張子を取得する
    * */
-  getExtention(fileName: string): string {
-    let ret = '';
+  getExtention(fileName) {
+    let ret;
     if (!fileName) {
       return ret;
     }
@@ -959,12 +842,12 @@ export class Util {
  * @extends Atlas.Util
  * */
 export class App extends Util {
-  public preScene!: Scene;
-  public preLoadInterval!: NodeJS.Timer;
+  public preScene: Scene;
+  public preLoadInterval: number;
   enterFrame!: () => void;
   onLoad!: () => void;
 
-  constructor(place: string) {
+  constructor(place) {
     super();
     this.assetPath = '';
     this._basicConstructor = 'App';
@@ -972,21 +855,18 @@ export class App extends Util {
     css.media = 'screen';
     css.type = 'text/css';
     document.getElementsByTagName('head')[0].appendChild(css);
-    let field: HTMLCanvasElement;
+    let field;
     if (place) {
-      field = document.getElementById(place) as HTMLCanvasElement;
+      field = document.getElementById(place);
     } else {
       field = document.createElement('canvas');
       const Body = document.getElementsByTagName('body').item(0);
-      if (Body) {
-        Body.appendChild(field);
-      }
+      Body.appendChild(field);
     }
     field.width = 320;
     field.height = 480;
     field.style.top = `${0}px`;
     field.style.left = `${0}px`;
-    // @ts-ignore
     field.tabIndex = '1';
     document.body.style.margin = '0em';
     const userAgent = navigator.userAgent;
@@ -1003,7 +883,6 @@ export class App extends Util {
     }
     this._css = css;
     this.field = field;
-    //@ts-ignore
     this.ctx = field.getContext('2d');
     this.fps = 30;// fps default
     this.scene = new Scene();
@@ -1044,22 +923,22 @@ export class App extends Util {
    * @method getChild
    * ゲームに登録されたプロパティの一致するオブジェクトを取得する
    * */
-  getChild(obj: Util) {
+  getChild(obj) {
     return this.scene.getChild(obj);
   }
   /**
    * @method getChildren
    * ゲームに登録されたプロパティの一致するオブジェクトをすべて取得する
    * */
-  getChildren(obj: Util) {
+  getChildren(obj) {
     return this.scene.getChildren(obj);
   }
   /**
    * @method colorToAlpha
    * ゲームに登録された画像の指定された色を透明にする
    * */
-  colorToAlpha(imagename: string, hex: string) {
-    let img: HTMLImageElement;
+  colorToAlpha(imagename, hex) {
+    let img;
     for (let i = 0, n = images.length; i < n; i++) {
       if (images[i].name == imagename) {
         img = images[i];
@@ -1070,8 +949,8 @@ export class App extends Util {
     img.addEventListener('load', function () {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const width = img.width;
-      const height = img.height;
+      const width = this.width;
+      const height = this.height;
       const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
       const hex = this.hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1100,7 +979,7 @@ export class App extends Util {
    * @param child
    * ゲームにオブジェクトを登録する
    * */
-  addChild(child: Util) {
+  addChild(child) {
     child.ctx = this.ctx;
     child.field = this.field;
     this.scene.addChild(child);
@@ -1141,7 +1020,7 @@ export class App extends Util {
    * @param height Number
    * ゲーム画面の解像度を設定する
    * */
-  setQuality(width: number, height: number) {
+  setQuality(width, height) {
     const field = this.field;
     field.width = width;
     field.height = height;
@@ -1152,7 +1031,7 @@ export class App extends Util {
    * @param height Number
    * ゲーム画面の大きさを設定する
    * */
-  setSize(width: number, height: number) {
+  setSize(width, height) {
     const style = this.field.style;
     style.width = `${width}px`;
     style.height = `${height}px`;
@@ -1234,16 +1113,14 @@ export class App extends Util {
    * @param scene Sceneオブジェクト
    * 現在のシーンを新しいシーンに置き換える
    * */
-  pushScene(scene: Scene) {
+  pushScene(scene) {
     const ctx = this.ctx;
     const field = this.field;
     let children = this.scene.children;
     for (let i = 0, n = children.length; i < n; i++) {
       const target = children[i];
       target.eventEnable = false;
-      if (target.onSceneRemoved) { 
-        target.onSceneRemoved(); 
-      }
+      if (target.onSceneremoved) { target.onSceneRemoved(); }
     }
     children = scene.children;
     for (let i = 0, n = children.length; i < n; i++) {
@@ -1251,22 +1128,16 @@ export class App extends Util {
       obj.ctx = ctx;
       obj.field = field;
       obj.eventEnable = true;
-      if (obj.onScenePushed) { 
-        obj.onScenePushed(); 
-      }
+      if (obj.onScenePushed) { obj.onScenePushed(); }
     }
     scene.parent = this;
     scene.ctx = ctx;
     scene.field = field;
     const style = this.field.style;
-    style.background = '';
+    style.background = null;
     style.backgroundColor = 'white';
-    if (scene.color && typeof scene.color === 'string') { 
-      this.setColor(scene.color); 
-    }
-    if (scene.image) { 
-      this.setImage(scene.image); 
-    }
+    if (scene.color) { this.setColor(scene.color); }
+    if (scene.image) { this.setImage(scene.image); }
     this.scene = scene;
   }
   /**
@@ -1274,9 +1145,9 @@ export class App extends Util {
    * @param color String
    * ゲームの背景色を設定する
    * */
-  setColor(color: string) {
+  setColor(color) {
     const style = this.field.style;
-    style.background = '';
+    style.background = null;
     style.backgroundColor = color;
   }
   /**
@@ -1284,7 +1155,7 @@ export class App extends Util {
    * @param img String
    * ゲームの背景画像を設定する
    * */
-  setImage(img: string) {
+  setImage(img) {
     const style = this.field.style;
     style.background = `url(${img}) no-repeat center`;
     style.backgroundSize = 'cover';
@@ -1338,27 +1209,20 @@ export class App extends Util {
         var ext = this.getExtention(data);
       }
       if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
-        const audio = new Audio(data);
-        // @ts-ignore TODO
-        audio.name = name;
+        var obj = new Audio(data);
+        obj.name = name;
         allLoaded++;
-        audio.addEventListener('canplaythrough', musicLoaded);
-        sounds.push(audio);
+        obj.addEventListener('canplaythrough', musicLoaded);
+        sounds.push(obj);
       } else if (ext == 'TTF' || ext == 'ttf') {
         const css = this._css;
         const rule = document.createTextNode(`${'@font-face{' +
           "font-family:'"}${name}';` +
           `src: url('${data}') format('truetype');` +
           '}');
-        // @ts-ignore TODO
-        if (css.styleSheet) { 
-          // @ts-ignore TODO
-          css.styleSheet.cssText = rule; 
-        } else { 
-          css.appendChild(rule); 
-        }
+        if (css.styleSheet) { css.styleSheet.cssText = rule; } else { css.appendChild(rule); }
       } else if (ext == 'svg') {
-        const obj = document.createElement('object');
+        var obj = document.createElement('object');
         obj.addEventListener('load', svgLoaded);
         obj.data = data;
         obj.name = name;
@@ -1366,7 +1230,7 @@ export class App extends Util {
         allLoaded++;
         svgs.push(obj);
       } else if (ext == 'png' || ext == 'gif' || ext == 'jpeg' || ext == 'jpg') {
-        const obj = new Image();
+        var obj = new Image();
         obj.addEventListener('load', imgLoaded);
         obj.src = data;
         obj.name = name;
@@ -1381,17 +1245,7 @@ export class App extends Util {
  * @extends Atlas.Util
  * */
 export class Thing extends Util {
-  public collisionShape: 'box' | 'circle';
-  public alpha: number;
-  public prepared: boolean;
-  public spriteWidth!: number;
-  public spriteHeight!: number;
-  public _scaleX!: number;
-  public _scaleY!: number;
-  public _rot!: number;
-  public img!: number;
-
-  constructor(width = 0, height = 0) {
+  constructor(width, height) {
     super();
     this.x = 0;
     this.y = 0;
@@ -1402,8 +1256,7 @@ export class Thing extends Util {
     this.prepared = false;/* 描画の準備が完了 */
     this.alpha = 1;
   }
-
-  _scaleBy(obj: TweenState) {
+  _scaleBy(obj) {
     if (obj.time === 0) {
       obj.toWidth = this.width * obj.scaleX;
       obj.toHeight = this.height * obj.scaleY;
@@ -1448,7 +1301,7 @@ export class Thing extends Util {
    * @param target Thingオブジェクト
    * 自分がターゲットと接触しているかを判定する
    * */
-  hitTest(target: Thing) { /* 衝突判定（自分の矩形は傾いてないものとする） */
+  hitTest(target) { /* 衝突判定（自分の矩形は傾いてないものとする） */
     let thisx = this._x || this.x;
     let thisy = this._y || this.y;
     const thisW = this._width || this.width;
@@ -1488,7 +1341,7 @@ export class Thing extends Util {
    * @param range Number
    * 自分がターゲットから半径range以内にいるかどうかを判定する
    * */
-  within(target: Thing, range: number) {
+  within(target, range) {
     const thisx = this._x || this.x;
     const thisy = this._y || this.y;
     const thisw = this._width || this.width;
@@ -1542,7 +1395,7 @@ export class Thing extends Util {
    * @param sy Number
    * オブジェクトを(sx,sy)倍する
    * */
-  scale(sx: number, sy: number) {
+  scale(sx, sy) {
     if (!this.width) {
       this._scaleX = sx;
       this._scaleY = sy;
@@ -1558,7 +1411,7 @@ export class Thing extends Util {
    * @param h Number
    * オブジェクトを幅w、高さhに設定する
    * */
-  setSize(w: number, h: number) {
+  setSize(w, h) {
     this.width = w;
     this.height = h;
   }
@@ -1569,21 +1422,10 @@ export class Thing extends Util {
  * SVGを描画するためのクラス
  * */
 export class Shape extends Thing {
-  protected obj: number;
-  protected svgid: string;
-  protected colorStops;
-  public strokeColor: string;
-  public closeMode: boolean;
-  public strokeMode: boolean;
-  public gradientType!: number;
-  public path!: SVGDrawLineState[];
-  public gradientStyle!: GradientStyle;
-  public color: string | CanvasGradient;
-
-  constructor(path: string, color: string, lineColor: string) {
+  constructor(path, color, lineColor) {
     super(0, 0);
     this.obj = -1;
-    this.svgid = '';
+    this.svgid = -1;
     this._basicConstructor = 'Shape';
     this.color = color || 'original';
     this.strokeColor = lineColor || 'original';
@@ -1602,7 +1444,7 @@ export class Shape extends Thing {
    * @param height Number
    * スプライトの大きさを設定する
    * */
-  setSpriteSize(width: number, height: number) {
+  setSpriteSize(width, height) {
     this.spriteWidth = width;
     this.spriteHeight = height;
   }
@@ -1611,7 +1453,7 @@ export class Shape extends Thing {
    * @param path String
    * ゲームにロードされたSVG画像をロードする
    * */
-  setImage(path: string) {
+  setImage(path) {
     for (let i = 0, n = svgs.length; i < n; i++) {
       if (path == svgs[i].name) {
         this.obj = i;
@@ -1670,41 +1512,40 @@ export class Shape extends Thing {
       while (true) {
         if (args.length == length[type]) {
           args.unshift(command);
-          let obj = {} as SVGDrawLineState;
           if (args[0] == 'q') {
-           obj = { method: 'quadraticCurveBy', cpx: args[1], cpy: args[2], x: args[3], y: args[4] };
+            var obj = { method: 'quadraticCurveBy', cpx: args[1], cpy: args[2], x: args[3], y: args[4] };
           } else if (args[0] == 'Q') {
-           obj = { method: 'quadraticCurveTo', cpx: args[1], cpy: args[2], x: args[3], y: args[4] };
+            var obj = { method: 'quadraticCurveTo', cpx: args[1], cpy: args[2], x: args[3], y: args[4] };
           } else if (args[0] == 'l') {
-           obj = { method: 'lineBy', x: args[1], y: args[2] };
+            var obj = { method: 'lineBy', x: args[1], y: args[2] };
           } else if (args[0] == 'L') {
-           obj = { method: 'lineTo', x: args[1], y: args[2] };
+            var obj = { method: 'lineTo', x: args[1], y: args[2] };
           } else if (args[0] == 'm') {
-           obj = { method: 'moveBy', x: args[1], y: args[2] };
+            var obj = { method: 'moveBy', x: args[1], y: args[2] };
           } else if (args[0] == 'M') {
-           obj = { method: 'moveTo', x: args[1], y: args[2] };
+            var obj = { method: 'moveTo', x: args[1], y: args[2] };
           } else if (args[0] == 'c') {
-           obj = { method: 'bezierCurveBy', cpx1: args[1], cpy1: args[2], cpx2: args[3], cpy2: args[4], x: args[5], y: args[6] };
+            var obj = { method: 'bezierCurveBy', cpx1: args[1], cpy1: args[2], cpx2: args[3], cpy2: args[4], x: args[5], y: args[6] };
           } else if (args[0] == 'C') {
-           obj = { method: 'bezierCurveTo', cpx1: args[1], cpy1: args[2], cpx2: args[3], cpy2: args[4], x: args[5], y: args[6] };
+            var obj = { method: 'bezierCurveTo', cpx1: args[1], cpy1: args[2], cpx2: args[3], cpy2: args[4], x: args[5], y: args[6] };
           } else if (args[0] == 'h') {
-           obj = { method: 'horizontalBy', x: args[1] };
+            var obj = { method: 'horizontalBy', x: args[1] };
           } else if (args[0] == 'H') {
-           obj = { method: 'horizontalTo', x: args[1] };
+            var obj = { method: 'horizontalTo', x: args[1] };
           } else if (args[0] == 'v') {
-           obj = { method: 'verticalBy', y: args[1] };
+            var obj = { method: 'verticalBy', y: args[1] };
           } else if (args[0] == 'V') {
-           obj = { method: 'verticalTo', y: args[1] };
+            var obj = { method: 'verticalTo', y: args[1] };
           } else if (args[0] == 's') {
-           obj = { method: 'bezierCurveShortBy', cpx2: args[1], cpy2: args[2], x: args[3], y: args[4] };
+            var obj = { method: 'bezierCurveShortBy', cpx2: args[1], cpy2: args[2], x: args[3], y: args[4] };
           } else if (args[0] == 'S') {
-           obj = { method: 'bezierCurveShortTo', cpx2: args[1], cpy2: args[2], x: args[3], y: args[4] };
+            var obj = { method: 'bezierCurveShortTo', cpx2: args[1], cpy2: args[2], x: args[3], y: args[4] };
           } else if (args[0] == 't') {
-           obj = { method: 'quadraticCurveShortBy', x: args[1], y: args[2] };
+            var obj = { method: 'quadraticCurveShortBy', x: args[1], y: args[2] };
           } else if (args[0] == 'T') {
-           obj = { method: 'quadraticCurveShortTo', x: args[1], y: args[2] };
+            var obj = { method: 'quadraticCurveShortTo', x: args[1], y: args[2] };
           } else {
-           obj = {};
+            var obj = {};
           }
           return data.push(obj);
         }
@@ -1732,7 +1573,8 @@ export class Shape extends Thing {
    * @method setLinearGradient
    * オブジェクトに対して線形グラデーションを設定する
    * */
-  setLinearGradient(x1: number, y1: number, x2: number, y2: number) {
+  setLinearGradient(x1, y1, x2, y2) {
+    const ctx = this.ctx;
     this.gradientStyle = { x1, y1, x2, y2 };
     this.gradientType = 1;
   }
@@ -1741,6 +1583,7 @@ export class Shape extends Thing {
    * オブジェクトに対して円形グラデーションを設定する
    * */
   setRadialGradient(x1, y1, r1, x2, y2, r2) {
+    const ctx = this.ctx;
     if (!x2) {
       x2 = x1;
       y2 = y1;
@@ -1755,9 +1598,7 @@ export class Shape extends Thing {
     for (let i = 0, n = stops.length; i < n; i++) {
       const stop = stops[i];
       const color = stop.color;
-      if (typeof grad !== 'string') {
-        grad.addColorStop(stop.offset, color);
-      }
+      grad.addColorStop(stop.offset, color);
     }
     this.color = grad;
   }
@@ -1780,7 +1621,7 @@ export class Shape extends Thing {
     this._addColorStops(stops);
   }
 
-  removeColorStopAt(num: number) {
+  removeColorStopAt(num) {
     this.colorStops.splice(num, 1);
     this.setColorStops(this.colorStops);
   }
@@ -1799,16 +1640,13 @@ export class Shape extends Thing {
   }
 
   _onLoad() {
-    let svg: HTMLElement;
-    let svgdoc: HTMLElement;
     if (this.obj != -1) {
-      svgdoc = svgs[this.obj].getSVGDocument();
+      var svgdoc = svgs[this.obj].getSVGDocument();
       var element = svgdoc.getElementsByTagName('path')[0] || svgdoc.getElementsByTagName('circle')[0] || svgdoc.getElementsByTagName('rect')[0] || svgdoc.getElementsByTagName('polygon')[0];
-      // @ts-ignore TODO
-      svg = svgdoc.getElementsByTagName('svg')[0];
+      var svg = svgdoc.getElementsByTagName('svg')[0];
     } else {
-      svg = document.getElementById(this.svgid);
-      svgdoc = svg;
+      var svg = document.getElementById(this.svgid);
+      var svgdoc = svg;
       var element = svgdoc.getElementsByTagName('path')[0] || svgdoc.getElementsByTagName('circle')[0] || svgdoc.getElementsByTagName('rect')[0] || svgdoc.getElementsByTagName('polygon')[0];
     }
     const color = svg.getElementsByTagName('linearGradient')[0] || svgdoc.getElementsByTagName('radialGradient')[0];
@@ -1817,7 +1655,7 @@ export class Shape extends Thing {
       const stops = [];
       for (let i = 0, n = stopsEle.length; i < n; i++) {
         const ele = stopsEle[i];
-        const obj = {} as ColorStop;
+        const obj = {};
         obj.offset = ele.getAttribute('offset');
         let styleCol = ele.style.stopColor.toString();
         const op = ele.style.stopOpacity;
@@ -1873,8 +1711,8 @@ export class Shape extends Thing {
         const viewBox = svg.getAttribute('viewBox');
         if (viewBox) {
           const data = viewBox.split(' ');
-          this.spriteWidth = parseInt(data[2]);
-          this.spriteHeight = parseInt(data[3]);
+          this.spriteWidth = data[2];
+          this.spriteHeight = data[3];
         }
       }
     }
@@ -2066,8 +1904,6 @@ export class Circle extends Thing {
  * 画像等を描画するクラス
  * */
 export class Sprite extends Thing {
-  public img!: number;
-
   constructor(name, width = null, height = null) {
     super(width, height);
     this.setImage(name, width, height);
@@ -2079,7 +1915,7 @@ export class Sprite extends Thing {
    * @method animate
    * フレームを変えてスプライトをアニメーションさせる
    * */
-  animate(array: number[], frameRate: number, frame: number) {
+  animate(array, frameRate, frame) {
     const obj = Tween(this, 'animate', frame);
     obj.array = array;
     obj.frameRate = frameRate;
@@ -2087,19 +1923,18 @@ export class Sprite extends Thing {
     this.mover.push(obj);
     return this;
   }
-  
-  _animate(obj: TweenState) {
+  _animate(obj) {
     if (obj.time == 0) { this.frame = obj.array[0]; }
     if (obj.time % obj.frameRate == 0) {
       obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
       this.frame = obj.array[obj.frameIdx];
     }
   }
-  setSpriteSize(width: number, height: number) {
+  setSpriteSize(width, height) {
     this.spriteWidth = width;
     this.spriteHeight = height;
   }
-  setImage(name: string, width: number, height: number) {
+  setImage(name, width, height) {
     if (width && height) { this.setSpriteSize(width, height); }
     const length = images.length;
     for (let i = 0; i < length; i++) {
@@ -2130,7 +1965,7 @@ export class Sprite extends Thing {
     this.prepared = true;
   }
   getImageSize() {
-    const obj = {} as Size;
+    const obj = {};
     const img = images[this.img];
     obj.width = img.width;
     obj.height = img.height;
@@ -2172,15 +2007,12 @@ export class Sprite extends Thing {
  * @extends Atlas.Sprite
  * */
 export class Map extends Sprite {
-  public drawData: number[][]
-  public hitData: number[][]
-
-  constructor(name: string, width: number, height: number) {
+  constructor(name, width, height) {
     super(name, width, height);
-    this.drawData = [];
-    this.hitData = [];
+    this.drawData;
+    this.hitData;
   }
-  intersect(ex: number, ey: number) {
+  intersect(ex, ey) {
     const array = this.hitData;
     const x = array[0].length;
     const y = array.length;
@@ -2253,12 +2085,7 @@ export class Map extends Sprite {
  * @extends Atlas.Util
  * */
 export class Text extends Util {
-  public size: string;
-  public spaceWidth: number;
-  public font: string;
-  public string: string;
-
-  constructor(string: string, col: string, size: number, font: string) {
+  constructor(string, col, size, font) {
     super();
     this._basicConstructor = 'Text';
     this.x = 0;
@@ -2272,13 +2099,13 @@ export class Text extends Util {
     if (string) { this.string = string; } else { this.string = ''; }
     if (col) { this.color = col; } else { this.color = 'white'; }
   }
-  setSize(size: number) {
+  setSize(size) {
     this.size = `${size}px`;
   }
-  setFont(font: string) {
+  setFont(font) {
     this.font = `'${font}'`;
   }
-  intersect(ex: number, ey: number) {
+  intersect(ex, ey) {
     const thisx = this._x || this.x;
     const thisy = this._y || this.y;
     const width = parseInt(this.size) * this.scaleX * this.string.length;
@@ -2293,11 +2120,11 @@ export class Text extends Util {
     if (xx < width / 2.0 && yy < height / 2.0) { return true; }
     return false;
   }
-  scale(x: number, y: number) {
+  scale(x, y) {
     this.scaleX *= x;
     this.scaleY *= y;
   }
-  _scaleBy(obj: TweenState) {
+  _scaleBy(obj) {
     if (obj.time == 0) {
       obj.diffWidth = obj.scaleX - this.scaleX;
       obj.diffHeight = obj.scaleY - this.scaleY;
@@ -2347,7 +2174,7 @@ export class Group extends Thing {
     this.y = 0;
     this._basicConstructor = 'Group';
   }
-  addChild(sprite: Util) {
+  addChild(sprite) {
     sprite.parent = this;
     this.children.push(sprite);
     if (this.parent) {
@@ -2361,13 +2188,13 @@ export class Group extends Thing {
       this.addChild(arguments[i]);
     }
   }
-  public getChild(obj: Search) {
+  public getChild(obj) {
     const array = this.getChildren(obj);
     let ret = array[0];
     if (!ret) { ret = null; }
     return ret;
   }
-  public getChildren(obj: Search) {
+  public getChildren(obj) {
     const ret = [];
     const children = this.children;
     for (let i = 0, n = children.length; i < n; i++) {
@@ -2387,11 +2214,11 @@ export class Group extends Thing {
     }
     return ret;
   }
-  public removeChild(obj: Search) {
+  public removeChild(obj) {
     const child = this.getChild(obj);
     child.remove();
   }
-  public removeChildren(obj: Search) {
+  public removeChildren(obj) {
     const children = this.getChildren(obj);
     for (let i = 0, n = children.length; i < n; i++) {
       children[i].remove();
@@ -2406,14 +2233,12 @@ export class Group extends Thing {
  * @extends Atlas.Group
  * */
 export class Scene extends Group {
-  public image!: string;
-
   constructor() {
     super();
     this._basicConstructor = 'Scene';
     this._remove = false;
   }
-  addChild(sprite: Util) {
+  addChild(sprite) {
     sprite.parent = this;
     if (this.ctx && this.field) {
       sprite.ctx = this.ctx;
@@ -2478,11 +2303,6 @@ export class Scene extends Group {
  * @extends Atlas.Group
  * */
 export class Layer extends Group {
-  
-  protected firstWidth: number;
-  protected firstHeight: number;
-
-
   constructor() {
     super();
     this.rot = 0;
@@ -2576,7 +2396,7 @@ export class Layer extends Group {
    * @param child Atlas.Thingクラス
    * 登録されているオブジェクトを解放する
    * */
-  releaseChild(child: Util) {
+  releaseChild(child) {
     const parent = this.parent;
     child.x = child._x;
     child.y = child._y;
@@ -2611,7 +2431,7 @@ export class Layer extends Group {
    * @param obj Object
    * プロパティの値が一致するオブジェクトを削除する
    * */
-  removeChildrenByProperty(obj: Util) {
+  removeChildrenByProperty(obj) {
     const children = this.getChildren(obj);
     for (let i = 0, n = children.length; i < n; i++) {
       children[i].remove();
@@ -2631,7 +2451,7 @@ export class Layer extends Group {
     return this;
   }
 
-  _setAbsPos(child: Util) {
+  _setAbsPos(child) {
     const centerX = (this.width / 2);
     const centerY = (this.height / 2);
     const rot = this.rot;
