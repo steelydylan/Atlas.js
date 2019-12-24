@@ -911,12 +911,12 @@ export class Util {
  * @extends Atlas.Util
  * */
 export class App extends Util {
-  public preScene: Scene;
-  public preLoadInterval: number;
+  public preScene!: Scene;
+  public preLoadInterval!: number;
   enterFrame!: () => void;
   onLoad!: () => void;
 
-  constructor(place) {
+  constructor(place: string) {
     super();
     this.assetPath = '';
     this._basicConstructor = 'App';
@@ -924,18 +924,21 @@ export class App extends Util {
     css.media = 'screen';
     css.type = 'text/css';
     document.getElementsByTagName('head')[0].appendChild(css);
-    let field;
+    let field: HTMLCanvasElement;
     if (place) {
-      field = document.getElementById(place);
+      field = document.getElementById(place) as HTMLCanvasElement;
     } else {
       field = document.createElement('canvas');
       const Body = document.getElementsByTagName('body').item(0);
-      Body.appendChild(field);
+      if (Body) {
+        Body.appendChild(field);
+      }
     }
     field.width = 320;
     field.height = 480;
     field.style.top = `${0}px`;
     field.style.left = `${0}px`;
+    // @ts-ignore
     field.tabIndex = '1';
     document.body.style.margin = '0em';
     const userAgent = navigator.userAgent;
@@ -1007,7 +1010,7 @@ export class App extends Util {
    * ゲームに登録された画像の指定された色を透明にする
    * */
   colorToAlpha(imagename: string, hex: string) {
-    let img;
+    let img: HTMLImageElement;
     for (let i = 0, n = images.length; i < n; i++) {
       if (images[i].name == imagename) {
         img = images[i];
@@ -1328,12 +1331,12 @@ export class Thing extends Util {
   public collisionShape: 'box' | 'circle';
   public alpha: number;
   public prepared: boolean;
-  public spriteWidth: number;
-  public spriteHeight: number;
-  public _scaleX: number;
-  public _scaleY: number;
-  public _rot: number;
-  public img: number;
+  public spriteWidth!: number;
+  public spriteHeight!: number;
+  public _scaleX!: number;
+  public _scaleY!: number;
+  public _rot!: number;
+  public img!: number;
 
   constructor(width = 0, height = 0) {
     super();
