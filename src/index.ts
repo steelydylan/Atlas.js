@@ -1245,6 +1245,10 @@ export class App extends Util {
  * @extends Atlas.Util
  * */
 export class Thing extends Util {
+  collisionShape: 'box' | 'circle';
+  alpha: number;
+  _rot: number;
+  
   constructor(width, height) {
     super();
     this.x = 0;
@@ -1256,7 +1260,8 @@ export class Thing extends Util {
     this.prepared = false;/* 描画の準備が完了 */
     this.alpha = 1;
   }
-  _scaleBy(obj) {
+
+  _scaleBy(obj: TweenState) {
     if (obj.time === 0) {
       obj.toWidth = this.width * obj.scaleX;
       obj.toHeight = this.height * obj.scaleY;
