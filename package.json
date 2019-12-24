@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
-    "build:lib": "npm run babel",
+    "build:lib": "tsc",
     "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone Atlas -o ./build/Atlas.js && npm run build:global:min",
     "build:global:min": "uglifyjs ./build/Atlas.js -m -c --comments -o ./build/Atlas.min.js",
     "babel": "babel src --out-dir lib",
@@ -41,6 +41,7 @@
     "npm-run-all": "^4.0.2",
     "onchange": "^3.2.1",
     "power-assert": "^1.4.2",
+    "typescript": "^3.7.4",
     "uglify-js": "^2.8.22",
     "watchify": "^3.9.0"
   }

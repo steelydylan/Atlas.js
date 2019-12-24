@@ -1,6 +1,6 @@
-const images = [];
-const sounds = [];
-const svgs = [];
+const images: string[] = [];
+const sounds: string[] = [];
+const svgs: string[] = [];
 let allLoaded = 0;
 const isMobile = (() => {
   const userAgent = navigator.userAgent;
@@ -13,7 +13,7 @@ const orientation = ((e) => {
   if (mq.matches) { return 'portrait'; }
   return 'landscape';
 })();
-const setKeyState = (ret, e) => {
+const setKeyState = (ret, e: KeyboardEvent) => {
   const which = e.which;
   switch (which) {
     case 13:
@@ -188,16 +188,16 @@ export class Util {
   public visible: boolean;
   public eventEnable: boolean;
   public drawMode: 'source-over';
-  public assetPath: string;
+  public assetPath!: string;
   public moverIndex: number;
   public eventListener: EventListenerState;
   public mover: TweenState[];
-  public _remove: boolean;
-  public _leave: boolean;
-  public _css: HTMLStyleElement;
-  public _basicConstructor: string;
-  public _x: number;
-  public _y: number;
+  public _remove!: boolean;
+  public _leave!: boolean;
+  public _css!: HTMLStyleElement;
+  public _basicConstructor!: string;
+  public _x!: number;
+  public _y!: number;
   public _rot: number;
   public scaleX: number;
   public scaleY: number;
@@ -1006,7 +1006,7 @@ export class App extends Util {
    * @method colorToAlpha
    * ゲームに登録された画像の指定された色を透明にする
    * */
-  colorToAlpha(imagename, hex) {
+  colorToAlpha(imagename: string, hex: string) {
     let img;
     for (let i = 0, n = images.length; i < n; i++) {
       if (images[i].name == imagename) {
@@ -1018,8 +1018,8 @@ export class App extends Util {
     img.addEventListener('load', function () {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const width = this.width;
-      const height = this.height;
+      const width = img.width;
+      const height = img.height;
       const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
       const hex = this.hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1486,7 +1486,7 @@ export class Thing extends Util {
    * @param sy Number
    * オブジェクトを(sx,sy)倍する
    * */
-  scale(sx, sy) {
+  scale(sx: number, sy: number) {
     if (!this.width) {
       this._scaleX = sx;
       this._scaleY = sy;
@@ -2350,14 +2350,14 @@ export class Group extends Thing {
  * @extends Atlas.Group
  * */
 export class Scene extends Group {
-  public image: string;
+  public image!: string;
 
   constructor() {
     super();
     this._basicConstructor = 'Scene';
     this._remove = false;
   }
-  addChild(sprite) {
+  addChild(sprite: Util) {
     sprite.parent = this;
     if (this.ctx && this.field) {
       sprite.ctx = this.ctx;

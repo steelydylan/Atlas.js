@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+      "target": "es5",
+      "moduleResolution": "Classic",
+      "outDir": "./lib",
+      "sourceMap": true,
+      "declaration": true,
+      "strict": true,
+      "lib": [
+          "es2018",
+          "dom"
+      ]
+  },
+  "include": [
+      "src"
+  ],
+  "exclude": [
+      "node_modules",
+      "**/__tests__/*"
+  ]
+}
