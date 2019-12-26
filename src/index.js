@@ -985,7 +985,7 @@ export class App extends Util {
       if (target.onSceneremoved) { target.onSceneRemoved(); }
     }
     children = scene.children;
-    for (i = 0, n = children.length; i < n; i++) {
+    for (let i = 0, n = children.length; i < n; i++) {
       const obj = children[i];
       obj.ctx = ctx;
       obj.field = field;
