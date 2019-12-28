@@ -1,9 +1,32 @@
-import { Key, TweenState } from './types';
+import { Key, TweenState, Animation, ImageAsset } from './types';
 
 const images: HTMLImageElement[] = [];
 const sounds: HTMLAudioElement[] = [];
 const svgs: HTMLOrSVGElement[] = [];
+
 let allLoaded = 0;
+
+export const addAsset = () => {
+  allLoaded++;
+}
+
+export const finishLoad = () => {
+  allLoaded--;
+}
+
+export const isLoaded = () => allLoaded === 0;
+
+export const getImageAssets = () => {
+  return images;
+}
+
+export const getSoundAssets = () => {
+  return sounds;
+}
+
+export const getSvgAssets = () => {
+  return svgs;
+}
 
 export const isMobile = (() => {
   const userAgent = navigator.userAgent;
@@ -13,8 +36,9 @@ export const isMobile = (() => {
 
 export const orientation = ((e) => {
   const mq = window.matchMedia('(orientation: portrait)');
-  const orientation = '';
-  if (mq.matches) { return 'portrait'; }
+  if (mq.matches) { 
+    return 'portrait'; 
+  }
   return 'landscape';
 })();
 
@@ -80,6 +104,8 @@ const keydown = (() => {
   clearKeyState(ret);
   return ret;
 })();
+
+export const getKeydown = () => keydown;
 
 export const Tween = (that: any, kind: Animation, frame: number) => {
   const mover = that.mover;

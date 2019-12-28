@@ -35,7 +35,7 @@ export class Group extends Thing {
     }
     return ret;
   }
-  public getChildren(obj: Util) {
+  public getChildren(obj: { [key: string]: any }) {
     const ret = [];
     const children = this.children;
     for (let i = 0, n = children.length; i < n; i++) {
@@ -43,11 +43,15 @@ export class Group extends Thing {
       for (const key in obj) {
         if (key == '$not') {
           for (const key2 in obj.$not) {
+            //@ts-ignore
             if (obj.$not[key2] == children[i][key2]) {
               flag = false;
             }
           }
-        } else if (obj[key] != children[i][key]) { flag = false; }
+          //@ts-ignore
+        } else if (obj[key] != children[i][key]) { 
+          flag = false; 
+        }
       }
       if (flag == true) {
         ret.push(children[i]);

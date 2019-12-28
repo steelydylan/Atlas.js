@@ -1,5 +1,5 @@
 import { Group } from './group';
-import { Util } from './util';
+import { Thing } from './thing';
 /**
  * @class Atlas.Layer
  * @extends Atlas.Group
@@ -8,7 +8,6 @@ export class Layer extends Group {
 
   protected firstWidth: number;
   protected firstHeight: number;
-
 
   constructor() {
     super();
@@ -103,7 +102,7 @@ export class Layer extends Group {
    * @param child Atlas.Thingクラス
    * 登録されているオブジェクトを解放する
    * */
-  releaseChild(child: Util) {
+  releaseChild(child: Thing) {
     const parent = this.parent;
     child.x = child._x;
     child.y = child._y;
@@ -138,7 +137,7 @@ export class Layer extends Group {
    * @param obj Object
    * プロパティの値が一致するオブジェクトを削除する
    * */
-  removeChildrenByProperty(obj: Util) {
+  removeChildrenByProperty(obj: Thing) {
     const children = this.getChildren(obj);
     for (let i = 0, n = children.length; i < n; i++) {
       children[i].remove();
@@ -158,7 +157,7 @@ export class Layer extends Group {
     return this;
   }
 
-  _setAbsPos(child: Util) {
+  _setAbsPos(child: Thing) {
     const centerX = (this.width / 2);
     const centerY = (this.height / 2);
     const rot = this.rot;

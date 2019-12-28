@@ -477,7 +477,7 @@ export class Box extends Thing {
  * 円を描画するためのクラス
  * */
 export class Circle extends Thing {
-  constructor(col, radius) {
+  constructor(col: string, radius: number) {
     super(radius * 2, radius * 2);
     this._basicConstructor = 'Shape.Circle';
     this.color = col;

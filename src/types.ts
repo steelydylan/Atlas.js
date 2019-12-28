@@ -10,6 +10,12 @@ export type EventListenerState = {
   orientationChange: boolean;
 }
 
+export type ImageAsset = {
+  hex?: string;
+  index?: number;
+  name: string;
+}
+
 export type GradientStyle = {
   x1: number,
   y1: number,

@@ -20,7 +20,7 @@ export class Sprite extends Thing {
    * @method animate
    * フレームを変えてスプライトをアニメーションさせる
    * */
-  animate(array: TweenState[], frameRate: number, frame: number) {
+  animate(array: number[], frameRate: number, frame: number) {
     const obj = Tween(this, 'animate', frame);
     obj.array = array;
     obj.frameRate = frameRate;
@@ -41,10 +41,14 @@ export class Sprite extends Thing {
     this.spriteHeight = height;
   }
   setImage(name: string, width: number, height: number) {
-    if (width && height) { this.setSpriteSize(width, height); }
+    if (width && height) { 
+      this.setSpriteSize(width, height); 
+    }
     const length = images.length;
     for (let i = 0; i < length; i++) {
-      if (images[i].name == name) { this.img = i; }
+      if (images[i].name == name) { 
+        this.img = i; 
+      }
     }
   }
   getImage() {

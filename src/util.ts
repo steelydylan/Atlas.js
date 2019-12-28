@@ -1,4 +1,6 @@
-import { EventListenerState, TweenState } from './types';
+import { EventListenerState, TweenState, Key } from './types';
+import { isMobile, orientation, Tween } from './functions';
+import { Scene } from './scene';
 /**
  * @class Atlas.Util
  * */

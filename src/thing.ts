@@ -14,6 +14,7 @@ export class Thing extends Util {
   public _scaleY!: number;
   public _rot!: number;
   public img!: number;
+  public startRot!: boolean;
 
   constructor(width = 0, height = 0) {
     super();

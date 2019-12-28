@@ -1,13 +1,14 @@
 import { Util } from './util';
 import { Scene } from './scene';
-import { isMobile, clearKeyState } from './functions';
+import { Size } from './types';
+import { isMobile, clearKeyState, setKeyState, getImageAssets, getKeydown, isLoaded, finishLoad, addAsset } from './functions';
 /**
  * @class Atlas.App
  * @extends Atlas.Util
  * */
 export class App extends Util {
   public preScene!: Scene;
-  public preLoadInterval!: TimerHandler;
+  public preLoadInterval!: number;
   enterFrame!: () => void;
   onLoad!: () => void;
 
@@ -36,7 +37,6 @@ export class App extends Util {
     // @ts-ignore
     field.tabIndex = '1';
     document.body.style.margin = '0em';
-    const userAgent = navigator.userAgent;
     if (isMobile) {
       field.style.width = `${window.innerWidth}px`;// mobile default
       field.style.height = `${window.innerHeight}px`;// mobile default
@@ -45,8 +45,14 @@ export class App extends Util {
       field.style.width = `${480}px`;
       field.style.height = `${620}px`;
       field.addEventListener('mousedown', function () { if (this.tabIndex != -1) this.focus(); });
-      field.addEventListener('keyup', () => { clearKeyState(keydown); }, false);
-      field.addEventListener('keydown', (e) => { setKeyState(keydown, e); });
+      field.addEventListener('keyup', () => { 
+        const keydown = getKeydown();
+        clearKeyState(keydown); 
+      }, false);
+      field.addEventListener('keydown', (e) => { 
+        const keydown = getKeydown();
+        setKeyState(keydown, e); 
+      });
     }
     this._css = css;
     this.field = field;
@@ -106,40 +112,44 @@ export class App extends Util {
    * ゲームに登録された画像の指定された色を透明にする
    * */
   colorToAlpha(imagename: string, hex: string) {
-    let img: HTMLImageElement;
+    let img: HTMLImageElement = new Image();
+    const images = getImageAssets();
     for (let i = 0, n = images.length; i < n; i++) {
       if (images[i].name == imagename) {
         img = images[i];
-        img.hex = hex;
-        img.index = i;
+        img.dataset.hex = hex;
+        img.dataset.index = `${i}`;
       }
     }
-    img.addEventListener('load', function () {
+    img.addEventListener('load', () => {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
       const width = img.width;
       const height = img.height;
       const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      const hex = this.hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+      if (!img.dataset.hex) {
+        return;
+      }
+      const hex = img.dataset.hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       const color = result ? {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16)
       } : null;
-      ctx.drawImage(this, 0, 0);
+      ctx.drawImage(img, 0, 0);
       const ImageData = ctx.getImageData(0, 0, width, height);
       const data = ImageData.data;
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
           const t = i * (width * 4) + (j * 4);
-          if (data[t] == color.r && data[t + 1] == color.g && data[t + 2] == color.b) { data[t + 3] = 0; }
+          if (color && data[t] == color.r && data[t + 1] == color.g && data[t + 2] == color.b) { data[t + 3] = 0; }
         }
       }
       ctx.putImageData(ImageData, 0, 0);// put image data back
       const newimg = new Image();
       newimg.src = canvas.toDataURL();
-      images[this.index] = newimg;
+      images[parseInt(img.dataset.index as string)] = newimg;
     });
   }
   /**
@@ -239,7 +249,7 @@ export class App extends Util {
     this.useEvent();
     const ctx = this.ctx;
     ctx.clearRect(0, 0, field.width, field.height);
-    if (allLoaded > 0) {
+    if (isLoaded()) {
       if (this.preScene) {
         this.preScene._enterFrame();
       }
@@ -308,8 +318,12 @@ export class App extends Util {
     const style = this.field.style;
     style.background = '';
     style.backgroundColor = 'white';
-    if (scene.color) { this.setColor(scene.color); }
-    if (scene.image) { this.setImage(scene.image); }
+    if (scene.color) { 
+      this.setColor(scene.color); 
+    }
+    if (scene.image) { 
+      this.setImage(scene.image); 
+    }
     this.scene = scene;
   }
   /**
@@ -317,10 +331,12 @@ export class App extends Util {
    * @param color String
    * ゲームの背景色を設定する
    * */
-  setColor(color: string) {
+  setColor(color: string | CanvasGradient) {
     const style = this.field.style;
     style.background = '';
-    style.backgroundColor = color;
+    if (typeof color === 'string') {
+      style.backgroundColor = color;
+    }
   }
   /**
    * @method setImage
@@ -348,24 +364,24 @@ export class App extends Util {
    * @method load
    * 音楽や画像等の素材をロードする
    * */
-  load() {
+  load(...args: string[]) {
     const musicLoaded = function () {
-      allLoaded--;
+      finishLoad();
       console.log(`${this.src} is loaded`);
     };
     const svgLoaded = function () {
-      allLoaded--;
+      finishLoad();
       this.style.display = 'none';
       this.loaded = true;
       console.log(`${this.data} is loaded`);
     };
     const imgLoaded = function () {
-      allLoaded--;
+      finishLoad();
       this.loaded = true;
       console.log(`${this.src} is loaded`);
     };
-    for (let i = 0, n = arguments.length; i < n; i++) {
-      var obj = arguments[i];
+    for (let i = 0, n = args.length; i < n; i++) {
+      var obj = args[i];
       var data = obj;
       var name = obj;
       if (obj instanceof Array) {
@@ -384,7 +400,7 @@ export class App extends Util {
         const audio = new Audio(data);
         // @ts-ignore TODO
         audio.name = name;
-        allLoaded++;
+        addAsset();
         audio.addEventListener('canplaythrough', musicLoaded);
         sounds.push(audio);
       } else if (ext == 'TTF' || ext == 'ttf') {
@@ -406,14 +422,14 @@ export class App extends Util {
         obj.data = data;
         obj.name = name;
         document.body.appendChild(obj);
-        allLoaded++;
+        addAsset();
         svgs.push(obj);
       } else if (ext == 'png' || ext == 'gif' || ext == 'jpeg' || ext == 'jpg') {
         const obj = new Image();
         obj.addEventListener('load', imgLoaded);
         obj.src = data;
         obj.name = name;
-        allLoaded++;
+        addAsset();
         images.push(obj);
       }
     }
