@@ -1,5 +1,5 @@
-import { EventListenerState, TweenState, Key } from './types';
-import { isMobile, orientation, Tween } from './functions';
+import { EventListenerState, TweenState, Key, Position, TouchEventWithPos } from './types';
+import { isMobile, orientation, Tween, getSoundAssets, getKeydown } from './functions';
 import { Scene } from './scene';
 /**
  * @class Atlas.Util
@@ -44,6 +44,8 @@ export class Util {
   public color!: string | CanvasGradient;
   public frame!: number;
   public prepared!: boolean;
+  public startRot!: boolean;
+  public grouped!: boolean;
   // TODO
   public multiTouchStart(pos?: Position[]) { };
   public multiTouchMove(pos?: Position[]) { };
@@ -323,7 +325,9 @@ export class Util {
    * eventオブジェクトからキャンバスの押された位置座標を取得
    * */
   getTouchPosition(e: TouchEventWithPos, num?: number) {
-    if (!(num && e.touches[num])) { num = 0; }
+    if (!(num && e.touches[num])) { 
+      num = 0; 
+    }
     const field = this.field;
     const rateX = parseInt(`${field.width}`) / parseInt(field.style.width);
     const rateY = parseInt(`${field.height}`) / parseInt(field.style.height);
@@ -367,9 +371,14 @@ export class Util {
     if (this.eventEnable) {
       e.preventDefault();
       const pos = this.getTouchPosition(e);
-      if (e.touches) { pos.touchCount = e.touches.length; } else { pos.touchCount = 1; }
+      if (e.touches) { 
+        pos.touchCount = e.touches.length; 
+      } else { 
+        pos.touchCount = 1; 
+      }
       pos.event = e;
       const type = e.type;
+      const keydown = getKeydown();
       switch (type) {
         case 'touchstart': if (this.multiTouchStart && e.touches.length > 1) { this.multiTouchStart(this.getMultiTouchPosition(e)); } else if (this.touchStart) { this.touchStart(pos); }
           break;
@@ -591,8 +600,9 @@ export class Util {
    * Appインスタンスにロードされた音楽を取得する
    * */
   getSound(name: string) {
+    const sounds = getSoundAssets();
     for (let i = 0, n = sounds.length; i < n; i++) {
-      if (name == sounds[i].name) {
+      if (name == sounds[i].dataset.name) {
         this.sound = new Audio(sounds[i].src);
       }
     }

@@ -2,12 +2,23 @@ import { Key, TweenState, Animation, ImageAsset } from './types';
 
 const images: HTMLImageElement[] = [];
 const sounds: HTMLAudioElement[] = [];
-const svgs: HTMLOrSVGElement[] = [];
+const svgs: HTMLObjectElement[] = [];
 
 let allLoaded = 0;
 
-export const addAsset = () => {
+export const addImage = (img: HTMLImageElement) => {
   allLoaded++;
+  images.push(img);
+}
+
+export const addSound = (sound: HTMLAudioElement) => {
+  allLoaded++;
+  sounds.push(sound);
+} 
+
+export const addSvg = (svg: HTMLObjectElement) => {
+  allLoaded++;
+  svgs.push(svg);
 }
 
 export const finishLoad = () => {

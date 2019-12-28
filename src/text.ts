@@ -5,12 +5,12 @@ import { TweenState } from './types';
  * @extends Atlas.Util
  * */
 export class Text extends Util {
-  public size: string;
+  public size!: string;
   public spaceWidth: number;
   public font: string;
   public string: string;
 
-  constructor(string: string, col: string, size: number, font: string) {
+  constructor(string: string, col?: string, size?: number, font?: string) {
     super();
     this._basicConstructor = 'Text';
     this.x = 0;

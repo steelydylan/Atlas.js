@@ -1,6 +1,6 @@
 import { Thing } from './thing';
-import { TweenState } from './types';
-import { Tween } from './functions';
+import { TweenState, Size } from './types';
+import { Tween, getImageAssets } from './functions';
 /**
  * @class Atlas.Sprite
  * @extends Atlas.Thing
@@ -44,6 +44,7 @@ export class Sprite extends Thing {
     if (width && height) { 
       this.setSpriteSize(width, height); 
     }
+    const images = getImageAssets();
     const length = images.length;
     for (let i = 0; i < length; i++) {
       if (images[i].name == name) { 
@@ -52,11 +53,12 @@ export class Sprite extends Thing {
     }
   }
   getImage() {
+    const images = getImageAssets();
     return images[this.img];
   }
   isLoaded() {
     const image = this.getImage();
-    if (image.loaded && this.ctx) {
+    if (image.dataset.loaded && this.ctx) {
       return true;
     }
     return false;
@@ -75,6 +77,7 @@ export class Sprite extends Thing {
     this.prepared = true;
   }
   getImageSize() {
+    const images = getImageAssets();
     const obj = {} as Size;
     const img = images[this.img];
     obj.width = img.width;
@@ -82,6 +85,7 @@ export class Sprite extends Thing {
     return obj;
   }
   draw() {
+    const images = getImageAssets();
     const ctx = this.ctx;
     ctx.globalAlpha = this.alpha;
     ctx.globalCompositeOperation = this.drawMode;

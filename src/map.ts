@@ -1,4 +1,5 @@
 import { Sprite } from './sprite';
+import { getImageAssets } from './functions';
 /**
  * @class Atlas.Map
  * @extends Atlas.Sprite
@@ -29,6 +30,7 @@ export class Map extends Sprite {
     return false;
   }
   draw() {
+    const images = getImageAssets();
     const array = this.drawData;
     if (array && array[0]) {
       const x = array[0].length;

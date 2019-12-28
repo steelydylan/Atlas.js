@@ -1,5 +1,5 @@
 import { Group } from './group';
-import { Thing } from './thing';
+import { Util } from './util';
 /**
  * @class Atlas.Layer
  * @extends Atlas.Group
@@ -28,8 +28,8 @@ export class Layer extends Group {
     const children = this.children;
     const postx = this.x;
     const posty = this.y;
-    this.x = null;
-    this.y = null;
+    this.x = Infinity;
+    this.y = Infinity;
     this.width = 0;
     this.height = 0;
     for (let i = 0, n = children.length; i < n; i++) {
@@ -41,30 +41,34 @@ export class Layer extends Group {
       const centerX = x + (width / 2);
       const centerY = y + (height / 2);
       let rot = child._rot || child.rot;
+      let x1 = Infinity;
+      let x2 = Infinity;
+      let y1 = Infinity;
+      let y2 = Infinity;
       rot %= (2 * Math.PI);
       if (rot < 0) {
         rot += (2 * Math.PI);
       }
       if (rot >= 0 && rot <= Math.PI / 2) {
-        var x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        var x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        var y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-        var y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
+        x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
+        y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
+        y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
       } else if (Math.PI / 2 < rot && rot <= Math.PI) {
-        var x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        var x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        var y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
-        var y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
+        x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
+        x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
+        y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
       } else if (Math.PI < rot && rot <= 3 / 2 * Math.PI) {
-        var x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        var x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        var y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
-        var y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
+        x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
+        x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
+        y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
       } else if (3 / 2 * Math.PI < rot && rot <= 2 * Math.PI) {
-        var x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        var x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        var y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-        var y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
+        x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
+        y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
+        y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
       }
       if (!this.x || this.x > x1) {
         this.x = x1;
@@ -102,18 +106,18 @@ export class Layer extends Group {
    * @param child Atlas.Thingクラス
    * 登録されているオブジェクトを解放する
    * */
-  releaseChild(child: Thing) {
+  releaseChild(child: Util) {
     const parent = this.parent;
     child.x = child._x;
     child.y = child._y;
     child.width = child._width;
     child.height = child._height;
     child.rot = child._rot;
-    child._x = null;
-    child._y = null;
-    child._width = null;
-    child._height = null;
-    child._rot = null;
+    child._x = Infinity;
+    child._y = Infinity;
+    child._width = Infinity;
+    child._height = Infinity;
+    child._rot = Infinity;
     child.grouped = false;
     child._leave = false;
     child.parent = parent;
@@ -137,7 +141,7 @@ export class Layer extends Group {
    * @param obj Object
    * プロパティの値が一致するオブジェクトを削除する
    * */
-  removeChildrenByProperty(obj: Thing) {
+  removeChildrenByProperty(obj: Util) {
     const children = this.getChildren(obj);
     for (let i = 0, n = children.length; i < n; i++) {
       children[i].remove();
@@ -157,7 +161,7 @@ export class Layer extends Group {
     return this;
   }
 
-  _setAbsPos(child: Thing) {
+  _setAbsPos(child: Util) {
     const centerX = (this.width / 2);
     const centerY = (this.height / 2);
     const rot = this.rot;

@@ -1,14 +1,14 @@
 import { Util } from './util';
 import { Scene } from './scene';
 import { Size } from './types';
-import { isMobile, clearKeyState, setKeyState, getImageAssets, getKeydown, isLoaded, finishLoad, addAsset } from './functions';
+import { isMobile, clearKeyState, setKeyState, getImageAssets, getKeydown, isLoaded, finishLoad, addSound, addSvg, addImage } from './functions';
 /**
  * @class Atlas.App
  * @extends Atlas.Util
  * */
 export class App extends Util {
   public preScene!: Scene;
-  public preLoadInterval!: number;
+  public preLoadInterval!: NodeJS.Timer;
   enterFrame!: () => void;
   onLoad!: () => void;
 
@@ -364,45 +364,33 @@ export class App extends Util {
    * @method load
    * 音楽や画像等の素材をロードする
    * */
-  load(...args: string[]) {
-    const musicLoaded = function () {
-      finishLoad();
-      console.log(`${this.src} is loaded`);
-    };
-    const svgLoaded = function () {
-      finishLoad();
-      this.style.display = 'none';
-      this.loaded = true;
-      console.log(`${this.data} is loaded`);
-    };
-    const imgLoaded = function () {
-      finishLoad();
-      this.loaded = true;
-      console.log(`${this.src} is loaded`);
-    };
+  load(...args: string[] | string[][]) {
     for (let i = 0, n = args.length; i < n; i++) {
-      var obj = args[i];
-      var data = obj;
-      var name = obj;
+      const obj = args[i];
+      let data = obj as string;
+      let name = obj as string;
       if (obj instanceof Array) {
-        var data = obj[0];
-        var name = obj[1];
+        data = obj[0];
+        name = obj[1];
       }
+      let ext: string;
       if (data.match('data:image/png')) {
-        var ext = 'png';
+        ext = 'png';
       } else {
         if (this.assetPath) {
           data = `${this.assetPath}${data}`;
         }
-        var ext = this.getExtention(data);
+        ext = this.getExtention(data);
       }
       if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
         const audio = new Audio(data);
         // @ts-ignore TODO
         audio.name = name;
-        addAsset();
-        audio.addEventListener('canplaythrough', musicLoaded);
-        sounds.push(audio);
+        audio.addEventListener('canplaythrough', () => {
+          finishLoad();
+          console.log(`${audio.src} is loaded`);
+        });
+        addSound(audio);
       } else if (ext == 'TTF' || ext == 'ttf') {
         const css = this._css;
         const rule = document.createTextNode(`${'@font-face{' +
@@ -418,19 +406,26 @@ export class App extends Util {
         }
       } else if (ext == 'svg') {
         const obj = document.createElement('object');
-        obj.addEventListener('load', svgLoaded);
+        obj.addEventListener('load', () => {
+          finishLoad();
+          obj.style.display = 'none';
+          obj.dataset.loaded = 'true';
+          console.log(`${obj.data} is loaded`);
+        });
         obj.data = data;
         obj.name = name;
         document.body.appendChild(obj);
-        addAsset();
-        svgs.push(obj);
+        addSvg(obj);
       } else if (ext == 'png' || ext == 'gif' || ext == 'jpeg' || ext == 'jpg') {
         const obj = new Image();
-        obj.addEventListener('load', imgLoaded);
+        obj.addEventListener('load', () => {
+          finishLoad();
+          obj.dataset.loaded = 'true';
+          console.log(`${obj.src} is loaded`);
+        });
         obj.src = data;
         obj.name = name;
-        addAsset();
-        images.push(obj);
+        addImage(obj);
       }
     }
   }

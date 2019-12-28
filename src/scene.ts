@@ -46,7 +46,6 @@ export class Scene extends Group {
       let target = children[i];
       if (target._remove) {
         children.splice(i, 1);
-        target = null;
         i--;
         n--;
         continue;

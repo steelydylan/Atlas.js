@@ -1,5 +1,6 @@
 import { Thing } from './thing';
-import { SVGDrawLineState, GradientStyle } from './types';
+import { SVGDrawLineState, GradientStyle, ColorStop } from './types';
+import { getSvgAssets } from './functions';
 /**
  * @class Atlas.Shape
  * @extends Atlas.Thing
@@ -8,7 +9,7 @@ import { SVGDrawLineState, GradientStyle } from './types';
 export class Shape extends Thing {
   protected obj: number;
   protected svgid: string;
-  protected colorStops;
+  protected colorStops: ColorStop[];
   public strokeColor: string;
   public closeMode: boolean;
   public strokeMode: boolean;
@@ -24,7 +25,7 @@ export class Shape extends Thing {
     this._basicConstructor = 'Shape';
     this.color = color || 'original';
     this.strokeColor = lineColor || 'original';
-    this.colorStops = [];
+    this.colorStops = [] as ColorStop[];
     if (this.getExtention(path) != 'svg') {
       this.svgid = path;
     } else {
@@ -49,6 +50,7 @@ export class Shape extends Thing {
    * ゲームにロードされたSVG画像をロードする
    * */
   setImage(path: string) {
+    const svgs = getSvgAssets();
     for (let i = 0, n = svgs.length; i < n; i++) {
       if (path == svgs[i].name) {
         this.obj = i;
@@ -60,6 +62,7 @@ export class Shape extends Thing {
    * セットされているSVG画像を取得する
    * */
   getImage() {
+    const svgs = getSvgAssets();
     return svgs[this.obj];
   }
   /**
@@ -67,6 +70,7 @@ export class Shape extends Thing {
    * セットされている画像名を取得する
    * */
   getImageName() {
+    const svgs = getSvgAssets();
     return svgs[this.obj].data;
   }
   /**
@@ -74,7 +78,7 @@ export class Shape extends Thing {
    * @param polygon String
    * SVGのポリゴン要素を解析
    * */
-  parsePolygon(polygon) {
+  parsePolygon(polygon: string) {
     const pols = polygon.split(' ');
     const data = [];
     for (let i = 0, n = pols.length - 1; i < n; i++) {
@@ -91,20 +95,23 @@ export class Shape extends Thing {
    * @param path String
    * SVGのpath要素を解析
    * */
-  parsePath(path) { /* SVGのpath要素を解析 */
+  parsePath(path: string) { /* SVGのpath要素を解析 */
     const length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
     const segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
-    const data = [];
+    const data = [] as any[];
+    //@ts-ignore
     path.replace(segment, (_, command, args) => {
       let type = command.toLowerCase();
       args = args.match(/-?[.0-9]+(?:e[-+]?\d+)?/ig);
       args = args ? args.map(Number) : [];
       if (type == 'm' && args.length > 2) {
+        //@t
         data.push([command].concat(args.splice(0, 2)));
         type = 'l';
         command = command == 'm' ? 'l' : 'L';
       }
       while (true) {
+        //@ts-ignore
         if (args.length == length[type]) {
           args.unshift(command);
           let obj = {} as SVGDrawLineState;
@@ -145,6 +152,7 @@ export class Shape extends Thing {
           }
           return data.push(obj);
         }
+        //@ts-ignore
         data.push([command].concat(args.splice(0, length[type])));
       }
     });
@@ -160,7 +168,7 @@ export class Shape extends Thing {
     if (!image) {
       return true;
     }
-    if (image.loaded && this.ctx) {
+    if (image.dataset.loaded && this.ctx) {
       return true;
     }
     return false;
@@ -170,6 +178,7 @@ export class Shape extends Thing {
    * オブジェクトに対して線形グラデーションを設定する
    * */
   setLinearGradient(x1: number, y1: number, x2: number, y2: number) {
+    //@ts-ignore
     this.gradientStyle = { x1, y1, x2, y2 };
     this.gradientType = 1;
   }
@@ -177,40 +186,41 @@ export class Shape extends Thing {
    * @method setRadialGradient
    * オブジェクトに対して円形グラデーションを設定する
    * */
-  setRadialGradient(x1, y1, r1, x2, y2, r2) {
+  setRadialGradient(x1: number, y1: number, r1: number, x2?: number, y2?: number, r2?: number) {
     if (!x2) {
       x2 = x1;
       y2 = y1;
       r2 = r2;
     }
+    //@ts-ignore
     this.gradientStyle = { x1, y1, r1, x2, y2, r2 };
     this.gradientType = 2;
   }
 
-  _addColorStops(stops) {
+  _addColorStops(stops: ColorStop[]) {
     const grad = this.color;
     for (let i = 0, n = stops.length; i < n; i++) {
       const stop = stops[i];
       const color = stop.color;
       if (typeof grad !== 'string') {
-        grad.addColorStop(stop.offset, color);
+        grad.addColorStop(parseInt(stop.offset), color);
       }
     }
     this.color = grad;
   }
 
-  setColorStops(stops) {
+  setColorStops(stops: ColorStop[]) {
     this.colorStops = stops;
     const style = this.gradientStyle;
     if (this.gradientType == 1) {
       this.color = this.ctx.createLinearGradient(style.x1, style.y1, style.x2, style.y2);
     } else if (this.gradientType == 2) {
-      this.color = this.ctx.createRadialGradient(style.x1, style.y1, style.r1, style.x2, style.y2, style.r2);
+      this.color = this.ctx.createRadialGradient(style.x1, style.y1, style.r1 as number, style.x2, style.y2, style.r2);
     }
     this._addColorStops(stops);
   }
 
-  addColorStops(stops) {
+  addColorStops(stops: ColorStop[]) {
     for (let i = 0, n = stops.length; i < n; i++) {
       this.colorStops.push(stops[i]);
     }
@@ -237,14 +247,15 @@ export class Shape extends Thing {
 
   _onLoad() {
     let svg: HTMLElement;
-    let svgdoc: HTMLElement;
+    let svgdoc: Document | HTMLElement;
+    const svgs = getSvgAssets();
     if (this.obj != -1) {
-      svgdoc = svgs[this.obj].getSVGDocument();
+      svgdoc = svgs[this.obj].getSVGDocument() as Document;
       var element = svgdoc.getElementsByTagName('path')[0] || svgdoc.getElementsByTagName('circle')[0] || svgdoc.getElementsByTagName('rect')[0] || svgdoc.getElementsByTagName('polygon')[0];
       // @ts-ignore TODO
       svg = svgdoc.getElementsByTagName('svg')[0];
     } else {
-      svg = document.getElementById(this.svgid);
+      svg = document.getElementById(this.svgid) as HTMLElement;
       svgdoc = svg;
       var element = svgdoc.getElementsByTagName('path')[0] || svgdoc.getElementsByTagName('circle')[0] || svgdoc.getElementsByTagName('rect')[0] || svgdoc.getElementsByTagName('polygon')[0];
     }
@@ -255,8 +266,8 @@ export class Shape extends Thing {
       for (let i = 0, n = stopsEle.length; i < n; i++) {
         const ele = stopsEle[i];
         const obj = {} as ColorStop;
-        obj.offset = ele.getAttribute('offset');
-        let styleCol = ele.style.stopColor.toString();
+        obj.offset = ele.getAttribute('offset') as string;
+        let styleCol = ele.style.stopColor as string;
         const op = ele.style.stopOpacity;
         if (op) {
           styleCol = styleCol.replace('rgb', 'rgba');
@@ -280,32 +291,34 @@ export class Shape extends Thing {
       this.setColorStops(stops);
     }
     if (this.color == 'original') {
-      this.color = element.getAttribute('fill');
+      this.color = element.getAttribute('fill') as string;
     }
     if (this.strokeColor == 'original') {
       this.strokeColor == element.getAttribute('stroke');
     }
     if (element.tagName == 'path') {
-      const path = element.getAttribute('d');
+      const path = element.getAttribute('d') as string;
       this.path = this.parsePath(path);
     } else if (element.tagName == 'circle') {
-      const radius = element.getAttribute('r');
-      var array = [];
-      array.push({ method: 'circle', r: radius });
+      const radius = element.getAttribute('r') as string;
+      const array = [] as SVGDrawLineState[];
+      array.push({ method: 'circle', r: parseInt(radius) });
       this.path = array;
     } else if (element.tagName == 'polygon') {
-      const points = element.getAttribute('points');
+      const points = element.getAttribute('points') as string;
+      //@ts-ignore
       this.path = this.parsePolygon(points);
     } else if (element.tagName == 'rect') {
       const width = element.getAttribute('width');
       const height = element.getAttribute('height');
-      var array = [];
+      const array = [];
       array.push({ method: 'rect', width, height });
+      //@ts-ignore
       this.path = array;
     }
     if (this.spriteWidth == void 0) {
-      this.spriteWidth = parseInt(svg.getAttribute('width'));
-      this.spriteHeight = parseInt(svg.getAttribute('height'));
+      this.spriteWidth = parseInt(svg.getAttribute('width') as string);
+      this.spriteHeight = parseInt(svg.getAttribute('height') as string);
       if (!this.spriteWidth) {
         const viewBox = svg.getAttribute('viewBox');
         if (viewBox) {
@@ -379,30 +392,30 @@ export class Shape extends Thing {
         }
       }
       if (method == 'circle') {
-        const r = p.r;
+        const r = p.r as number;
         ctx.arc(x + r, y + r, r, 0, Math.PI * 2, false);
       } else if (method == 'rect') {
-        ctx.fillRect(x, y, p.width, p.height);
+        ctx.fillRect(x, y, p.width as number, p.height as number);
       } else if (method == 'moveTo' || method == 'moveBy') {
         ctx.moveTo(x, y);
       } else if (method == 'lineTo' || method == 'lineBy') {
         ctx.lineTo(x, y);
       } else if (method == 'quadraticCurveBy' || method == 'quadraticCurveTo') {
-        ctx.quadraticCurveTo(tmpx + p.cpx, tmpy + p.cpy, x, y);
-        rcpx = 2 * x - (tmpx + p.cpx);
-        rcpy = 2 * y - (tmpy + p.cpy);
+        ctx.quadraticCurveTo(tmpx + (p.cpx as number), tmpy + (p.cpy as number), x, y);
+        rcpx = 2 * x - (tmpx + (p.cpx as number));
+        rcpy = 2 * y - (tmpy + (p.cpy as number));
       } else if (method == 'bezierCurveTo' || method == 'bezierCurveBy') {
-        ctx.bezierCurveTo(tmpx + p.cpx1, tmpy + p.cpy1, tmpx + p.cpx2, tmpy + p.cpy2, x, y);
-        rcpx = 2 * x - (tmpx + p.cpx2);
-        rcpy = 2 * y - (tmpy + p.cpy2);
+        ctx.bezierCurveTo(tmpx + (p.cpx1 as number), tmpy + (p.cpy1 as number), tmpx + (p.cpx2 as number), tmpy + (p.cpy2 as number), x, y);
+        rcpx = 2 * x - (tmpx + (p.cpx2 as number));
+        rcpy = 2 * y - (tmpy + (p.cpy2 as number));
       } else if (method == 'horizontalTo' || method == 'horizontalBy') {
         ctx.lineTo(x, y);
       } else if (method == 'verticalTo' || method == 'verticalBy') {
         ctx.lineTo(x, y);
       } else if (method == 'bezierCurveShortBy' || method == 'bezierCurveShortTo') {
-        ctx.bezierCurveTo(rcpx, rcpy, tmpx + p.cpx2, tmpy + p.cpy2, x, y);
-        rcpx = 2 * x - (tmpx + p.cpx2);
-        rcpy = 2 * y - (tmpy + p.cpy2);
+        ctx.bezierCurveTo(rcpx, rcpy, tmpx + (p.cpx2 as number), tmpy + (p.cpy2 as number), x, y);
+        rcpx = 2 * x - (tmpx + (p.cpx2 as number));
+        rcpy = 2 * y - (tmpy + (p.cpy2 as number));
       } else if (method == 'quadraticCurveShortBy' || method == 'quadraticCurveShortTo') {
         ctx.quadraticCurveTo(rcpx, rcpy, x, y);
         rcpx = 2 * x - rcpx;
