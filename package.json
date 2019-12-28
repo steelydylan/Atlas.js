@@ -6,14 +6,10 @@
   "version": "1.0.3",
   "main": "./lib/index.js",
   "scripts": {
-    "lint": "eslint ./src/core/index.js --fix",
-    "build": "npm-run-all -p build:lib build:global",
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
     "build:lib": "tsc",
-    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone Atlas -o ./build/Atlas.js && npm run build:global:min",
-    "build:global:min": "uglifyjs ./build/Atlas.js -m -c --comments -o ./build/Atlas.min.js",
     "babel": "babel src --out-dir lib",
-    "watch:js": "onchange \"src/\" -- npm run build:js",
-    "start": "npm-run-all -p watch:js",
     "deploy": "np --yolo"
   },
   "devDependencies": {

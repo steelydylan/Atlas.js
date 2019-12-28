@@ -91,7 +91,7 @@ export declare class Shape extends Thing {
      * @method getNodeByName
      * SVGに設定されたNode（点）オブジェクトを返す
      * */
-    getNodeByName(name: string): SVGDrawLineState | -1;
+    getNodeByName(name: string): -1 | SVGDrawLineState;
 }
 /**
  * @class Atlas.Shape.Box

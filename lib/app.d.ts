@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Util } from './util';
 import { Scene } from './scene';
 import { Size } from './types';
@@ -8,7 +7,7 @@ import { Size } from './types';
  * */
 export declare class App extends Util {
     preScene: Scene;
-    preLoadInterval: NodeJS.Timer;
+    preLoadInterval: number;
     enterFrame: () => void;
     onLoad: () => void;
     constructor(place: string);

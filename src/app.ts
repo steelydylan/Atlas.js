@@ -8,7 +8,7 @@ import { isMobile, clearKeyState, setKeyState, getImageAssets, getKeydown, isLoa
  * */
 export class App extends Util {
   public preScene!: Scene;
-  public preLoadInterval!: NodeJS.Timer;
+  public preLoadInterval!: number;
   enterFrame!: () => void;
   onLoad!: () => void;
 
