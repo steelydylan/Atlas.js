@@ -1,4 +1,4 @@
-import { Key, TweenState, Animation, ImageAsset } from './types';
+import { Key, TweenState, Animation, ImageAsset } from "./types";
 
 const images: HTMLImageElement[] = [];
 const sounds: HTMLAudioElement[] = [];
@@ -9,48 +9,54 @@ let allLoaded = 0;
 export const addImage = (img: HTMLImageElement) => {
   allLoaded++;
   images.push(img);
-}
+};
 
 export const addSound = (sound: HTMLAudioElement) => {
   allLoaded++;
   sounds.push(sound);
-} 
+};
 
 export const addSvg = (svg: HTMLObjectElement) => {
   allLoaded++;
   svgs.push(svg);
-}
+};
 
 export const finishLoad = () => {
   allLoaded--;
-}
+};
 
 export const isLoaded = () => allLoaded === 0;
 
 export const getImageAssets = () => {
   return images;
-}
+};
 
 export const getSoundAssets = () => {
   return sounds;
-}
+};
 
 export const getSvgAssets = () => {
   return svgs;
-}
+};
 
 export const isMobile = (() => {
   const userAgent = navigator.userAgent;
-  if ((userAgent.indexOf('iPhone') > 0 && userAgent.indexOf('iPad') == -1) || userAgent.indexOf('iPod') > 0 || userAgent.indexOf('Android') > 0) { return true; }
+  if (
+    (userAgent.indexOf("iPhone") > 0 && userAgent.indexOf("iPad") == -1) ||
+    userAgent.indexOf("iPod") > 0 ||
+    userAgent.indexOf("Android") > 0
+  ) {
+    return true;
+  }
   return false;
 })();
 
-export const orientation = ((e) => {
-  const mq = window.matchMedia('(orientation: portrait)');
-  if (mq.matches) { 
-    return 'portrait'; 
+export const orientation = (e => {
+  const mq = window.matchMedia("(orientation: portrait)");
+  if (mq.matches) {
+    return "portrait";
   }
-  return 'landscape';
+  return "landscape";
 })();
 
 export const setKeyState = (ret: Key, e: KeyboardEvent) => {
@@ -126,7 +132,9 @@ export const Tween = (that: any, kind: Animation, frame: number) => {
     obj = target;
   }
   obj.time = 0;
-  if (frame) { obj.frame = frame; }
+  if (frame) {
+    obj.frame = frame;
+  }
   obj.loop = false;
   obj.and = false;
   obj[kind] = true;

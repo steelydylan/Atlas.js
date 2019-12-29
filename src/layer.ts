@@ -1,18 +1,17 @@
-import { Group } from './group';
-import { Util } from './util';
+import { Group } from "./group";
+import { Util } from "./util";
 /**
  * @class Atlas.Layer
  * @extends Atlas.Group
  * */
 export class Layer extends Group {
-
   protected firstWidth: number;
   protected firstHeight: number;
 
   constructor() {
     super();
     this.rot = 0;
-    this._basicConstructor = 'Layer';
+    this._basicConstructor = "Layer";
     this.firstWidth = 100;
     this.firstHeight = 100;
     this.height = 100;
@@ -38,37 +37,85 @@ export class Layer extends Group {
       const y = child._y || child.y;
       const width = child._width || child.width;
       const height = child._height || child.height;
-      const centerX = x + (width / 2);
-      const centerY = y + (height / 2);
+      const centerX = x + width / 2;
+      const centerY = y + height / 2;
       let rot = child._rot || child.rot;
       let x1 = Infinity;
       let x2 = Infinity;
       let y1 = Infinity;
       let y2 = Infinity;
-      rot %= (2 * Math.PI);
+      rot %= 2 * Math.PI;
       if (rot < 0) {
-        rot += (2 * Math.PI);
+        rot += 2 * Math.PI;
       }
       if (rot >= 0 && rot <= Math.PI / 2) {
-        x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-        y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        x1 =
+          Math.cos(rot) * (x - centerX) -
+          Math.sin(rot) * (y + height - centerY) +
+          centerX;
+        x2 =
+          Math.cos(rot) * (x + width - centerX) -
+          Math.sin(rot) * (y - centerY) +
+          centerX;
+        y1 =
+          Math.sin(rot) * (x - centerX) +
+          Math.cos(rot) * (y - centerY) +
+          centerY;
+        y2 =
+          Math.sin(rot) * (x + width - centerX) +
+          Math.cos(rot) * (y + height - centerY) +
+          centerY;
       } else if (Math.PI / 2 < rot && rot <= Math.PI) {
-        x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        y1 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
-        y2 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-      } else if (Math.PI < rot && rot <= 3 / 2 * Math.PI) {
-        x1 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        x2 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
-        y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-      } else if (3 / 2 * Math.PI < rot && rot <= 2 * Math.PI) {
-        x1 = Math.cos(rot) * (x - centerX) - Math.sin(rot) * (y - centerY) + centerX;
-        x2 = Math.cos(rot) * (x + width - centerX) - Math.sin(rot) * (y + height - centerY) + centerX;
-        y1 = Math.sin(rot) * (x + width - centerX) + Math.cos(rot) * (y - centerY) + centerY;
-        y2 = Math.sin(rot) * (x - centerX) + Math.cos(rot) * (y + height - centerY) + centerY;
+        x1 =
+          Math.cos(rot) * (x + width - centerX) -
+          Math.sin(rot) * (y + height - centerY) +
+          centerX;
+        x2 =
+          Math.cos(rot) * (x - centerX) -
+          Math.sin(rot) * (y - centerY) +
+          centerX;
+        y1 =
+          Math.sin(rot) * (x - centerX) +
+          Math.cos(rot) * (y + height - centerY) +
+          centerY;
+        y2 =
+          Math.sin(rot) * (x + width - centerX) +
+          Math.cos(rot) * (y - centerY) +
+          centerY;
+      } else if (Math.PI < rot && rot <= (3 / 2) * Math.PI) {
+        x1 =
+          Math.cos(rot) * (x + width - centerX) -
+          Math.sin(rot) * (y - centerY) +
+          centerX;
+        x2 =
+          Math.cos(rot) * (x - centerX) -
+          Math.sin(rot) * (y + height - centerY) +
+          centerX;
+        y1 =
+          Math.sin(rot) * (x + width - centerX) +
+          Math.cos(rot) * (y + height - centerY) +
+          centerY;
+        y2 =
+          Math.sin(rot) * (x - centerX) +
+          Math.cos(rot) * (y - centerY) +
+          centerY;
+      } else if ((3 / 2) * Math.PI < rot && rot <= 2 * Math.PI) {
+        x1 =
+          Math.cos(rot) * (x - centerX) -
+          Math.sin(rot) * (y - centerY) +
+          centerX;
+        x2 =
+          Math.cos(rot) * (x + width - centerX) -
+          Math.sin(rot) * (y + height - centerY) +
+          centerX;
+        y1 =
+          Math.sin(rot) * (x + width - centerX) +
+          Math.cos(rot) * (y - centerY) +
+          centerY;
+        y2 =
+          Math.sin(rot) * (x - centerX) +
+          Math.cos(rot) * (y + height - centerY) +
+          centerY;
       }
       if (!this.x || this.x > x1) {
         this.x = x1;
@@ -162,16 +209,22 @@ export class Layer extends Group {
   }
 
   _setAbsPos(child: Util) {
-    const centerX = (this.width / 2);
-    const centerY = (this.height / 2);
+    const centerX = this.width / 2;
+    const centerY = this.height / 2;
     const rot = this.rot;
-    child.Cx = (this.scaleX * child.x + child._width / 2);
-    child.Cy = (this.scaleY * child.y + child._height / 2);
+    child.Cx = this.scaleX * child.x + child._width / 2;
+    child.Cy = this.scaleY * child.y + child._height / 2;
     child.startRot = true;
-    const cx = Math.cos(rot) * (child.Cx - centerX) - Math.sin(rot) * (child.Cy - centerY) + centerX;// this.width/2
-    const cy = Math.sin(rot) * (child.Cx - centerX) + Math.cos(rot) * (child.Cy - centerY) + centerY;// this.height/2
-    child._x = cx - (child._width / 2);
-    child._y = cy - (child._height / 2);
+    const cx =
+      Math.cos(rot) * (child.Cx - centerX) -
+      Math.sin(rot) * (child.Cy - centerY) +
+      centerX; // this.width/2
+    const cy =
+      Math.sin(rot) * (child.Cx - centerX) +
+      Math.cos(rot) * (child.Cy - centerY) +
+      centerY; // this.height/2
+    child._x = cx - child._width / 2;
+    child._y = cy - child._height / 2;
     child._x += this.x;
     child._y += this.y;
   }

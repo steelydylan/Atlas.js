@@ -1,11 +1,11 @@
-import { TweenState } from './types';
-import { Util } from './util';
+import { TweenState } from "./types";
+import { Util } from "./util";
 /**
  * @class Atlas.Thing
  * @extends Atlas.Util
  * */
 export class Thing extends Util {
-  public collisionShape: 'box' | 'circle';
+  public collisionShape: "box" | "circle";
   public alpha: number;
   public prepared: boolean;
   public spriteWidth!: number;
@@ -22,8 +22,8 @@ export class Thing extends Util {
     this._remove = false;
     this.width = width;
     this.height = height;
-    this.collisionShape = 'box';
-    this.prepared = false;/* 描画の準備が完了 */
+    this.collisionShape = "box";
+    this.prepared = false; /* 描画の準備が完了 */
     this.alpha = 1;
   }
 
@@ -49,20 +49,24 @@ export class Thing extends Util {
     const thisw = this._width || this.width;
     const thish = this._height || this.height;
     const r = this._rot || this.rot;
-    if (this.collisionShape == 'box') {
+    if (this.collisionShape == "box") {
       var x = ex - (thisx + thisw / 2);
       var y = ey - (thisy + thish / 2);
       const s = Math.sin(-r);
       const c = Math.cos(-r);
       const xx = Math.abs(x * c - y * s);
       const yy = Math.abs(x * s + y * c);
-      if (xx < thisw / 2.0 && yy < thish / 2.0) { return true; }
+      if (xx < thisw / 2.0 && yy < thish / 2.0) {
+        return true;
+      }
       return false;
-    } else if (this.collisionShape == 'circle') {
+    } else if (this.collisionShape == "circle") {
       const radius = thisw / 2;
       var x = ex - (thisx + radius);
       var y = ey - (thisy + radius);
-      if (Math.sqrt(x * x + y * y) < radius) { return true; }
+      if (Math.sqrt(x * x + y * y) < radius) {
+        return true;
+      }
       return false;
     }
     return false;
@@ -72,7 +76,8 @@ export class Thing extends Util {
    * @param target Thingオブジェクト
    * 自分がターゲットと接触しているかを判定する
    * */
-  hitTest(target: Thing) { /* 衝突判定（自分の矩形は傾いてないものとする） */
+  hitTest(target: Thing) {
+    /* 衝突判定（自分の矩形は傾いてないものとする） */
     let thisx = this._x || this.x;
     let thisy = this._y || this.y;
     const thisW = this._width || this.width;
@@ -84,27 +89,41 @@ export class Thing extends Util {
     const targetW = target._width || target.width;
     const targetH = target._height || target.height;
     const targetr = target._rot || target.rot;
-    if (this.collisionShape == 'box') {
-      if (target.collisionShape == 'circle') { return target.within(this, targetW / 2); }/* 矩形と円の当たり判定ならwithinで実装済み */
-    } else if (this.collisionShape == 'circle') {
-      return this.within(target, thisW / 2);/* 矩形と円の当たり判定ならwithinで実装済み */
+    if (this.collisionShape == "box") {
+      if (target.collisionShape == "circle") {
+        return target.within(this, targetW / 2);
+      } /* 矩形と円の当たり判定ならwithinで実装済み */
+    } else if (this.collisionShape == "circle") {
+      return this.within(
+        target,
+        thisW / 2
+      ); /* 矩形と円の当たり判定ならwithinで実装済み */
     } else {
       return false;
     }
     if (targetr !== 0 && targetr != Math.PI) {
-      if (target.collisionShape == 'box') {
+      if (target.collisionShape == "box") {
         const centerX = targetx + targetW / 2;
         const centerY = targety + targetH / 2;
         const rot = -targetr;
-        thiscX = Math.cos(rot) * (thiscX - centerX) -
-          Math.sin(rot) * (thiscY - centerY) + centerX;
-        thiscY = Math.sin(rot) * (thiscX - centerX) +
-          Math.cos(rot) * (thiscY - centerY) + centerY;
+        thiscX =
+          Math.cos(rot) * (thiscX - centerX) -
+          Math.sin(rot) * (thiscY - centerY) +
+          centerX;
+        thiscY =
+          Math.sin(rot) * (thiscX - centerX) +
+          Math.cos(rot) * (thiscY - centerY) +
+          centerY;
         thisx = thiscX - thisW / 2;
         thisy = thiscY - thisH / 2;
       }
     }
-    return (thisx < targetx + targetW) && (targetx < thisx + thisW) && (thisy < targety + targetH) && (targety < thisy + thisH);
+    return (
+      thisx < targetx + targetW &&
+      targetx < thisx + thisW &&
+      thisy < targety + targetH &&
+      targety < thisy + thisH
+    );
   }
   /**
    * @method within
@@ -127,41 +146,45 @@ export class Thing extends Util {
     let b: number;
     let x: number;
     let y: number;
-    if (this.collisionShape == 'box') {
+    if (this.collisionShape == "box") {
       var thiscX = thisx + thisw / 2;
       var thiscY = thisy + thish / 2;
-    } else if (this.collisionShape == 'circle') {
+    } else if (this.collisionShape == "circle") {
       const radius = thisw / 2;
       var thiscX = thisx + radius;
       var thiscY = thisy + radius;
     } else {
       return false;
     }
-    if (target.collisionShape == 'box') {
+    if (target.collisionShape == "box") {
       const centerX = targetx + targetw / 2;
       const centerY = targety + targeth / 2;
       const rot = -targetr;
-      const cx = Math.cos(rot) * (thiscX - centerX) -
-        Math.sin(rot) * (thiscY - centerY) + centerX;
-      const cy = Math.sin(rot) * (thiscX - centerX) +
-        Math.cos(rot) * (thiscY - centerY) + centerY;
-      if (cx < targetx) { 
-        x = targetx; 
-      } else if (cx > targetx + targetw) { 
-        x = targetx + targetw; 
-      } else { 
-        x = cx; 
+      const cx =
+        Math.cos(rot) * (thiscX - centerX) -
+        Math.sin(rot) * (thiscY - centerY) +
+        centerX;
+      const cy =
+        Math.sin(rot) * (thiscX - centerX) +
+        Math.cos(rot) * (thiscY - centerY) +
+        centerY;
+      if (cx < targetx) {
+        x = targetx;
+      } else if (cx > targetx + targetw) {
+        x = targetx + targetw;
+      } else {
+        x = cx;
       }
-      if (cy < targety) { 
-        y = targety; 
-      } else if (cy > targety + targeth) { 
-        y = targety + targeth; 
-      } else { 
-        y = cy; 
+      if (cy < targety) {
+        y = targety;
+      } else if (cy > targety + targeth) {
+        y = targety + targeth;
+      } else {
+        y = cy;
       }
       a = Math.abs(cx - x);
       b = Math.abs(cy - y);
-    } else if (target.collisionShape == 'circle') {
+    } else if (target.collisionShape == "circle") {
       const tradius = targetw / 2;
       x = targetx + tradius;
       y = targety + tradius;
@@ -171,7 +194,9 @@ export class Thing extends Util {
     } else {
       return false;
     }
-    if (Math.sqrt((a * a) + (b * b)) < range) { return true; }
+    if (Math.sqrt(a * a + b * b) < range) {
+      return true;
+    }
     return false;
   }
   /**

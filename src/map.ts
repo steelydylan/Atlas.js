@@ -1,12 +1,12 @@
-import { Sprite } from './sprite';
-import { getImageAssets } from './functions';
+import { Sprite } from "./sprite";
+import { getImageAssets } from "./functions";
 /**
  * @class Atlas.Map
  * @extends Atlas.Sprite
  * */
 export class Map extends Sprite {
-  public drawData: number[][]
-  public hitData: number[][]
+  public drawData: number[][];
+  public hitData: number[][];
 
   constructor(name: string, width: number, height: number) {
     super(name, width, height);
@@ -23,8 +23,15 @@ export class Map extends Sprite {
     const posY = this._y || this.y;
     for (let i = 0; i < y; i++) {
       for (let t = 0; t < x; t++) {
-        if (array[i][t] == 1 && posX + t * width < ex && ex < posX + (t + 1) * width
-          && posY + i * height < ey && ey < posY + (i + 1) * height) { return true; }
+        if (
+          array[i][t] == 1 &&
+          posX + t * width < ex &&
+          ex < posX + (t + 1) * width &&
+          posY + i * height < ey &&
+          ey < posY + (i + 1) * height
+        ) {
+          return true;
+        }
       }
     }
     return false;
@@ -62,7 +69,13 @@ export class Map extends Sprite {
       while (i < y) {
         while (t < x) {
           frame = array[i][t];
-          if (frame >= 0 && fieldHeight > py + height * i && py + height * (i + 1) > 0 && fieldWidth > px + width * t && px + width * (t + 1) > 0) {
+          if (
+            frame >= 0 &&
+            fieldHeight > py + height * i &&
+            py + height * (i + 1) > 0 &&
+            fieldWidth > px + width * t &&
+            px + width * (t + 1) > 0
+          ) {
             const dx = (frame % numX) * SizeX;
             const dy = (~~(frame / numX) % numY) * SizeY;
             ctx.save();

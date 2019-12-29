@@ -8,40 +8,54 @@ export type EventListenerState = {
   multiTouchEnd: boolean;
   multiTouchMove: boolean;
   orientationChange: boolean;
-}
+};
 
 export type ImageAsset = {
   hex?: string;
   index?: number;
   name: string;
-}
+};
 
 export type GradientStyle = {
-  x1: number,
-  y1: number,
-  r1: number,
-  x2: number,
-  y2: number,
-  r2: number
-}
+  x1: number;
+  y1: number;
+  r1: number;
+  x2: number;
+  y2: number;
+  r2: number;
+};
 
 export type Position = {
   x: number;
   y: number;
   touchCount: number;
   event: TouchEventWithPos;
-}
+};
 
 export type Size = {
   width: number;
   height: number;
-}
+};
 
-export type SVGDrawLineMethod = 'quadraticCurveBy' | 'quadraticCurveTo' | 'lineTo' | 'lineBy' |
-  'moveBy' | 'moveTo' | 'bezierCurveBy' | 'circle' | 'rect' |
-  'bezierCurveTo' | 'horizontalBy' | 'horizontalTo' |
-  'verticalBy' | 'verticalTo' | 'bezierCurveShortBy' |
-  'bezierCurveShortTo' | 'quadraticCurveShortBy' | 'quadraticCurveShortTo';
+export type SVGDrawLineMethod =
+  | "quadraticCurveBy"
+  | "quadraticCurveTo"
+  | "lineTo"
+  | "lineBy"
+  | "moveBy"
+  | "moveTo"
+  | "bezierCurveBy"
+  | "circle"
+  | "rect"
+  | "bezierCurveTo"
+  | "horizontalBy"
+  | "horizontalTo"
+  | "verticalBy"
+  | "verticalTo"
+  | "bezierCurveShortBy"
+  | "bezierCurveShortTo"
+  | "quadraticCurveShortBy"
+  | "quadraticCurveShortTo";
 
 export type SVGDrawLineState = {
   method?: SVGDrawLineMethod;
@@ -57,16 +71,23 @@ export type SVGDrawLineState = {
   r?: number;
   width?: number;
   height?: number;
-}
+};
 
 export type ColorStop = {
   offset: string;
   color: string;
-}
+};
 
-export type Animation = 'moveTo' | 'moveBy' | 'delay' | 'rotateBy' | 'animate' | 'scaleBy' | 'then';
+export type Animation =
+  | "moveTo"
+  | "moveBy"
+  | "delay"
+  | "rotateBy"
+  | "animate"
+  | "scaleBy"
+  | "then";
 
-export type TouchEventWithPos = TouchEvent & { pageX: number, pageY: number };
+export type TouchEventWithPos = TouchEvent & { pageX: number; pageY: number };
 
 export type TweenState = {
   time: number;
@@ -88,10 +109,10 @@ export type TweenState = {
   exec: Function;
   frameRate: number;
   frameIdx: number;
-  array: number[]
+  array: number[];
 } & {
-    [index in Animation]: boolean
-  };
+  [index in Animation]: boolean;
+};
 
 export type Key = {
   enter: boolean;
@@ -129,4 +150,4 @@ export type Key = {
   x: boolean;
   y: boolean;
   z: boolean;
-}
+};

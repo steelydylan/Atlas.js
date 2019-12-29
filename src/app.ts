@@ -1,7 +1,18 @@
-import { Util } from './util';
-import { Scene } from './scene';
-import { Size } from './types';
-import { isMobile, clearKeyState, setKeyState, getImageAssets, getKeydown, isLoaded, finishLoad, addSound, addSvg, addImage } from './functions';
+import { Util } from "./util";
+import { Scene } from "./scene";
+import { Size } from "./types";
+import {
+  isMobile,
+  clearKeyState,
+  setKeyState,
+  getImageAssets,
+  getKeydown,
+  isLoaded,
+  finishLoad,
+  addSound,
+  addSvg,
+  addImage
+} from "./functions";
 /**
  * @class Atlas.App
  * @extends Atlas.Util
@@ -14,18 +25,18 @@ export class App extends Util {
 
   constructor(place: string) {
     super();
-    this.assetPath = '';
-    this._basicConstructor = 'App';
-    const css = document.createElement('style');
-    css.media = 'screen';
-    css.type = 'text/css';
-    document.getElementsByTagName('head')[0].appendChild(css);
+    this.assetPath = "";
+    this._basicConstructor = "App";
+    const css = document.createElement("style");
+    css.media = "screen";
+    css.type = "text/css";
+    document.getElementsByTagName("head")[0].appendChild(css);
     let field: HTMLCanvasElement;
     if (place) {
       field = document.getElementById(place) as HTMLCanvasElement;
     } else {
-      field = document.createElement('canvas');
-      const Body = document.getElementsByTagName('body').item(0);
+      field = document.createElement("canvas");
+      const Body = document.getElementsByTagName("body").item(0);
       if (Body) {
         Body.appendChild(field);
       }
@@ -35,30 +46,38 @@ export class App extends Util {
     field.style.top = `${0}px`;
     field.style.left = `${0}px`;
     // @ts-ignore
-    field.tabIndex = '1';
-    document.body.style.margin = '0em';
+    field.tabIndex = "1";
+    document.body.style.margin = "0em";
     if (isMobile) {
-      field.style.width = `${window.innerWidth}px`;// mobile default
-      field.style.height = `${window.innerHeight}px`;// mobile default
-      field.addEventListener('touchstart', function () { if (this.tabIndex != -1) this.focus(); });
+      field.style.width = `${window.innerWidth}px`; // mobile default
+      field.style.height = `${window.innerHeight}px`; // mobile default
+      field.addEventListener("touchstart", function() {
+        if (this.tabIndex != -1) this.focus();
+      });
     } else {
       field.style.width = `${480}px`;
       field.style.height = `${620}px`;
-      field.addEventListener('mousedown', function () { if (this.tabIndex != -1) this.focus(); });
-      field.addEventListener('keyup', () => { 
+      field.addEventListener("mousedown", function() {
+        if (this.tabIndex != -1) this.focus();
+      });
+      field.addEventListener(
+        "keyup",
+        () => {
+          const keydown = getKeydown();
+          clearKeyState(keydown);
+        },
+        false
+      );
+      field.addEventListener("keydown", e => {
         const keydown = getKeydown();
-        clearKeyState(keydown); 
-      }, false);
-      field.addEventListener('keydown', (e) => { 
-        const keydown = getKeydown();
-        setKeyState(keydown, e); 
+        setKeyState(keydown, e);
       });
     }
     this._css = css;
     this.field = field;
     //@ts-ignore
-    this.ctx = field.getContext('2d');
-    this.fps = 30;// fps default
+    this.ctx = field.getContext("2d");
+    this.fps = 30; // fps default
     this.scene = new Scene();
     this.scene.ctx = this.ctx;
     this.scene.field = this.field;
@@ -91,7 +110,7 @@ export class App extends Util {
    * */
   getCanvasImage() {
     const url = this.field.toDataURL();
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   }
   /**
    * @method getChild
@@ -121,32 +140,44 @@ export class App extends Util {
         img.dataset.index = `${i}`;
       }
     }
-    img.addEventListener('load', () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    img.addEventListener("load", () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
       const width = img.width;
       const height = img.height;
       const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
       if (!img.dataset.hex) {
         return;
       }
-      const hex = img.dataset.hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+      const hex = img.dataset.hex.replace(
+        shorthandRegex,
+        (m, r, g, b) => r + r + g + g + b + b
+      );
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      const color = result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : null;
+      const color = result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          }
+        : null;
       ctx.drawImage(img, 0, 0);
       const ImageData = ctx.getImageData(0, 0, width, height);
       const data = ImageData.data;
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
-          const t = i * (width * 4) + (j * 4);
-          if (color && data[t] == color.r && data[t + 1] == color.g && data[t + 2] == color.b) { data[t + 3] = 0; }
+          const t = i * (width * 4) + j * 4;
+          if (
+            color &&
+            data[t] == color.r &&
+            data[t + 1] == color.g &&
+            data[t + 2] == color.b
+          ) {
+            data[t + 3] = 0;
+          }
         }
       }
-      ctx.putImageData(ImageData, 0, 0);// put image data back
+      ctx.putImageData(ImageData, 0, 0); // put image data back
       const newimg = new Image();
       newimg.src = canvas.toDataURL();
       images[parseInt(img.dataset.index as string)] = newimg;
@@ -167,7 +198,9 @@ export class App extends Util {
    * ゲームにオブジェクトを複数登録する
    * */
   addChildren() {
-    for (let i = 0, n = arguments.length; i < n; i++) { this.addChild(arguments[i]); }
+    for (let i = 0, n = arguments.length; i < n; i++) {
+      this.addChild(arguments[i]);
+    }
   }
   /**
    * @method centerize
@@ -177,9 +210,9 @@ export class App extends Util {
     const style = this.field.style;
     style.marginTop = `${-parseInt(style.height) / 2}px`;
     style.marginLeft = `${-parseInt(style.width) / 2}px`;
-    style.top = '50%';
-    style.left = '50%';
-    style.position = 'absolute';
+    style.top = "50%";
+    style.left = "50%";
+    style.position = "absolute";
   }
   /**
    * @method fitWindow
@@ -214,9 +247,9 @@ export class App extends Util {
     style.height = `${height}px`;
   }
   /**
-  * @method getSize
-  * ゲーム画面の大きさを取得する
-  * */
+   * @method getSize
+   * ゲーム画面の大きさを取得する
+   * */
   getSize() {
     const size = {} as Size;
     size.width = parseInt(this.field.style.width);
@@ -312,13 +345,13 @@ export class App extends Util {
     scene.ctx = ctx;
     scene.field = field;
     const style = this.field.style;
-    style.background = '';
-    style.backgroundColor = 'white';
-    if (scene.color) { 
-      this.setColor(scene.color); 
+    style.background = "";
+    style.backgroundColor = "white";
+    if (scene.color) {
+      this.setColor(scene.color);
     }
-    if (scene.image) { 
-      this.setImage(scene.image); 
+    if (scene.image) {
+      this.setImage(scene.image);
     }
     this.scene = scene;
   }
@@ -329,8 +362,8 @@ export class App extends Util {
    * */
   setColor(color: string | CanvasGradient) {
     const style = this.field.style;
-    style.background = '';
-    if (typeof color === 'string') {
+    style.background = "";
+    if (typeof color === "string") {
       style.backgroundColor = color;
     }
   }
@@ -342,7 +375,7 @@ export class App extends Util {
   setImage(img: string) {
     const style = this.field.style;
     style.background = `url(${img}) no-repeat center`;
-    style.backgroundSize = 'cover';
+    style.backgroundSize = "cover";
   }
   /**
    * @method start
@@ -369,29 +402,30 @@ export class App extends Util {
         name = obj[1];
       }
       let ext: string;
-      if (data.match('data:image/png')) {
-        ext = 'png';
+      if (data.match("data:image/png")) {
+        ext = "png";
       } else {
         if (this.assetPath) {
           data = `${this.assetPath}${data}`;
         }
         ext = this.getExtention(data);
       }
-      if (ext == 'wav' || ext == 'mp3' || ext == 'ogg') {
+      if (ext == "wav" || ext == "mp3" || ext == "ogg") {
         const audio = new Audio(data);
         // @ts-ignore TODO
         audio.name = name;
-        audio.addEventListener('canplaythrough', () => {
+        audio.addEventListener("canplaythrough", () => {
           finishLoad();
           console.log(`${audio.src} is loaded`);
         });
         addSound(audio);
-      } else if (ext == 'TTF' || ext == 'ttf') {
+      } else if (ext == "TTF" || ext == "ttf") {
         const css = this._css;
-        const rule = document.createTextNode(`${'@font-face{' +
-          "font-family:'"}${name}';` +
-          `src: url('${data}') format('truetype');` +
-          '}');
+        const rule = document.createTextNode(
+          `${"@font-face{" + "font-family:'"}${name}';` +
+            `src: url('${data}') format('truetype');` +
+            "}"
+        );
         // @ts-ignore TODO
         if (css.styleSheet) {
           // @ts-ignore TODO
@@ -399,23 +433,28 @@ export class App extends Util {
         } else {
           css.appendChild(rule);
         }
-      } else if (ext == 'svg') {
-        const obj = document.createElement('object');
-        obj.addEventListener('load', () => {
+      } else if (ext == "svg") {
+        const obj = document.createElement("object");
+        obj.addEventListener("load", () => {
           finishLoad();
-          obj.style.display = 'none';
-          obj.dataset.loaded = 'true';
+          obj.style.display = "none";
+          obj.dataset.loaded = "true";
           console.log(`${obj.data} is loaded`);
         });
         obj.data = data;
         obj.name = name;
         document.body.appendChild(obj);
         addSvg(obj);
-      } else if (ext == 'png' || ext == 'gif' || ext == 'jpeg' || ext == 'jpg') {
+      } else if (
+        ext == "png" ||
+        ext == "gif" ||
+        ext == "jpeg" ||
+        ext == "jpg"
+      ) {
         const obj = new Image();
-        obj.addEventListener('load', () => {
+        obj.addEventListener("load", () => {
           finishLoad();
-          obj.dataset.loaded = 'true';
+          obj.dataset.loaded = "true";
           console.log(`${obj.src} is loaded`);
         });
         obj.src = data;

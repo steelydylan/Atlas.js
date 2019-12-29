@@ -1,23 +1,23 @@
-import { App } from './app';
-import { Group } from './group';
-import { Layer } from './layer';
-import { Map } from './map';
-import { Scene } from './scene';
-import { Shape, Box, Circle } from './shape';
-import { Sprite } from './sprite';
-import { Text } from './text';
-import { Thing } from './thing';
-import { Util } from './util';
+import { App } from "./app";
+import { Group } from "./group";
+import { Layer } from "./layer";
+import { Map } from "./map";
+import { Scene } from "./scene";
+import { Shape, Box, Circle } from "./shape";
+import { Sprite } from "./sprite";
+import { Text } from "./text";
+import { Thing } from "./thing";
+import { Util } from "./util";
 
 const Atlas = {
   App,
   Group,
-  Layer, 
+  Layer,
   Map,
   Scene,
-  Shape, 
+  Shape,
   Box,
-  Circle, 
+  Circle,
   Sprite,
   Text,
   Thing,
@@ -29,14 +29,14 @@ export default Atlas;
 export {
   App,
   Group,
-  Layer, 
+  Layer,
   Map,
   Scene,
-  Shape, 
+  Shape,
   Box,
-  Circle, 
+  Circle,
   Sprite,
   Text,
   Thing,
   Util
-}
+};

@@ -1,5 +1,5 @@
-import { Thing } from './thing';
-import { Util } from './util';
+import { Thing } from "./thing";
+import { Util } from "./util";
 /**
  * @class Atlas.Group
  * @extends Atlas.Thing
@@ -11,7 +11,7 @@ export class Group extends Thing {
     this.children = [];
     this.x = 0;
     this.y = 0;
-    this._basicConstructor = 'Group';
+    this._basicConstructor = "Group";
   }
   addChild(sprite: Util) {
     sprite.parent = this;
@@ -31,7 +31,7 @@ export class Group extends Thing {
     const array = this.getChildren(obj);
     let ret = array[0];
     if (!ret) {
-      return
+      return;
     }
     return ret;
   }
@@ -41,7 +41,7 @@ export class Group extends Thing {
     for (let i = 0, n = children.length; i < n; i++) {
       let flag = true;
       for (const key in obj) {
-        if (key == '$not') {
+        if (key == "$not") {
           for (const key2 in obj.$not) {
             //@ts-ignore
             if (obj.$not[key2] == children[i][key2]) {
@@ -49,8 +49,8 @@ export class Group extends Thing {
             }
           }
           //@ts-ignore
-        } else if (obj[key] != children[i][key]) { 
-          flag = false; 
+        } else if (obj[key] != children[i][key]) {
+          flag = false;
         }
       }
       if (flag == true) {
@@ -71,7 +71,5 @@ export class Group extends Thing {
       children[i].remove();
     }
   }
-  public draw() {
-
-  }
+  public draw() {}
 }

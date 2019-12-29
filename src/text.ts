@@ -1,5 +1,5 @@
-import { Util } from './util';
-import { TweenState } from './types';
+import { Util } from "./util";
+import { TweenState } from "./types";
 /**
  * @class Atlas.Text
  * @extends Atlas.Util
@@ -12,17 +12,33 @@ export class Text extends Util {
 
   constructor(string: string, col?: string, size?: number, font?: string) {
     super();
-    this._basicConstructor = 'Text';
+    this._basicConstructor = "Text";
     this.x = 0;
     this.y = 0;
     this.scaleX = 1;
     this.scaleY = 1;
     this.alpha = 1;
-    this.spaceWidth = 7;/* append */
-    if (font) { this.font = `'${font}'`; } else { this.font = "'Meiryo'"; }
-    if (size) { this.size = `${size}px`; } else { this.size = '10px'; }
-    if (string) { this.string = string; } else { this.string = ''; }
-    if (col) { this.color = col; } else { this.color = 'white'; }
+    this.spaceWidth = 7; /* append */
+    if (font) {
+      this.font = `'${font}'`;
+    } else {
+      this.font = "'Meiryo'";
+    }
+    if (size) {
+      this.size = `${size}px`;
+    } else {
+      this.size = "10px";
+    }
+    if (string) {
+      this.string = string;
+    } else {
+      this.string = "";
+    }
+    if (col) {
+      this.color = col;
+    } else {
+      this.color = "white";
+    }
   }
   setSize(size: number) {
     this.size = `${size}px`;
@@ -42,7 +58,9 @@ export class Text extends Util {
     const c = Math.cos(-r);
     const xx = Math.abs(x * c - y * s);
     const yy = Math.abs(x * s + y * c);
-    if (xx < width / 2.0 && yy < height / 2.0) { return true; }
+    if (xx < width / 2.0 && yy < height / 2.0) {
+      return true;
+    }
     return false;
   }
   scale(x: number, y: number) {
@@ -64,16 +82,16 @@ export class Text extends Util {
     const scaleX = this.scaleX;
     const scaleY = this.scaleY;
     const ctx = this.ctx;
-    const strings = this.string.split('<br>');
+    const strings = this.string.split("<br>");
     const length = strings.length;
     ctx.globalAlpha = this.alpha;
     ctx.globalCompositeOperation = this.drawMode;
     ctx.font = `${this.size} ${this.font}`;
-    let height = ctx.measureText('a').width * 1.5 + this.spaceWidth;
+    let height = ctx.measureText("a").width * 1.5 + this.spaceWidth;
     ctx.fillStyle = this.color;
     ctx.save();
-    const cX = parseInt(this.size) * this.scaleX * this.string.length / 2;
-    const cY = parseInt(this.size) * this.scaleY / 2;
+    const cX = (parseInt(this.size) * this.scaleX * this.string.length) / 2;
+    const cY = (parseInt(this.size) * this.scaleY) / 2;
     ctx.translate(x + cX, y + cY);
     ctx.rotate(rot);
     ctx.translate(-cX, -cY);

@@ -1,6 +1,6 @@
-import { Thing } from './thing';
-import { TweenState, Size } from './types';
-import { Tween, getImageAssets } from './functions';
+import { Thing } from "./thing";
+import { TweenState, Size } from "./types";
+import { Tween, getImageAssets } from "./functions";
 /**
  * @class Atlas.Sprite
  * @extends Atlas.Thing
@@ -12,7 +12,7 @@ export class Sprite extends Thing {
   constructor(name: string, width: number, height: number) {
     super(width, height);
     this.setImage(name, width, height);
-    this._basicConstructor = 'Sprite';
+    this._basicConstructor = "Sprite";
     this.frame = 0;
     this.alpha = 1;
   }
@@ -21,16 +21,18 @@ export class Sprite extends Thing {
    * フレームを変えてスプライトをアニメーションさせる
    * */
   animate(array: number[], frameRate: number, frame: number) {
-    const obj = Tween(this, 'animate', frame);
+    const obj = Tween(this, "animate", frame);
     obj.array = array;
     obj.frameRate = frameRate;
     obj.frameIdx = 0;
     this.mover.push(obj);
     return this;
   }
-  
+
   _animate(obj: TweenState) {
-    if (obj.time == 0) { this.frame = obj.array[0]; }
+    if (obj.time == 0) {
+      this.frame = obj.array[0];
+    }
     if (obj.time % obj.frameRate == 0) {
       obj.frameIdx = (obj.frameIdx + 1) % obj.array.length;
       this.frame = obj.array[obj.frameIdx];
@@ -41,14 +43,14 @@ export class Sprite extends Thing {
     this.spriteHeight = height;
   }
   setImage(name: string, width: number, height: number) {
-    if (width && height) { 
-      this.setSpriteSize(width, height); 
+    if (width && height) {
+      this.setSpriteSize(width, height);
     }
     const images = getImageAssets();
     const length = images.length;
     for (let i = 0; i < length; i++) {
-      if (images[i].name == name) { 
-        this.img = i; 
+      if (images[i].name == name) {
+        this.img = i;
       }
     }
   }
@@ -111,7 +113,9 @@ export class Sprite extends Thing {
     ctx.rotate(rot);
     ctx.translate(-cX, -cY);
     ctx.scale(scaleX, scaleY);
-    if (dx != null) { ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY); }
+    if (dx != null) {
+      ctx.drawImage(image, dx, dy, SizeX, SizeY, 0, 0, SizeX, SizeY);
+    }
     ctx.restore();
     ctx.globalAlpha = 1;
   }

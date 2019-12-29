@@ -1,17 +1,29 @@
-import { EventListenerState, TweenState, Key, Position, TouchEventWithPos } from './types';
-import { isMobile, orientation, Tween, getSoundAssets, getKeydown } from './functions';
-import { Scene } from './scene';
+import {
+  EventListenerState,
+  TweenState,
+  Key,
+  Position,
+  TouchEventWithPos
+} from "./types";
+import {
+  isMobile,
+  orientation,
+  Tween,
+  getSoundAssets,
+  getKeydown
+} from "./functions";
+import { Scene } from "./scene";
 /**
  * @class Atlas.Util
  * */
 export class Util {
   // todo _はprotectedにしたい
   public isMobile: boolean;
-  public orientation: 'portrait' | 'landscape';
+  public orientation: "portrait" | "landscape";
   public rot: number;
   public visible: boolean;
   public eventEnable: boolean;
-  public drawMode: 'source-over';
+  public drawMode: "source-over";
   public assetPath!: string;
   public moverIndex: number;
   public eventListener: EventListenerState;
@@ -47,18 +59,18 @@ export class Util {
   public startRot!: boolean;
   public grouped!: boolean;
   // TODO
-  public multiTouchStart(pos?: Position[]) { };
-  public multiTouchMove(pos?: Position[]) { };
-  public multiTouchEnd(pos?: Position[]) { };
-  public touchStart(pos?: Position) { };
-  public touchMove(pos?: Position) { };
-  public touchEnd(pos?: Position) { };
-  public keyUp(key?: Key) { };
-  public keyDown(key?: Key) { };
-  public enterFrame() { };
-  public onSceneRemoved() { };
-  public onScenePushed() { };
-  public onLoad() { };
+  public multiTouchStart(pos?: Position[]) {}
+  public multiTouchMove(pos?: Position[]) {}
+  public multiTouchEnd(pos?: Position[]) {}
+  public touchStart(pos?: Position) {}
+  public touchMove(pos?: Position) {}
+  public touchEnd(pos?: Position) {}
+  public keyUp(key?: Key) {}
+  public keyDown(key?: Key) {}
+  public enterFrame() {}
+  public onSceneRemoved() {}
+  public onScenePushed() {}
+  public onLoad() {}
 
   constructor() {
     this.isMobile = isMobile;
@@ -68,7 +80,7 @@ export class Util {
     this.moverIndex = 0;
     this.visible = true;
     this.eventEnable = true;
-    this.drawMode = 'source-over';
+    this.drawMode = "source-over";
     this.eventListener = {
       touchStart: false,
       touchMove: false,
@@ -86,16 +98,10 @@ export class Util {
     return true;
   }
 
-  public _enterFrame() {
+  public _enterFrame() {}
+  public _onLoad() {}
 
-  }
-  public _onLoad() {
-
-  }
-
-  public draw() {
-
-  }
+  public draw() {}
 
   public tween() {
     const mover = this.mover;
@@ -134,13 +140,9 @@ export class Util {
     }
   }
 
-  protected _animate(obj: TweenState) {
+  protected _animate(obj: TweenState) {}
 
-  }
-
-  protected _scaleBy(obj: TweenState) {
-
-  }
+  protected _scaleBy(obj: TweenState) {}
 
   protected _refresh() {
     this.moverIndex = 0;
@@ -169,7 +171,7 @@ export class Util {
    * @param frame {Number}
    * */
   public moveTo(x: number, y: number, frame: number) {
-    const obj = Tween(this, 'moveTo', frame);
+    const obj = Tween(this, "moveTo", frame);
     obj.toX = x;
     obj.toY = y;
     this.mover.push(obj);
@@ -191,7 +193,7 @@ export class Util {
    * @param frame {Number}
    * */
   public moveBy(x: number, y: number, frame: number) {
-    const obj = Tween(this, 'moveBy', frame);
+    const obj = Tween(this, "moveBy", frame);
     obj.diffX = x;
     obj.diffY = y;
     this.mover.push(obj);
@@ -211,7 +213,7 @@ export class Util {
    * @param frame {Number}
    * */
   public delay(frame: number) {
-    const obj = Tween(this, 'delay', frame);
+    const obj = Tween(this, "delay", frame);
     this.mover.push(obj);
     return this;
   }
@@ -224,7 +226,9 @@ export class Util {
   public and() {
     const mover = this.mover;
     const target = mover[mover.length - 1];
-    if (target) { target.and = true; }
+    if (target) {
+      target.and = true;
+    }
     return this;
   }
   /**
@@ -248,27 +252,29 @@ export class Util {
     return this;
   }
   /**
-  * @method rotateBy
-  * @param angle {Number}
-  * @param frame {Number}
-  * frameフレームでangle（ラジアン）回転させる
-  * */
+   * @method rotateBy
+   * @param angle {Number}
+   * @param frame {Number}
+   * frameフレームでangle（ラジアン）回転させる
+   * */
   public rotateBy(angle: number, frame: number) {
-    const obj = Tween(this, 'rotateBy', frame);
+    const obj = Tween(this, "rotateBy", frame);
     this.mover.push(obj);
     obj.diffAngle = angle;
     return this;
   }
   protected _rotateBy(obj: TweenState) {
-    if (obj.time === 0) { obj.toAngle = this.rot + obj.diffAngle; }
+    if (obj.time === 0) {
+      obj.toAngle = this.rot + obj.diffAngle;
+    }
     this.rot = obj.toAngle - obj.diffAngle * (1 - obj.time / obj.frame);
   }
   /**
-  * @method then
-  * アニメーションの途中に関数を実行する
-  * */
+   * @method then
+   * アニメーションの途中に関数を実行する
+   * */
   public then(fn: Function, frame: number) {
-    const obj = Tween(this, 'then', frame);
+    const obj = Tween(this, "then", frame);
     obj.exec = fn;
     this.mover.push(obj);
     return this;
@@ -285,7 +291,7 @@ export class Util {
    * frameフレームで横にx倍、縦にy倍拡大する
    * */
   scaleBy(x: number, y: number, frame: number) {
-    const obj = Tween(this, 'scaleBy', frame);
+    const obj = Tween(this, "scaleBy", frame);
     obj.scaleX = x;
     obj.scaleY = y;
     this.mover.push(obj);
@@ -305,7 +311,7 @@ export class Util {
   saveData(key: string) {
     const obj = {} as { [index: string]: any };
     for (const i in this) {
-      if (typeof (this[i]) !== 'function') {
+      if (typeof this[i] !== "function") {
         obj[i] = this[i];
       }
     }
@@ -325,8 +331,8 @@ export class Util {
    * eventオブジェクトからキャンバスの押された位置座標を取得
    * */
   getTouchPosition(e: TouchEventWithPos, num?: number) {
-    if (!(num && e.touches[num])) { 
-      num = 0; 
+    if (!(num && e.touches[num])) {
+      num = 0;
     }
     const field = this.field;
     const rateX = parseInt(`${field.width}`) / parseInt(field.style.width);
@@ -335,10 +341,16 @@ export class Util {
     const margin = field.getBoundingClientRect();
     let x = parseInt(`${margin.left}`);
     let y = parseInt(`${margin.top}`);
-    if (isNaN(x)) { x = 0; }
-    if (isNaN(y)) { y = 0; }
-    const scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-    const scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+    if (isNaN(x)) {
+      x = 0;
+    }
+    if (isNaN(y)) {
+      y = 0;
+    }
+    const scrollX =
+      document.documentElement.scrollLeft || document.body.scrollLeft;
+    const scrollY =
+      document.documentElement.scrollTop || document.body.scrollTop;
     if (e) {
       if (!isMobile || (isMobile && e.touches[num])) {
         obj.x = (isMobile ? e.touches[num].pageX : e.pageX) - x - scrollX;
@@ -371,26 +383,51 @@ export class Util {
     if (this.eventEnable) {
       e.preventDefault();
       const pos = this.getTouchPosition(e);
-      if (e.touches) { 
-        pos.touchCount = e.touches.length; 
-      } else { 
-        pos.touchCount = 1; 
+      if (e.touches) {
+        pos.touchCount = e.touches.length;
+      } else {
+        pos.touchCount = 1;
       }
       pos.event = e;
       const type = e.type;
       const keydown = getKeydown();
       switch (type) {
-        case 'touchstart': if (this.multiTouchStart && e.touches.length > 1) { this.multiTouchStart(this.getMultiTouchPosition(e)); } else if (this.touchStart) { this.touchStart(pos); }
+        case "touchstart":
+          if (this.multiTouchStart && e.touches.length > 1) {
+            this.multiTouchStart(this.getMultiTouchPosition(e));
+          } else if (this.touchStart) {
+            this.touchStart(pos);
+          }
           break;
-        case 'mousedown': if (this.touchStart) this.touchStart(pos); break;
-        case 'touchmove': if (this.multiTouchMove && e.touches.length > 1) { this.multiTouchMove(this.getMultiTouchPosition(e)); } else if (this.touchMove) { this.touchMove(pos); }
+        case "mousedown":
+          if (this.touchStart) this.touchStart(pos);
           break;
-        case 'mousemove': if (this.touchMove) this.touchMove(pos); break;
-        case 'touchend': if (this.multiTouchEnd && e.touches.length > 1) { this.multiTouchEnd(this.getMultiTouchPosition(e)); } else if (this.touchEnd) { this.touchEnd(pos); }
+        case "touchmove":
+          if (this.multiTouchMove && e.touches.length > 1) {
+            this.multiTouchMove(this.getMultiTouchPosition(e));
+          } else if (this.touchMove) {
+            this.touchMove(pos);
+          }
           break;
-        case 'mouseup': if (this.touchEnd) this.touchEnd(); break;
-        case 'keydown': if (this.keyDown) this.keyDown(keydown); break;
-        case 'keyup': if (this.keyUp) this.keyUp(); break;
+        case "mousemove":
+          if (this.touchMove) this.touchMove(pos);
+          break;
+        case "touchend":
+          if (this.multiTouchEnd && e.touches.length > 1) {
+            this.multiTouchEnd(this.getMultiTouchPosition(e));
+          } else if (this.touchEnd) {
+            this.touchEnd(pos);
+          }
+          break;
+        case "mouseup":
+          if (this.touchEnd) this.touchEnd();
+          break;
+        case "keydown":
+          if (this.keyDown) this.keyDown(keydown);
+          break;
+        case "keyup":
+          if (this.keyUp) this.keyUp();
+          break;
       }
     }
   }
@@ -399,41 +436,65 @@ export class Util {
     const field = this.field;
     const eventListener = this.eventListener;
     if (this.touchStart && eventListener.touchStart === false) {
-      if (isMobile) { field.addEventListener('touchstart', this, false); } else { field.addEventListener('mousedown', this, false); }
+      if (isMobile) {
+        field.addEventListener("touchstart", this, false);
+      } else {
+        field.addEventListener("mousedown", this, false);
+      }
       eventListener.touchStart = true;
     }
     if (this.touchMove && eventListener.touchMove === false) {
-      if (isMobile) { field.addEventListener('touchmove', this, false); } else { field.addEventListener('mousemove', this, false); }
+      if (isMobile) {
+        field.addEventListener("touchmove", this, false);
+      } else {
+        field.addEventListener("mousemove", this, false);
+      }
       eventListener.touchMove = true;
     }
     if (this.touchEnd && eventListener.touchEnd === false) {
-      if (isMobile) { field.addEventListener('touchend', this, false); } else { field.addEventListener('mouseup', this, false); }
+      if (isMobile) {
+        field.addEventListener("touchend", this, false);
+      } else {
+        field.addEventListener("mouseup", this, false);
+      }
       eventListener.touchEnd = true;
     }
     if (this.multiTouchStart && eventListener.multiTouchStart === false) {
       if (!eventListener.touchStart) {
-        if (isMobile) { field.addEventListener('touchstart', this, false); } else { field.addEventListener('mousedown', this, false); }
+        if (isMobile) {
+          field.addEventListener("touchstart", this, false);
+        } else {
+          field.addEventListener("mousedown", this, false);
+        }
       }
       eventListener.touchStart = true;
     }
     if (this.multiTouchMove && eventListener.multiTouchMove === false) {
       if (!eventListener.touchMove) {
-        if (isMobile) { field.addEventListener('touchmove', this, false); } else { field.addEventListener('mousemove', this, false); }
+        if (isMobile) {
+          field.addEventListener("touchmove", this, false);
+        } else {
+          field.addEventListener("mousemove", this, false);
+        }
       }
       eventListener.touchMove = true;
     }
     if (this.multiTouchEnd && eventListener.multiTouchEnd === false) {
       if (!eventListener.touchEnd) {
-        if (isMobile) { field.addEventListener('touchend', this, false); } else { field.addEventListener('mouseup', this, false); }
+        if (isMobile) {
+          field.addEventListener("touchend", this, false);
+        } else {
+          field.addEventListener("mouseup", this, false);
+        }
       }
       eventListener.touchEnd = true;
     }
     if (this.keyUp && eventListener.keyUp === false) {
-      field.addEventListener('keyup', this, false);
+      field.addEventListener("keyup", this, false);
       eventListener.keyUp = true;
     }
     if (this.keyDown && eventListener.keyDown === false) {
-      field.addEventListener('keydown', this, false);
+      field.addEventListener("keydown", this, false);
       eventListener.keyDown = true;
     }
   }
@@ -466,8 +527,9 @@ export class Util {
    * limitまでの文字数で文字列を取得
    * */
   getRandText(limit: number) {
-    let ret = '';
-    const strings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let ret = "";
+    const strings =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const length = strings.length;
     for (let i = 0; i < limit; i++) {
       ret += strings.charAt(Math.floor(this.getRand(0, length)));
@@ -492,18 +554,24 @@ export class Util {
    * 16進からRGBを取得する
    * */
   hexToRgb(color: string, opacity?: number) {
-    if (typeof this.color !== 'string') {
+    if (typeof this.color !== "string") {
       return null;
     }
     const hex = color || this.color;
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (opacity) {
-      return result ?
-        `rgba(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)},${opacity})`
+      return result
+        ? `rgba(${parseInt(result[1], 16)},${parseInt(
+            result[2],
+            16
+          )},${parseInt(result[3], 16)},${opacity})`
         : null;
     }
-    return result ?
-      `rgb(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)})`
+    return result
+      ? `rgb(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(
+          result[3],
+          16
+        )})`
       : null;
   }
   /**
@@ -523,21 +591,57 @@ export class Util {
     let g: number | string = 0;
     let b: number | string = 0;
     i = Math.floor(h / 60.0) % 6;
-    f = (h / 60.0) - Math.floor(h / 60.0);
-    p = Math.round(v * (1.0 - (s / 255.0)));
+    f = h / 60.0 - Math.floor(h / 60.0);
+    p = Math.round(v * (1.0 - s / 255.0));
     q = Math.round(v * (1.0 - (s / 255.0) * f));
     t = Math.round(v * (1.0 - (s / 255.0) * (1.0 - f)));
     switch (i) {
-      case 0: r = v; g = t; b = p; break;
-      case 1: r = q; g = v; b = p; break;
-      case 2: r = p; g = v; b = t; break;
-      case 3: r = p; g = q; b = v; break;
-      case 4: r = t; g = p; b = v; break;
-      case 5: r = v; g = p; b = q; break;
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
     }
-    if (r <= 15) { r = `0${r.toString(16)}`; } else { r = r.toString(16); }
-    if (g <= 15) { g = `0${g.toString(16)}`; } else { g = g.toString(16); }
-    if (b <= 15) { b = `0${b.toString(16)}`; } else { b = b.toString(16); }
+    if (r <= 15) {
+      r = `0${r.toString(16)}`;
+    } else {
+      r = r.toString(16);
+    }
+    if (g <= 15) {
+      g = `0${g.toString(16)}`;
+    } else {
+      g = g.toString(16);
+    }
+    if (b <= 15) {
+      b = `0${b.toString(16)}`;
+    } else {
+      b = b.toString(16);
+    }
     return `#${r}${g}${b}`;
   }
   rgbToHsv(r: number, g: number, b: number) {
@@ -562,9 +666,9 @@ export class Util {
       if (r === v) {
         h = bb - gg;
       } else if (g === v) {
-        h = (1 / 3) + rr - bb;
+        h = 1 / 3 + rr - bb;
       } else if (b === v) {
-        h = (2 / 3) + gg - rr;
+        h = 2 / 3 + gg - rr;
       }
       if (h < 0) {
         h += 1;
@@ -572,7 +676,9 @@ export class Util {
         h -= 1;
       }
     }
-    return `hsv(${Math.round(h * 360)},${Math.round(s * 100)},${Math.round(v * 100)})`;
+    return `hsv(${Math.round(h * 360)},${Math.round(s * 100)},${Math.round(
+      v * 100
+    )})`;
   }
   hexToHsv(color: string) {
     const rgb = this.hexToRgb(color);
@@ -614,7 +720,7 @@ export class Util {
   soundClonePlay() {
     const sound = this.sound;
     if (sound) {
-      (new Audio(sound.src)).play();
+      new Audio(sound.src).play();
     }
   }
   /**
@@ -625,10 +731,14 @@ export class Util {
     const sound = this.sound;
     if (sound) {
       if (!sound.loop) {
-        sound.addEventListener('ended', function () {
-          this.currentTime = 0;
-          this.play();
-        }, false);
+        sound.addEventListener(
+          "ended",
+          function() {
+            this.currentTime = 0;
+            this.play();
+          },
+          false
+        );
       }
       sound.loop = true;
       sound.play();
@@ -664,7 +774,9 @@ export class Util {
    * */
   soundPlay() {
     const sound = this.sound;
-    if (sound) { sound.play(); }
+    if (sound) {
+      sound.play();
+    }
   }
   /**
    * @method soundPause
@@ -672,7 +784,9 @@ export class Util {
    * */
   soundPause() {
     const sound = this.sound;
-    if (sound) { sound.pause(); }
+    if (sound) {
+      sound.pause();
+    }
   }
   /**
    * @method soundGetCount
@@ -680,7 +794,9 @@ export class Util {
    * */
   soundGetCount() {
     const sound = this.sound;
-    if (sound) { return sound.currentTime; }
+    if (sound) {
+      return sound.currentTime;
+    }
   }
   /**
    * @method soundSetCount
@@ -689,7 +805,9 @@ export class Util {
    * */
   soundSetCount(time: number) {
     const sound = this.sound;
-    if (sound) { sound.currentTime = time; }
+    if (sound) {
+      sound.currentTime = time;
+    }
   }
   /**
    * @method soundGetVolume
@@ -697,7 +815,9 @@ export class Util {
    * */
   soundGetVolume() {
     const sound = this.sound;
-    if (sound) { return sound.volume; }
+    if (sound) {
+      return sound.volume;
+    }
   }
   /**
    * @method soundSetVolume
@@ -706,7 +826,9 @@ export class Util {
    * */
   soundSetVolume(volume: number) {
     const sound = this.sound;
-    if (sound) { sound.volume = volume; }
+    if (sound) {
+      sound.volume = volume;
+    }
   }
   /**
    * @method soundGetAlltime
@@ -714,7 +836,9 @@ export class Util {
    * */
   soundGetAlltime() {
     const sound = this.sound;
-    if (sound) { return sound.duration; }
+    if (sound) {
+      return sound.duration;
+    }
   }
   /**
    * @method 音楽が再生中かを調べる
@@ -722,7 +846,9 @@ export class Util {
    * */
   soundIsPlaying() {
     const sound = this.sound;
-    if (sound) { return !sound.paused; }
+    if (sound) {
+      return !sound.paused;
+    }
   }
   /**
    * @method getExtention
@@ -730,11 +856,11 @@ export class Util {
    * ファイル名から拡張子を取得する
    * */
   getExtention(fileName: string): string {
-    let ret = '';
+    let ret = "";
     if (!fileName) {
       return ret;
     }
-    const fileTypes = fileName.split('.');
+    const fileTypes = fileName.split(".");
     const len = fileTypes.length;
     if (len === 0) {
       return ret;
