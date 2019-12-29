@@ -187,9 +187,8 @@ export class App extends Util {
    * */
   fitWindow() {
     this.setSize(window.innerWidth, window.innerHeight);
-    const that = this;
-    window.onresize = function () {
-      that.setSize(window.innerWidth, window.innerHeight);
+    window.onresize = () => {
+      this.setSize(window.innerWidth, window.innerHeight);
     };
   }
   /**
