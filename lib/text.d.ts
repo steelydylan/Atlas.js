@@ -1,5 +1,5 @@
-import { Util } from './util';
-import { TweenState } from './types';
+import { Util } from "./util";
+import { TweenState } from "./types";
 /**
  * @class Atlas.Text
  * @extends Atlas.Util

@@ -1,6 +1,6 @@
-import { Util } from './util';
-import { Scene } from './scene';
-import { Size } from './types';
+import { Util } from "./util";
+import { Scene } from "./scene";
+import { Size } from "./types";
 /**
  * @class Atlas.App
  * @extends Atlas.Util
@@ -82,9 +82,9 @@ export declare class App extends Util {
      * */
     setSize(width: number, height: number): void;
     /**
-    * @method getSize
-    * ゲーム画面の大きさを取得する
-    * */
+     * @method getSize
+     * ゲーム画面の大きさを取得する
+     * */
     getSize(): Size;
     /**
      * @method getQuality

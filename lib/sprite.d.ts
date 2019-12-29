@@ -1,5 +1,5 @@
-import { Thing } from './thing';
-import { TweenState, Size } from './types';
+import { Thing } from "./thing";
+import { TweenState, Size } from "./types";
 /**
  * @class Atlas.Sprite
  * @extends Atlas.Thing

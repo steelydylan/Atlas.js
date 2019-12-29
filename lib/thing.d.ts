@@ -1,11 +1,11 @@
-import { TweenState } from './types';
-import { Util } from './util';
+import { TweenState } from "./types";
+import { Util } from "./util";
 /**
  * @class Atlas.Thing
  * @extends Atlas.Util
  * */
 export declare class Thing extends Util {
-    collisionShape: 'box' | 'circle';
+    collisionShape: "box" | "circle";
     alpha: number;
     prepared: boolean;
     spriteWidth: number;

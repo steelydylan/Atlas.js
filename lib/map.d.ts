@@ -1,4 +1,4 @@
-import { Sprite } from './sprite';
+import { Sprite } from "./sprite";
 /**
  * @class Atlas.Map
  * @extends Atlas.Sprite

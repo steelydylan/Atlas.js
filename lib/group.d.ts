@@ -1,5 +1,5 @@
-import { Thing } from './thing';
-import { Util } from './util';
+import { Thing } from "./thing";
+import { Util } from "./util";
 /**
  * @class Atlas.Group
  * @extends Atlas.Thing

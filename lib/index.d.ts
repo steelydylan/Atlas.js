@@ -1,13 +1,13 @@
-import { App } from './app';
-import { Group } from './group';
-import { Layer } from './layer';
-import { Map } from './map';
-import { Scene } from './scene';
-import { Shape, Box, Circle } from './shape';
-import { Sprite } from './sprite';
-import { Text } from './text';
-import { Thing } from './thing';
-import { Util } from './util';
+import { App } from "./app";
+import { Group } from "./group";
+import { Layer } from "./layer";
+import { Map } from "./map";
+import { Scene } from "./scene";
+import { Shape, Box, Circle } from "./shape";
+import { Sprite } from "./sprite";
+import { Text } from "./text";
+import { Thing } from "./thing";
+import { Util } from "./util";
 declare const Atlas: {
     App: typeof App;
     Group: typeof Group;

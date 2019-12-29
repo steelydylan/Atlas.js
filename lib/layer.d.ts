@@ -1,5 +1,5 @@
-import { Group } from './group';
-import { Util } from './util';
+import { Group } from "./group";
+import { Util } from "./util";
 /**
  * @class Atlas.Layer
  * @extends Atlas.Group

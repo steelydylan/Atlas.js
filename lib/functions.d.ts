@@ -1,4 +1,4 @@
-import { Key, TweenState, Animation } from './types';
+import { Key, TweenState, Animation } from "./types";
 export declare const addImage: (img: HTMLImageElement) => void;
 export declare const addSound: (sound: HTMLAudioElement) => void;
 export declare const addSvg: (svg: HTMLObjectElement) => void;

@@ -1,15 +1,15 @@
-import { EventListenerState, TweenState, Key, Position, TouchEventWithPos } from './types';
-import { Scene } from './scene';
+import { EventListenerState, TweenState, Key, Position, TouchEventWithPos } from "./types";
+import { Scene } from "./scene";
 /**
  * @class Atlas.Util
  * */
 export declare class Util {
     isMobile: boolean;
-    orientation: 'portrait' | 'landscape';
+    orientation: "portrait" | "landscape";
     rot: number;
     visible: boolean;
     eventEnable: boolean;
-    drawMode: 'source-over';
+    drawMode: "source-over";
     assetPath: string;
     moverIndex: number;
     eventListener: EventListenerState;
@@ -114,17 +114,17 @@ export declare class Util {
      * */
     loop(): this;
     /**
-    * @method rotateBy
-    * @param angle {Number}
-    * @param frame {Number}
-    * frameフレームでangle（ラジアン）回転させる
-    * */
+     * @method rotateBy
+     * @param angle {Number}
+     * @param frame {Number}
+     * frameフレームでangle（ラジアン）回転させる
+     * */
     rotateBy(angle: number, frame: number): this;
     protected _rotateBy(obj: TweenState): void;
     /**
-    * @method then
-    * アニメーションの途中に関数を実行する
-    * */
+     * @method then
+     * アニメーションの途中に関数を実行する
+     * */
     then(fn: Function, frame: number): this;
     protected _then(obj: TweenState): void;
     /**

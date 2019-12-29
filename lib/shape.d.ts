@@ -1,5 +1,5 @@
-import { Thing } from './thing';
-import { SVGDrawLineState, GradientStyle, ColorStop } from './types';
+import { Thing } from "./thing";
+import { SVGDrawLineState, GradientStyle, ColorStop } from "./types";
 /**
  * @class Atlas.Shape
  * @extends Atlas.Thing
