@@ -249,10 +249,8 @@ export class App extends Util {
     this.useEvent();
     const ctx = this.ctx;
     ctx.clearRect(0, 0, field.width, field.height);
-    if (isLoaded()) {
-      if (this.preScene) {
-        this.preScene._enterFrame();
-      }
+    if (isLoaded() && this.preScene) {
+      this.preScene._enterFrame();
     } else {
       if (this.onLoad) {
         this.onLoad();
@@ -270,9 +268,8 @@ export class App extends Util {
         }
       }
       clearInterval(this.preLoadInterval);
-      const that = this;
       setInterval(() => {
-        that._enterFrame();
+        this._enterFrame();
       }, 1000 / this.fps);
     }
   }
@@ -354,10 +351,9 @@ export class App extends Util {
    * */
   start() {
     const field = this.field;
-    const that = this;
     this.ctx.clearRect(0, 0, field.width, field.height);
     this.preLoadInterval = setInterval(() => {
-      that._preLoadEnterFrame();
+      this._preLoadEnterFrame();
     }, 1000 / this.fps);
   }
   /**

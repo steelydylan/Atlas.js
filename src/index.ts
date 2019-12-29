@@ -9,17 +9,34 @@ import { Text } from './text';
 import { Thing } from './thing';
 import { Util } from './util';
 
-export { 
-  App, 
-  Group, 
+const Atlas = {
+  App,
+  Group,
   Layer, 
-  Map, 
-  Scene, 
+  Map,
+  Scene,
   Shape, 
-  Box, 
+  Box,
   Circle, 
-  Sprite, 
-  Text, 
-  Thing, 
+  Sprite,
+  Text,
+  Thing,
   Util
 };
+
+export default Atlas;
+
+export {
+  App,
+  Group,
+  Layer, 
+  Map,
+  Scene,
+  Shape, 
+  Box,
+  Circle, 
+  Sprite,
+  Text,
+  Thing,
+  Util
+}
