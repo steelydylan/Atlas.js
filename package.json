@@ -5,18 +5,20 @@
   "license": "MIT License",
   "version": "1.0.3",
   "main": "./lib/index.js",
+  "type": "./lib/index.d.ts",
   "scripts": {
-    "lint": "eslint ./src/core/index.js --fix",
-    "build:js": "npm-run-all -p build:lib build:global",
-    "build:lib": "npm run babel",
-    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone Atlas -o ./build/Atlas.js && npm run build:global:min",
-    "build:global:min": "uglifyjs ./build/Atlas.js -m -c --comments -o ./build/Atlas.min.js",
+    "lint": "eslint ./src/** --fix",
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "build:lib": "tsc",
     "babel": "babel src --out-dir lib",
-    "watch:js": "onchange \"src/\" -- npm run build:js",
-    "start": "npm-run-all -p watch:js",
     "deploy": "np --yolo"
   },
   "devDependencies": {
+    "@types/node": "^13.1.1",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "awesome-typescript-loader": "^5.2.1",
     "babel-cli": "^6.18.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-html-import-to-string": "^0.0.1",
@@ -26,9 +28,9 @@
     "browser-sync": "^2.18.6",
     "browserify": "^13.1.1",
     "co": "^4.6.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "fs-extra": "^2.1.2",
     "http-server": "^0.9.0",
     "licensify": "^3.1.2",
@@ -41,7 +43,11 @@
     "npm-run-all": "^4.0.2",
     "onchange": "^3.2.1",
     "power-assert": "^1.4.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.4",
     "uglify-js": "^2.8.22",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }

@@ -1,0 +1,15 @@
+import { Key, TweenState, Animation } from "./types";
+export declare const addImage: (img: HTMLImageElement) => void;
+export declare const addSound: (sound: HTMLAudioElement) => void;
+export declare const addSvg: (svg: HTMLObjectElement) => void;
+export declare const finishLoad: () => void;
+export declare const isLoaded: () => boolean;
+export declare const getImageAssets: () => HTMLImageElement[];
+export declare const getSoundAssets: () => HTMLAudioElement[];
+export declare const getSvgAssets: () => HTMLObjectElement[];
+export declare const isMobile: boolean;
+export declare const orientation: string;
+export declare const setKeyState: (ret: Key, e: KeyboardEvent) => void;
+export declare const clearKeyState: (ret: Key) => void;
+export declare const getKeydown: () => Key;
+export declare const Tween: (that: any, kind: Animation, frame: number) => TweenState;

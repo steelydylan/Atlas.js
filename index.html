@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="build/Atlas.js"></script>
+  <script>
+    var app = new Atlas.App();
+    app.load('http://steelydylan.github.io/Atlas.js/image/chara2.png');
+    var sprite = new Atlas.Sprite('http://steelydylan.github.io/Atlas.js/image/chara2.png', 32, 32);
+    app.addChild(sprite);
+    app.setColor('#000');
+    sprite.setPosition(0, 0);
+    sprite.moveBy(100, 100, 30).moveBy(-100, -100, 30).loop();
+    sprite.touchStart = (e) => {
+      if (sprite.intersect(e.x, e.y)) {
+        sprite.stop();
+      }
+    }
+    app.start();
+    app.enterFrame = () => {
+    }
+  </script>
+</body>
+
+</html>
