@@ -6,6 +6,11 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "globals": {
+    "document": true,
+    "window": true,
+    "event": true
+  },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module",
